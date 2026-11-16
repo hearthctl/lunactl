@@ -1,0 +1,4 @@
+{
+  "light.decke": {"state": "on", "brightness": 255, "color_temp_kelvin": 4000},
+  "light.bett": {"state": "on", "brightness": 255, "color_temp_kelvin": 4000}
+}

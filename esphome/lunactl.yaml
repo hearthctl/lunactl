@@ -1,0 +1,290 @@
+esphome:
+  name: lunactl
+  # Runs after the I2C bus (1000) and before the M5IOE1 setup (IO, 900).
+  # Mirrors M5GFX's StopWatch power-on. Verified on device: on a battery cold
+  # boot the M5IOE1 NACKs for ~50 ms (M5GFX allows up to 500 ms), and the
+  # M5PM1 power outputs are already on (PWR_CFG 0x17).
+  on_boot:
+    priority: 950
+    then:
+      - lambda: |-
+          // M5PM1 (0x6E): I2C idle-sleep off (0x09), watchdog off (0x0A).
+          // Its first transfer after idle may NACK, so retry.
+          for (uint8_t reg : {0x09, 0x0A}) {
+            const uint8_t data[2] = {reg, 0x00};
+            for (int i = 0; i < 20 && id(i2c_bus).write(0x6E, data, 2) != i2c::ERROR_OK; i++)
+              delay(1);
+          }
+          // M5IOE1 (0x4F): wait up to 1 s for it to answer, then I2C idle-sleep off (0x23).
+          const uint8_t cfg[2] = {0x23, 0x00};
+          int waited = 0;
+          while (waited < 1000 && id(i2c_bus).write(0x4F, cfg, 2) != i2c::ERROR_OK) {
+            delay(1);
+            waited++;
+          }
+          ESP_LOGI("lunactl", "M5IOE1 ready after %d ms", waited);
+
+esp32:
+  variant: esp32s3
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+logger:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+# OTA uses the api encryption key.
+ota:
+  - platform: esphome
+    encryption:
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/m5stack/esphome-yaml
+      ref: f76024e1527b38170350be62c9c01fe29488319d
+    components: [m5ioe1]
+
+i2c:
+  id: i2c_bus
+  sda: GPIO47
+  scl: GPIO48
+
+# Expander pin numbers are 0-based: number N is the expander's IO(N+1).
+m5ioe1:
+  id: ioe
+  address: 0x4F
+  # A software reset may restore the I2C idle-sleep disabled in on_boot.
+  reset: false
+
+# 3V3_L3B powers display and touch. Turned on before the display sets up.
+switch:
+  - platform: gpio
+    id: rail_3v3_l3b
+    restore_mode: ALWAYS_ON
+    pin:
+      m5ioe1_id: ioe
+      number: 7
+      mode:
+        output: true
+
+spi:
+  type: quad
+  clk_pin: GPIO40
+  data_pins: [GPIO41, GPIO42, GPIO46, GPIO45]
+
+display:
+  - platform: mipi_spi
+    id: amoled
+    model: CO5300
+    bus_mode: quad
+    color_order: rgb
+    cs_pin: GPIO39
+    reset_pin:
+      m5ioe1_id: ioe
+      number: 4
+      mode:
+        output: true
+    dimensions:
+      width: 466
+      height: 466
+      offset_width: 6
+      offset_height: 0
+
+# Verified on device: CST820 at 0x15 reports raw coordinates over the full
+# 0..466 range, so no calibration is needed.
+touchscreen:
+  - platform: cst816
+    id: touch
+    display: amoled
+    interrupt_pin: GPIO13
+    reset_pin:
+      m5ioe1_id: ioe
+      number: 3
+      mode:
+        output: true
+    on_touch:
+      - logger.log:
+          format: "touch x=%d y=%d raw_x=%d raw_y=%d"
+          args: [touch.x, touch.y, touch.x_raw, touch.y_raw]
+
+binary_sensor:
+  - platform: gpio
+    id: taste_a
+    name: Taste A
+    internal: true
+    pin:
+      number: GPIO2
+      inverted: true
+    # Short press only. HA decides between Gemütlich and Schlafen gehen.
+    on_click:
+      min_length: 50ms
+      max_length: 1s
+      then:
+        - homeassistant.action:
+            action: script.lunactl_taste_a
+  - platform: gpio
+    id: taste_b
+    name: Taste B
+    internal: true
+    pin:
+      number: GPIO1
+      inverted: true
+    on_press:
+      - logger.log: "Taste B pressed"
+    on_release:
+      - logger.log: "Taste B released"
+
+font:
+  - id: font_tile
+    file: "gfonts://Nunito@800"
+    size: 28
+    bpp: 4
+    # Latin core includes the German umlauts (Gemütlich).
+    glyphsets: [GF_Latin_Core]
+  # Material Design Icons, pinned to a release.
+  - id: font_icon
+    file: https://raw.githubusercontent.com/Templarian/MaterialDesign-Webfont/v7.4.47/fonts/materialdesignicons-webfont.ttf
+    size: 60
+    bpp: 4
+    glyphs:
+      - "\U000F05A8" # white-balance-sunny: Hell
+      - "\U000F14F7" # book-open-variant: Lesen
+      - "\U000F04B9" # sofa: Gemütlich
+      - "\U000F0594" # weather-night: Schlafen gehen
+
+# Each page is a tile of the tileview; swiping drags to the next one.
+# The 2x2 grid of 164 px tiles stays inside the round 466 px display.
+lvgl:
+  displays: [amoled]
+  touchscreens: [touch]
+  bg_color: 0x000000
+  style_definitions:
+    - id: tile
+      width: 164
+      height: 164
+      radius: 44
+      shadow_width: 0
+      text_font: font_tile
+      text_align: center
+      pad_row: 4
+  widgets:
+    - tileview:
+        id: pages
+        width: 100%
+        height: 100%
+        bg_opa: transp
+        tiles:
+          - id: licht
+            row: 0
+            column: 0
+            dir: HOR
+            widgets:
+              - button:
+                  styles: tile
+                  align: center
+                  x: -87
+                  y: -87
+                  bg_color: 0xF5C542
+                  text_color: 0x1A1A1A
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_main: center
+                    flex_align_cross: center
+                    flex_align_track: center
+                  widgets:
+                    - label:
+                        text: "\U000F05A8"
+                        text_font: font_icon
+                    - label:
+                        text: Hell
+                  on_click:
+                    - homeassistant.action:
+                        action: script.lunactl_hell
+              - button:
+                  styles: tile
+                  align: center
+                  x: 87
+                  y: -87
+                  bg_color: 0x0F766E
+                  text_color: 0xFFFFFF
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_main: center
+                    flex_align_cross: center
+                    flex_align_track: center
+                  widgets:
+                    - label:
+                        text: "\U000F14F7"
+                        text_font: font_icon
+                    - label:
+                        text: Lesen
+                  on_click:
+                    - homeassistant.action:
+                        action: script.lunactl_lesen
+              - button:
+                  styles: tile
+                  align: center
+                  x: -87
+                  y: 87
+                  bg_color: 0xC2410C
+                  text_color: 0xFFFFFF
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_main: center
+                    flex_align_cross: center
+                    flex_align_track: center
+                  widgets:
+                    - label:
+                        text: "\U000F04B9"
+                        text_font: font_icon
+                    - label:
+                        text: Gemütlich
+                  on_click:
+                    - homeassistant.action:
+                        action: script.lunactl_gemuetlich
+              - button:
+                  styles: tile
+                  align: center
+                  x: 87
+                  y: 87
+                  bg_color: 0x3730A3
+                  text_color: 0xFFFFFF
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_main: center
+                    flex_align_cross: center
+                    flex_align_track: center
+                  widgets:
+                    - label:
+                        text: "\U000F0594"
+                        text_font: font_icon
+                    - label:
+                        text: "Schlafen\ngehen"
+                  on_click:
+                    - homeassistant.action:
+                        action: script.lunactl_schlafen_gehen
+    # Page dots at the bottom edge, one per tile; the active one is white.
+    - obj:
+        align: bottom_mid
+        y: -21
+        width: 10
+        height: 10
+        radius: 5
+        border_width: 0
+        bg_color: 0xFFFFFF

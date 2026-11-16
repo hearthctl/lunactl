@@ -1,0 +1,4 @@
+firmwares/
+esphome/secrets.yaml
+esphome/.esphome/
+esphome/.check/
