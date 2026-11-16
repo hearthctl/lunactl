@@ -47,9 +47,10 @@ api:
     key: !secret api_encryption_key
   on_client_connected:
     # Log viewers can also subscribe to states. Only HA supplies the contract.
+    # Transition only on the first/last HA client; API connections can overlap.
     - if:
         condition:
-          lambda: 'return client_info.rfind("Home Assistant ", 0) == 0;'
+          lambda: 'return client_info.rfind("Home Assistant ", 0) == 0 && ++id(ha_clients) == 1;'
         then:
           - lambda: id(manifest_core).set_connected(true);
           - script.execute: render_manifest
@@ -57,7 +58,7 @@ api:
   on_client_disconnected:
     - if:
         condition:
-          lambda: 'return client_info.rfind("Home Assistant ", 0) == 0;'
+          lambda: 'return client_info.rfind("Home Assistant ", 0) == 0 && id(ha_clients) > 0 && --id(ha_clients) == 0;'
         then:
           - script.stop: manifest_on_connect
           - lambda: id(manifest_core).set_connected(false);
@@ -66,6 +67,10 @@ api:
 json:
 
 globals:
+  - id: ha_clients
+    type: unsigned int
+    restore_value: false
+    initial_value: "0"
   - id: manifest_core
     type: lunactl::Core
     restore_value: false

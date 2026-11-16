@@ -59,6 +59,11 @@ int main() {
  if (payload["target"]["entity_id"] != "script.expected" || payload["data"]["text"] != response["response"]["pages"][0]["item"]["action"]["data"]["text"]) return 5;
 }
 `
+	checkAdapter(t, source)
+}
+
+func checkAdapter(t *testing.T, source string) {
+	t.Helper()
 	dir := t.TempDir()
 	file := filepath.Join(dir, "adapter.cpp")
 	if err := os.WriteFile(file, []byte(source), 0600); err != nil {
@@ -76,4 +81,71 @@ int main() {
 	if out, err := exec.Command(binary).CombinedOutput(); err != nil {
 		t.Fatalf("adapter contract: %v\n%s", err, out)
 	}
+}
+
+// Exercise the production API conditions and actions with overlapping HA clients.
+func TestOverlappingHomeAssistantClients(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join(testutil.Root(), "esphome/lunactl.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	handler := func(event string) string {
+		t.Helper()
+		pattern := `(?s)  on_client_` + event + `:\n.*?lambda: '([^'\n]+)'\n        then:\n(.*?)(?:\n\n|\n  on_client_)`
+		match := regexp.MustCompile(pattern).FindStringSubmatch(string(raw))
+		if match == nil {
+			t.Fatalf("missing %s handler", event)
+		}
+		var actions strings.Builder
+		for _, line := range strings.Split(match[2], "\n") {
+			line = strings.TrimSpace(line)
+			switch {
+			case strings.HasPrefix(line, "- lambda: "):
+				actions.WriteString(strings.TrimPrefix(line, "- lambda: ") + "\n")
+			case line == "- script.execute: manifest_on_connect":
+				actions.WriteString("pending = true; ++starts;\n")
+			case line == "- script.stop: manifest_on_connect":
+				actions.WriteString("pending = false; ++stops;\n")
+			case line == "- script.execute: render_manifest", line == "":
+			default:
+				t.Fatalf("unsupported API action: %s", line)
+			}
+		}
+		return "if ([&]() { " + match[1] + " }()) {\n" + actions.String() + "}\n"
+	}
+	source := `#include "core.h"
+#define id(name) name
+int main() {
+ lunactl::Core manifest_core;
+ unsigned int ha_clients = 0;
+ bool pending = false;
+ int starts = 0, stops = 0;
+ auto connect = [&](std::string client_info) { ` + handler("connected") + ` };
+ auto disconnect = [&](std::string client_info) { ` + handler("disconnected") + ` };
+ connect("esphome logs");
+ disconnect("esphome logs");
+ disconnect("Home Assistant stray");
+ if (ha_clients || manifest_core.connected() || starts || stops) return 1;
+ connect("Home Assistant first");
+ uint32_t request = manifest_core.begin_fetch();
+ connect("Home Assistant second");
+ disconnect("Home Assistant first");
+ if (!pending || starts != 1 || stops || !manifest_core.current(request)) return 2;
+ std::string error;
+ if (!manifest_core.accept_json(request, R"({"schema":1,"pages":[{"type":"single","item":{"label":"Overlap","color":"#123456","action":{"action":"script.test"}}}]})", error)) return 3;
+ if (!manifest_core.tappable() || !manifest_core.begin_fetch()) return 4;
+ connect("esphome logs");
+ disconnect("esphome logs");
+ if (!manifest_core.tappable() || ha_clients != 1) return 5;
+ disconnect("Home Assistant second");
+ if (pending || stops != 1 || manifest_core.connected() || manifest_core.tappable() || manifest_core.current(request)) return 6;
+ connect("Home Assistant third");
+ connect("Home Assistant fourth");
+ disconnect("Home Assistant fourth");
+ if (!pending || !manifest_core.tappable() || starts != 2 || stops != 1) return 7;
+ disconnect("Home Assistant third");
+ if (pending || manifest_core.connected() || ha_clients || stops != 2) return 8;
+}
+`
+	checkAdapter(t, source)
 }
