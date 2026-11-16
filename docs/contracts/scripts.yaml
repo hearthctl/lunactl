@@ -1,0 +1,46 @@
+# Reference scripts, loaded under `script:` in Home Assistant.
+# Replace this example MAC/Manifest in your household. No house logic lives here.
+lunactl_manifest:
+  alias: lunactl Manifest
+  mode: parallel
+  fields:
+    mac:
+      required: true
+      selector:
+        text:
+  sequence:
+    - variables:
+        manifests:
+          "AA:BB:CC:DD:EE:FF":
+            schema: 1
+            pages:
+              - type: single
+                item:
+                  label: Beispiel
+                  color: "#B91360"
+                  action:
+                    action: input_boolean.toggle
+                    target:
+                      entity_id: input_boolean.lunactl_example
+        manifest: "{{ manifests.get(mac | upper, {}) }}"
+    - stop: Return Manifest
+      response_variable: manifest
+
+lunactl_run:
+  alias: lunactl Aktion
+  mode: parallel
+  fields:
+    action:
+      required: true
+      selector:
+        text:
+    data:
+      required: true
+      selector:
+        text:
+  sequence:
+    - variables:
+        payload: "{{ data | from_json }}"
+    - action: "{{ action }}"
+      target: "{{ payload.get('target', {}) }}"
+      data: "{{ payload.get('data', {}) }}"

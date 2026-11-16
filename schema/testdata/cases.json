@@ -1,0 +1,957 @@
+[
+  {
+    "name": "single",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "optional-action-fields",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "script.example"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "selector-list-and-nested-data",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "script.contract_echo",
+              "target": {
+                "entity_id": [
+                  "script.contract_echo"
+                ]
+              },
+              "data": {
+                "payload": {
+                  "text": "Grüße \"hi\"\\\n",
+                  "enabled": true,
+                  "values": [
+                    1,
+                    2.5,
+                    null
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "lowercase-colour",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#ab12ef",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "integer-schema-as-float",
+    "valid": true,
+    "manifest": {
+      "schema": 1.0,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "unknown-schema",
+    "valid": false,
+    "manifest": {
+      "schema": 2,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "string-schema",
+    "valid": false,
+    "manifest": {
+      "schema": "1",
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "boolean-schema",
+    "valid": false,
+    "manifest": {
+      "schema": true,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "null-schema",
+    "valid": false,
+    "manifest": {
+      "schema": null,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "empty-pages",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": []
+    }
+  },
+  {
+    "name": "too-many-pages",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        },
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "pages-object",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": {}
+    }
+  },
+  {
+    "name": "unknown-page-type",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "null-item",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "empty-label",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "numeric-label",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": 12,
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "null-label",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": null,
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "invalid-colour",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#aabbgg",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "short-colour",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#fff",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "numeric-colour",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": 123,
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "action-string",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": "script.example"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "action-no-domain",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "example",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "action-injection",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "{{ example }}",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "action-extra-dot",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "script.foo.bar",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "null-target",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": null
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "target-string",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": "input_boolean.example"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "target-unknown",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "typo": "foo"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "target-empty-selector",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": ""
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "target-empty-list",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": []
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "target-invalid-list",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": [
+                  12
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "null-data",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              },
+              "data": null
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "data-list",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              },
+              "data": []
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "data-string",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              },
+              "data": "{}"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "unknown-root-field",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ],
+      "extra": true
+    }
+  },
+  {
+    "name": "unknown-page-field",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          },
+          "extra": true
+        }
+      ]
+    }
+  },
+  {
+    "name": "unknown-item-field",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            },
+            "extra": true
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "unknown-action-field",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              },
+              "extra": true
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "missing-schema",
+    "valid": false,
+    "manifest": {
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "missing-pages",
+    "valid": false,
+    "manifest": {
+      "schema": 1
+    }
+  },
+  {
+    "name": "missing-page-type",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "missing-item",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single"
+        }
+      ]
+    }
+  },
+  {
+    "name": "missing-label",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "missing-color",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "missing-action",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "missing-action-name",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "root-null",
+    "valid": false,
+    "manifest": null
+  },
+  {
+    "name": "root-string",
+    "valid": false,
+    "manifest": "{}"
+  },
+  {
+    "name": "root-array",
+    "valid": false,
+    "manifest": []
+  }
+]
