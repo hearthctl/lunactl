@@ -25,7 +25,15 @@ Golden cases cover a single Item and tap, UTF-8/nested action data, missing
 target/data, reload success, invalid replacement, initial errors, disconnect,
 and stale replies from old connections or overlapping reloads. Size cases
 exercise the 32 KiB boundary. Schema cases cover missing/unknown fields, types,
-version, page count, colour, actions and targets. Contract cases fetch by MAC,
+version, page count, colour, actions and targets. Pie golden cases cover all four
+Slot actions, dark/inert empty quarters, clock formatting and invalid time, the
+clock hole/dividers, all 44 icon names and glyphs, unknown-icon warnings and
+fallback actions. Mixed-page cases cover six pages, dots, bounded swipes, home
+on replacement, and cancellation of a touch spanning a Manifest replacement.
+Schema cases accept sparse/full/empty Pie pages, mixed pages and optional or
+unknown icons; they reject invalid quarter counts/Items/icons, a seventh page
+and the deferred `center` field, with schema/core agreement. Contract cases
+fetch by MAC,
 feed the returned Manifest through the C++ host and execute its tap through
 `lunactl_run`, and check target/data forwarding and failures in real HA.
 

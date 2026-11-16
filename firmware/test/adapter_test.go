@@ -1,11 +1,14 @@
 package test
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -40,15 +43,19 @@ func TestProductionAdapter(t *testing.T) {
 	source := `#include "core.h"
 #include <iostream>
 #define id(name) name
-#define ESP_LOGW(...) ((void)0)
+#define ESP_LOGW(tag, format, message) warnings.emplace_back(message)
 int main() {
  lunactl::Core manifest_core;
+ int tapped_slot = 0;
+ std::vector<std::string> warnings;
  manifest_core.set_connected(true);
  uint32_t request = manifest_core.begin_fetch();
  JsonDocument envelope;
  deserializeJson(envelope, R"({"response":{"schema":1,"pages":[{"type":"single","item":{"label":"Adapter","color":"#123456","action":{"action":"script.adapter","target":{"entity_id":"script.expected"},"data":{"text":"quoted \\\" value"}}}}]}})");
  auto response = envelope.as<JsonObjectConst>();
+ {
  ` + callback + `
+ }
  if (!manifest_core.tappable()) return 1;
  JsonDocument out;
  ` + bindings.String() + `
@@ -57,6 +64,21 @@ int main() {
  JsonDocument payload;
  if (deserializeJson(payload, out["data"].as<std::string>())) return 4;
  if (payload["target"]["entity_id"] != "script.expected" || payload["data"]["text"] != response["response"]["pages"][0]["item"]["action"]["data"]["text"]) return 5;
+ if (!warnings.empty()) return 6;
+ deserializeJson(envelope, R"({"response":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,{"label":"Pie","icon":"mdi:future-icon","color":"#AABBCC","action":{"action":"script.pie","data":{"slot":2}}},null]}]}})");
+ response = envelope.as<JsonObjectConst>();
+ {
+ ` + callback + `
+ }
+ if (warnings.size() != 1 || warnings[0] != "Unknown icon: mdi:future-icon; using mdi:help-circle") return 7;
+ manifest_core.press(336, 336);
+ tapped_slot = manifest_core.release(336, 336);
+ if (tapped_slot != 2) return 8;
+ out.clear();
+ ` + bindings.String() + `
+ if (out["action"] != "script.pie" || deserializeJson(payload, out["data"].as<std::string>())) return 9;
+ if (payload["data"]["slot"] != 2 || payload["target"].size() != 0) return 10;
+
 }
 `
 	checkAdapter(t, source)
@@ -148,4 +170,45 @@ int main() {
 }
 `
 	checkAdapter(t, source)
+}
+
+// The icon names/glyphs in the golden are the catalog contract. A name can be
+// resolved correctly by the core while its glyph is accidentally left out of
+// the compiled font, producing a blank icon on the device.
+func TestIconFontCoversGoldenGlyphs(t *testing.T) {
+	raw, err := os.ReadFile("testdata/icons.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var golden struct {
+		Want struct {
+			Snapshots []struct {
+				Quarters []struct{ Icon, Glyph string }
+			}
+		}
+	}
+	if err := json.Unmarshal(raw, &golden); err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]string{}
+	for _, snapshot := range golden.Want.Snapshots {
+		for _, quarter := range snapshot.Quarters {
+			want[quarter.Icon] = quarter.Glyph
+		}
+	}
+	raw, err = os.ReadFile(filepath.Join(testutil.Root(), "esphome/lunactl.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string]string{}
+	for _, match := range regexp.MustCompile(`(?m)^\s+- "\\U([0-9A-Fa-f]{8})" # (mdi:[a-z0-9-]+)$`).FindAllStringSubmatch(string(raw), -1) {
+		codepoint, err := strconv.ParseInt(match[1], 16, 32)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got[match[2]] = string(rune(codepoint))
+	}
+	if len(want) != 44 || !reflect.DeepEqual(got, want) {
+		t.Fatalf("compiled icon font differs from the 44-icon golden: got %v, want %v", got, want)
+	}
 }

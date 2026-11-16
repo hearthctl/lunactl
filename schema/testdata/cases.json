@@ -246,6 +246,71 @@
               }
             }
           }
+        },
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        },
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        },
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        },
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
+        },
+        {
+          "type": "single",
+          "item": {
+            "label": "Beispiel",
+            "color": "#B91360",
+            "action": {
+              "action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.lunactl_example"
+              }
+            }
+          }
         }
       ]
     }
@@ -265,7 +330,7 @@
       "schema": 1,
       "pages": [
         {
-          "type": "pie",
+          "type": "unsupported",
           "item": {
             "label": "Beispiel",
             "color": "#B91360",
@@ -953,5 +1018,1269 @@
     "name": "root-array",
     "valid": false,
     "manifest": []
+  },
+  {
+    "name": "pie-sparse",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-full",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-empty",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "mixed-six-pages",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "type": "single",
+          "item": {
+            "label": "Hell",
+            "icon": "mdi:white-balance-sunny",
+            "color": "#F7C844",
+            "action": {
+              "action": "script.hell"
+            }
+          }
+        },
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "type": "single",
+          "item": {
+            "label": "Hell",
+            "icon": "mdi:white-balance-sunny",
+            "color": "#F7C844",
+            "action": {
+              "action": "script.hell"
+            }
+          }
+        },
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "type": "single",
+          "item": {
+            "label": "Hell",
+            "icon": "mdi:white-balance-sunny",
+            "color": "#F7C844",
+            "action": {
+              "action": "script.hell"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "two-pages",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "known-icon",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Hell",
+            "icon": "mdi:sofa",
+            "color": "#F7C844",
+            "action": {
+              "action": "script.hell"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "unknown-icon",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Hell",
+            "icon": "mdi:future-icon",
+            "color": "#F7C844",
+            "action": {
+              "action": "script.hell"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "empty-icon",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Hell",
+            "icon": "",
+            "color": "#F7C844",
+            "action": {
+              "action": "script.hell"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "null-icon",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Hell",
+            "icon": null,
+            "color": "#F7C844",
+            "action": {
+              "action": "script.hell"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "numeric-icon",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Hell",
+            "icon": 44,
+            "color": "#F7C844",
+            "action": {
+              "action": "script.hell"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "array-icon",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Hell",
+            "icon": [],
+            "color": "#F7C844",
+            "action": {
+              "action": "script.hell"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "omitted-icon",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Hell",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "Hell",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "Hell",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "Hell",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-missing-quarters",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie"
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-null-quarters",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-object-quarters",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": {}
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-three-quarters",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-five-quarters",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-item-field",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            null,
+            null,
+            null
+          ],
+          "item": {
+            "label": "Hell",
+            "icon": "mdi:white-balance-sunny",
+            "color": "#F7C844",
+            "action": {
+              "action": "script.hell"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-center-deferred",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            null,
+            null,
+            null
+          ],
+          "center": {
+            "label": "Hell",
+            "icon": "mdi:white-balance-sunny",
+            "color": "#F7C844",
+            "action": {
+              "action": "script.hell"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "single-quarters",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Hell",
+            "icon": "mdi:white-balance-sunny",
+            "color": "#F7C844",
+            "action": {
+              "action": "script.hell"
+            }
+          },
+          "quarters": [
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-invalid-quarter",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            false,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-empty-item",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {},
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-last-invalid",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "invalid"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-invalid-color",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            null,
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#FFF",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-invalid-label",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            null,
+            {
+              "label": "",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-invalid-icon",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            null,
+            {
+              "label": "Hell",
+              "icon": null,
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-invalid-action",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            null,
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "invalid"
+              }
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "invalid-later-page",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Hell",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "type": "pie",
+          "quarters": [
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-icon-catalog-1",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "mdi:lightbulb",
+              "icon": "mdi:lightbulb",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:lightbulb-off",
+              "icon": "mdi:lightbulb-off",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:ceiling-light",
+              "icon": "mdi:ceiling-light",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:lamp",
+              "icon": "mdi:lamp",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-icon-catalog-2",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "mdi:desk-lamp",
+              "icon": "mdi:desk-lamp",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:led-strip-variant",
+              "icon": "mdi:led-strip-variant",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:string-lights",
+              "icon": "mdi:string-lights",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:white-balance-sunny",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-icon-catalog-3",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "mdi:book-open-variant",
+              "icon": "mdi:book-open-variant",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:sofa",
+              "icon": "mdi:sofa",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:weather-night",
+              "icon": "mdi:weather-night",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:bed",
+              "icon": "mdi:bed",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-icon-catalog-4",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "mdi:sleep",
+              "icon": "mdi:sleep",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:brightness-6",
+              "icon": "mdi:brightness-6",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:palette",
+              "icon": "mdi:palette",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:snowflake",
+              "icon": "mdi:snowflake",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-icon-catalog-5",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "mdi:fire",
+              "icon": "mdi:fire",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:thermometer",
+              "icon": "mdi:thermometer",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:air-conditioner",
+              "icon": "mdi:air-conditioner",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:fan",
+              "icon": "mdi:fan",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-icon-catalog-6",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "mdi:water-percent",
+              "icon": "mdi:water-percent",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:power",
+              "icon": "mdi:power",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:timer-outline",
+              "icon": "mdi:timer-outline",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:plus-circle",
+              "icon": "mdi:plus-circle",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-icon-catalog-7",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "mdi:stop-circle",
+              "icon": "mdi:stop-circle",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:hand-wave",
+              "icon": "mdi:hand-wave",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:bell-ring",
+              "icon": "mdi:bell-ring",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:home",
+              "icon": "mdi:home",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-icon-catalog-8",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "mdi:door",
+              "icon": "mdi:door",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:window-closed",
+              "icon": "mdi:window-closed",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:blinds",
+              "icon": "mdi:blinds",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:check-circle",
+              "icon": "mdi:check-circle",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-icon-catalog-9",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "mdi:close-circle",
+              "icon": "mdi:close-circle",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:wifi-off",
+              "icon": "mdi:wifi-off",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:battery-alert",
+              "icon": "mdi:battery-alert",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:music",
+              "icon": "mdi:music",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-icon-catalog-10",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "mdi:television",
+              "icon": "mdi:television",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:gamepad-variant",
+              "icon": "mdi:gamepad-variant",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:star",
+              "icon": "mdi:star",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:heart",
+              "icon": "mdi:heart",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pie-icon-catalog-11",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "mdi:alarm",
+              "icon": "mdi:alarm",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:calendar",
+              "icon": "mdi:calendar",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:robot-vacuum",
+              "icon": "mdi:robot-vacuum",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            },
+            {
+              "label": "mdi:help-circle",
+              "icon": "mdi:help-circle",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell"
+              }
+            }
+          ]
+        }
+      ]
+    }
   }
 ]

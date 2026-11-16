@@ -1,54 +1,150 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "lunactl Manifest, schema 1 (single Item tracer)",
+  "title": "lunactl Manifest, schema 1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "pages"],
+  "required": [
+    "schema",
+    "pages"
+  ],
   "properties": {
-    "schema": {"type": "integer", "const": 1},
+    "schema": {
+      "type": "integer",
+      "const": 1
+    },
     "pages": {
-      "type": "array", "minItems": 1, "maxItems": 1,
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
       "items": {
-        "type": "object", "additionalProperties": false,
-        "required": ["type", "item"],
-        "properties": {
-          "type": {"const": "single"},
-          "item": {"$ref": "#/$defs/item"}
-        }
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "item"
+            ],
+            "properties": {
+              "type": {
+                "const": "single"
+              },
+              "item": {
+                "$ref": "#/$defs/item"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "quarters"
+            ],
+            "properties": {
+              "type": {
+                "const": "pie"
+              },
+              "quarters": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "$ref": "#/$defs/item"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
       }
     }
   },
   "$defs": {
     "selector": {
       "oneOf": [
-        {"type": "string", "minLength": 1},
-        {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
       ]
     },
     "action": {
-      "type": "object", "additionalProperties": false, "required": ["action"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action"
+      ],
       "properties": {
-        "action": {"type": "string", "pattern": "^[a-z0-9_]+\\.[a-z0-9_]+$"},
+        "action": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+\\.[a-z0-9_]+$"
+        },
         "target": {
-          "type": "object", "additionalProperties": false,
+          "type": "object",
+          "additionalProperties": false,
           "properties": {
-            "entity_id": {"$ref": "#/$defs/selector"},
-            "device_id": {"$ref": "#/$defs/selector"},
-            "area_id": {"$ref": "#/$defs/selector"},
-            "floor_id": {"$ref": "#/$defs/selector"},
-            "label_id": {"$ref": "#/$defs/selector"}
+            "entity_id": {
+              "$ref": "#/$defs/selector"
+            },
+            "device_id": {
+              "$ref": "#/$defs/selector"
+            },
+            "area_id": {
+              "$ref": "#/$defs/selector"
+            },
+            "floor_id": {
+              "$ref": "#/$defs/selector"
+            },
+            "label_id": {
+              "$ref": "#/$defs/selector"
+            }
           }
         },
-        "data": {"type": "object"}
+        "data": {
+          "type": "object"
+        }
       }
     },
     "item": {
-      "type": "object", "additionalProperties": false,
-      "required": ["label", "color", "action"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "color",
+        "action"
+      ],
       "properties": {
-        "label": {"type": "string", "minLength": 1},
-        "color": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"},
-        "action": {"$ref": "#/$defs/action"}
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "action": {
+          "$ref": "#/$defs/action"
+        },
+        "icon": {
+          "type": "string",
+          "minLength": 1,
+          "description": "HA MDI name. The 44 compiled-in icons are listed in docs/mockups/icons.png; unknown names use mdi:help-circle and log a warning. Omission uses the fallback without a warning."
+        }
       }
     }
   }

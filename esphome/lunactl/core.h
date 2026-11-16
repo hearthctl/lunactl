@@ -6,12 +6,18 @@
 #include <initializer_list>
 #include <string>
 #include <utility>
+#include <array>
+#include <vector>
+#include <cstdio>
+#include <cstdlib>
+#include "icons.h"
 
 namespace lunactl {
 
 constexpr size_t MAX_MANIFEST_BYTES = 32 * 1024;
 
 struct Item {
+  std::string icon{"mdi:help-circle"};
   std::string label;
   std::string color;
   uint32_t rgb{0};
@@ -57,19 +63,19 @@ inline bool target_valid(JsonVariantConst value) {
   return true;
 }
 
-inline bool parse_manifest(JsonVariantConst root, Item &item, std::string &error) {
+struct Page {
+  bool pie{false};
+  // Clockwise: top-left, top-right, bottom-right, bottom-left.
+  std::array<Item, 4> items;
+};
+using Manifest = std::vector<Page>;
+
+inline bool parse_item(JsonVariantConst source, Item &item, std::string &error,
+                       std::vector<std::string> &warnings) {
   auto reject = [&error](const char *message) { error = message; return false; };
-  if (measureJson(root) > MAX_MANIFEST_BYTES) return reject("Manifest exceeds 32 KiB");
-  if (!keys(root, {"schema", "pages"})) return reject("Invalid Manifest fields");
-  if (!root["schema"].is<double>() || root["schema"].as<double>() != 1)
-    return reject("Unknown or invalid schema version");
-  auto pages = root["pages"];
-  if (!pages.is<JsonArrayConst>() || pages.size() != 1) return reject("Expected one page");
-  auto page = pages[0];
-  if (!keys(page, {"type", "item"}) || page["type"] != "single") return reject("Expected single page");
-  auto source = page["item"];
-  if (!keys(source, {"label", "color", "action"}) || !nonempty_string(source["label"]))
+  if (!keys(source, {"label", "color", "icon", "action"}) || !nonempty_string(source["label"]))
     return reject("Invalid Item");
+  if (!source["icon"].isUnbound() && !nonempty_string(source["icon"])) return reject("Invalid Item icon");
   if (!source["color"].is<const char *>()) return reject("Invalid Item color");
   std::string color = source["color"].as<std::string>();
   if (color.size() != 7 || color[0] != '#') return reject("Expected #RRGGBB color");
@@ -96,6 +102,11 @@ inline bool parse_manifest(JsonVariantConst root, Item &item, std::string &error
   if (action["data"].isNull()) payload["data"].to<JsonObject>();
   else payload["data"] = action["data"];
   Item candidate;
+  if (!source["icon"].isUnbound()) {
+    std::string name = source["icon"].as<std::string>();
+    candidate.icon = resolve_icon(name.c_str()).name;
+    if (candidate.icon != name) warnings.push_back("Unknown icon: " + name + "; using mdi:help-circle");
+  }
   candidate.label = source["label"].as<std::string>();
   candidate.color = color;
   candidate.rgb = rgb;
@@ -106,11 +117,43 @@ inline bool parse_manifest(JsonVariantConst root, Item &item, std::string &error
   return true;
 }
 
+inline bool parse_manifest(JsonVariantConst root, Manifest &manifest, std::string &error,
+                           std::vector<std::string> &warnings) {
+  auto reject = [&error](const char *message) { error = message; return false; };
+  if (measureJson(root) > MAX_MANIFEST_BYTES) return reject("Manifest exceeds 32 KiB");
+  if (!keys(root, {"schema", "pages"})) return reject("Invalid Manifest fields");
+  if (!root["schema"].is<double>() || root["schema"].as<double>() != 1)
+    return reject("Unknown or invalid schema version");
+  auto pages = root["pages"];
+  if (!pages.is<JsonArrayConst>() || pages.size() < 1 || pages.size() > 6)
+    return reject("Expected one to six pages");
+  for (JsonVariantConst source : pages.as<JsonArrayConst>()) {
+    Page page;
+    if (source["type"] == "single") {
+      if (!keys(source, {"type", "item"})) return reject("Invalid single page");
+      if (!parse_item(source["item"], page.items[0], error, warnings)) return false;
+    } else if (source["type"] == "pie") {
+      if (!keys(source, {"type", "quarters"})) return reject("Invalid pie page");
+      auto quarters = source["quarters"];
+      if (!quarters.is<JsonArrayConst>() || quarters.size() != 4) return reject("Expected four quarters");
+      page.pie = true;
+      for (size_t slot = 0; slot < 4; ++slot) {
+        if (quarters[slot].isNull()) continue;
+        if (!parse_item(quarters[slot], page.items[slot], error, warnings)) return false;
+      }
+    } else return reject("Unknown page type");
+    manifest.push_back(std::move(page));
+  }
+  error.clear();
+  return true;
+}
+
 class Core {
  public:
   void set_connected(bool connected) {
     if (connected_ == connected) return;
     connected_ = connected;
+    ++revision_;
     ++request_;  // Invalidates replies from an earlier connection.
     // Keep the last valid Manifest in RAM; an invalid replacement must not
     // destroy it, including after reconnect. Offline it is hidden and inert.
@@ -119,14 +162,20 @@ class Core {
   uint32_t begin_fetch() { return connected_ ? ++request_ : 0; }
   bool current(uint32_t request) const { return connected_ && request != 0 && request == request_; }
   bool accept(uint32_t request, JsonVariantConst root, std::string &error) {
+    warnings_.clear();
     if (!current(request)) { error = "Stale Manifest response"; return false; }
-    Item candidate;
-    if (!parse_manifest(root, candidate, error)) return false;
-    item_ = std::move(candidate);
+    Manifest candidate;
+    std::vector<std::string> warnings;
+    if (!parse_manifest(root, candidate, error, warnings)) return false;
+    pages_ = std::move(candidate);
+    warnings_ = std::move(warnings);
+    page_ = 0;
+    ++revision_;
     has_manifest_ = true;
     return true;
   }
   bool accept_json(uint32_t request, const std::string &json, std::string &error) {
+    warnings_.clear();
     if (json.size() > MAX_MANIFEST_BYTES) { error = "Manifest exceeds 32 KiB"; return false; }
     JsonDocument doc;
     auto result = deserializeJson(doc, json, DeserializationOption::NestingLimit(32));
@@ -134,14 +183,79 @@ class Core {
     return accept(request, doc.as<JsonVariantConst>(), error);
   }
   bool tappable() const { return connected_ && has_manifest_; }
-  const Item &item() const { return item_; }
+  const Item &item(size_t slot = 0) const { return pages_[page_].items[slot]; }
+  bool slot_tappable(size_t slot) const {
+    return tappable() && slot < (pie() ? 4u : 1u) && !item(slot).action.empty();
+  }
+  bool pie() const { return has_manifest_ && pages_[page_].pie; }
+  size_t page_count() const { return pages_.size(); }
+  size_t page_index() const { return page_; }
+  bool show_page(size_t index) {
+    if (!tappable() || index >= pages_.size()) return false;
+    page_ = index;
+    ++revision_;
+    return true;
+  }
+  const std::vector<std::string> &warnings() const { return warnings_; }
+  void set_time(int hour, int minute, bool valid = true) {
+    if (!valid || hour < 0 || hour > 23 || minute < 0 || minute > 59) clock_ = "--:--";
+    else {
+      char text[6];
+      std::snprintf(text, sizeof(text), "%02d:%02d", hour, minute);
+      clock_ = text;
+    }
+  }
+  const std::string &clock() const { return clock_; }
+  // Shared display geometry: 466 px circle, 112 px clock hole, 6 px dividers.
+  int hit(int x, int y) const {
+    if (!tappable() || x < 0 || x >= 466 || y < 0 || y >= 466) return -1;
+    int dx = x - 233, dy = y - 233;
+    if (dx * dx + dy * dy > 233 * 233) return -1;
+    if (page_count() > 1 && y >= 407 && y < 435 &&
+        x >= dots_left() && x < dots_left() + dots_width()) return -1;
+    if (!pie()) return dx * dx + dy * dy <= 140 * 140 ? 0 : -1;
+    if (dx * dx + dy * dy <= 56 * 56 || (dx >= -3 && dx < 3) || (dy >= -3 && dy < 3)) return -1;
+    int slot = dy < 0 ? (dx < 0 ? 0 : 1) : (dx < 0 ? 3 : 2);
+    return slot_tappable(slot) ? slot : -1;
+  }
+  int dots_width() const { return static_cast<int>(page_count()) * 18 + 12; }
+  int dots_left() const { return (466 - dots_width()) / 2; }
+  void press(int x, int y) {
+    press_x_ = x; press_y_ = y; press_revision_ = revision_; pressed_ = tappable();
+  }
+  // Returns an Item slot only for a tap. Navigation never runs an action.
+  int release(int x, int y) {
+    if (!pressed_) return -1;
+    pressed_ = false;
+    if (!tappable() || press_revision_ != revision_) return -1;
+    int dx = x - press_x_, dy = y - press_y_;
+    if (std::abs(dx) >= 60 && std::abs(dx) > std::abs(dy)) {
+      if (dx < 0 && page_ + 1 < page_count()) show_page(page_ + 1);
+      else if (dx > 0 && page_ > 0) show_page(page_ - 1);
+      return -1;
+    }
+    if (std::abs(dx) > 20 || std::abs(dy) > 20) return -1;
+    if (page_count() > 1 && y >= 407 && y < 435 && press_y_ >= 407 && press_y_ < 435 &&
+        x >= dots_left() + 6 && x < dots_left() + 6 + static_cast<int>(page_count()) * 18) {
+      show_page((x - dots_left() - 6) / 18);
+      return -1;
+    }
+    int slot = hit(x, y);
+    return slot >= 0 && hit(press_x_, press_y_) == slot ? slot : -1;
+  }
   const char *status() const { return !connected_ ? "Keine Verbindung" : has_manifest_ ? "" : "Kein Manifest"; }
 
  private:
   bool connected_{false};
   bool has_manifest_{false};
   uint32_t request_{0};
-  Item item_;
+  Manifest pages_;
+  size_t page_{0};
+  std::vector<std::string> warnings_;
+  std::string clock_{"--:--"};
+  uint32_t revision_{0}, press_revision_{0};
+  int press_x_{0}, press_y_{0};
+  bool pressed_{false};
 };
 
 }  // namespace lunactl
