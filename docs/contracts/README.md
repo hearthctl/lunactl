@@ -2,8 +2,8 @@
 
 Copy [scripts.yaml](scripts.yaml) into the household's Home Assistant scripts
 (for example, `script: !include scripts.yaml` in `configuration.yaml`). Replace
-the example MAC with the StopWatch's Wi-Fi MAC. The reference normalizes MACs
-to uppercase colon notation. Its example Item toggles
+the example MAC with the StopWatch's Wi-Fi MAC. Input MACs must use
+colon-separated notation; the reference normalizes letter case to uppercase. Its example Item toggles
 `input_boolean.lunactl_example`; create that helper in HA or replace the action.
 Reload scripts after edits. Enable **Allow the device to perform Home Assistant
 actions** in HA's ESPHome integration.

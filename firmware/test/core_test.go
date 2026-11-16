@@ -1,6 +1,7 @@
 package test
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -27,7 +28,9 @@ func TestCoreGolden(t *testing.T) {
 				Events []map[string]any `json:"events"`
 				Want   map[string]any   `json:"want"`
 			}
-			if err := json.Unmarshal(raw, &tc); err != nil {
+			decoder := json.NewDecoder(bytes.NewReader(raw))
+			decoder.UseNumber()
+			if err := decoder.Decode(&tc); err != nil {
 				t.Fatal(err)
 			}
 			got := testutil.Host(t, tc.Events)
@@ -40,7 +43,9 @@ func TestCoreGolden(t *testing.T) {
 							t.Fatal("action data must be JSON text")
 						}
 						var payload any
-						if err := json.Unmarshal([]byte(text), &payload); err != nil {
+						decoder := json.NewDecoder(strings.NewReader(text))
+						decoder.UseNumber()
+						if err := decoder.Decode(&payload); err != nil {
 							t.Fatal(err)
 						}
 						call["data"] = payload

@@ -41,9 +41,9 @@
               "label": "Beispiel",
               "color": "#B91360",
               "action": {
-                "action": "input_boolean.toggle",
+                "action": "input_boolean.turn_off",
                 "target": {
-                  "entity_id": "input_boolean.lunactl_example"
+                  "entity_id": "input_boolean.stale"
                 }
               }
             }
@@ -51,6 +51,9 @@
         ]
       },
       "request": 2
+    },
+    {
+      "type": "tap"
     }
   ],
   "want": {
@@ -84,6 +87,19 @@
         "item": {
           "label": "Grüße",
           "color": "#00aBcD"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "item": {
+          "label": "Grüße",
+          "color": "#00aBcD"
+        },
+        "call": {
+          "service": "script.lunactl_run",
+          "action": "input_boolean.toggle",
+          "data": "{\"target\":{\"entity_id\":\"input_boolean.lunactl_example\"},\"data\":{}}"
         }
       }
     ]

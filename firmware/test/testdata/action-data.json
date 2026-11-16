@@ -30,7 +30,8 @@
                     "values": [
                       1,
                       2.5,
-                      null
+                      null,
+                      9007199254740993
                     ]
                   }
                 }
@@ -69,7 +70,7 @@
         "call": {
           "service": "script.lunactl_run",
           "action": "script.contract_echo",
-          "data": "{\"target\":{\"entity_id\":[\"script.contract_echo\"]},\"data\":{\"payload\":{\"text\":\"Grüße \\\"hi\\\"\\\\\\n\",\"enabled\":true,\"values\":[1,2.5,null]}}}"
+          "data": "{\"target\":{\"entity_id\":[\"script.contract_echo\"]},\"data\":{\"payload\":{\"text\":\"Grüße \\\"hi\\\"\\\\\\n\",\"enabled\":true,\"values\":[1,2.5,null,9007199254740993]}}}"
         },
         "item": {
           "label": "Beispiel",

@@ -32,19 +32,23 @@ func TestManifestSchemaAndCoreAgree(t *testing.T) {
 		t.Fatal(err)
 	}
 	var cases []struct {
-		Name     string `json:"name"`
-		Valid    bool   `json:"valid"`
-		Manifest any    `json:"manifest"`
+		Name     string          `json:"name"`
+		Valid    bool            `json:"valid"`
+		Manifest json.RawMessage `json:"manifest"`
 	}
 	if err := json.Unmarshal(raw, &cases); err != nil {
 		t.Fatal(err)
 	}
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			if err := schema.Validate(tc.Manifest); (err == nil) != tc.Valid {
+			var manifest any
+			if err := json.Unmarshal(tc.Manifest, &manifest); err != nil {
+				t.Fatal(err)
+			}
+			if err := schema.Validate(manifest); (err == nil) != tc.Valid {
 				t.Fatalf("schema: expected valid=%t, error=%v", tc.Valid, err)
 			}
-			got := testutil.Host(t, []map[string]any{{"type": "connect"}, {"type": "fetch"}, {"type": "manifest", "manifest": tc.Manifest}})
+			got := testutil.Host(t, []map[string]any{{"type": "connect"}, {"type": "fetch"}, {"type": "manifest", "raw": string(tc.Manifest)}})
 			last := got["snapshots"].([]any)[2].(map[string]any)
 			if last["tappable"] != tc.Valid {
 				t.Fatalf("core: expected valid=%t, got %v", tc.Valid, last)

@@ -28,7 +28,9 @@ func Host(t *testing.T, events any) map[string]any {
 		t.Fatalf("host (run make check-core first): %v\n%s", err, raw)
 	}
 	var result map[string]any
-	if err := json.Unmarshal(raw, &result); err != nil {
+	decoder := json.NewDecoder(bytes.NewReader(raw))
+	decoder.UseNumber()
+	if err := decoder.Decode(&result); err != nil {
 		t.Fatal(err)
 	}
 	return result
