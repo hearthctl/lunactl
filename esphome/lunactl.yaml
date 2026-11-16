@@ -1,5 +1,7 @@
 esphome:
   name: lunactl
+  # Copy the header, and include its type before ESPHome's static globals.
+  includes: [<core.h>, lunactl/core.h]
   # Runs after the I2C bus (1000) and before the M5IOE1 setup (IO, 900).
   # Mirrors M5GFX's StopWatch power-on. Verified on device: on a battery cold
   # boot the M5IOE1 NACKs for ~50 ms (M5GFX allows up to 500 ms), and the
@@ -43,6 +45,86 @@ wifi:
 api:
   encryption:
     key: !secret api_encryption_key
+  on_client_connected:
+    # Log viewers can also subscribe to states. Only HA supplies the contract.
+    - if:
+        condition:
+          lambda: 'return client_info.rfind("Home Assistant ", 0) == 0;'
+        then:
+          - lambda: id(manifest_core).set_connected(true);
+          - script.execute: render_manifest
+          - script.execute: manifest_on_connect
+  on_client_disconnected:
+    - if:
+        condition:
+          lambda: 'return client_info.rfind("Home Assistant ", 0) == 0;'
+        then:
+          - script.stop: manifest_on_connect
+          - lambda: id(manifest_core).set_connected(false);
+          - script.execute: render_manifest
+
+json:
+
+globals:
+  - id: manifest_core
+    type: lunactl::Core
+    restore_value: false
+
+button:
+  - platform: template
+    name: Manifest neu laden
+    on_press:
+      - if:
+          condition:
+            lambda: return id(manifest_core).connected();
+          then:
+            - script.execute:
+                id: fetch_manifest
+                request: !lambda return id(manifest_core).begin_fetch();
+
+script:
+  - id: manifest_on_connect
+    mode: restart
+    then:
+      # HA subscribes to device actions after the initial API handshake.
+      - delay: 1s
+      - script.execute:
+          id: fetch_manifest
+          request: !lambda return id(manifest_core).begin_fetch();
+  - id: fetch_manifest
+    mode: parallel
+    parameters:
+      request: uint32_t
+    then:
+      - homeassistant.action:
+          action: script.lunactl_manifest
+          data:
+            mac: !lambda return get_mac_address_pretty();
+          capture_response: true
+          on_success:
+            - lambda: |-
+                std::string error;
+                if (!id(manifest_core).accept(request, response["response"], error))
+                  ESP_LOGW("lunactl", "Manifest rejected: %s", error.c_str());
+            - script.execute: render_manifest
+          on_error:
+            - lambda: |-
+                if (id(manifest_core).current(request))
+                  ESP_LOGW("lunactl", "Manifest fetch failed: %s", error.c_str());
+  - id: render_manifest
+    then:
+      - lambda: |-
+          auto &core = id(manifest_core);
+          lv_label_set_text(id(manifest_status), core.status());
+          if (core.tappable()) {
+            lv_obj_remove_flag(id(single_item), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(id(manifest_status), LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text(id(item_label), core.item().label.c_str());
+            lv_obj_set_style_bg_color(id(single_item), lv_color_hex(core.item().rgb), LV_PART_MAIN);
+          } else {
+            lv_obj_add_flag(id(single_item), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_remove_flag(id(manifest_status), LV_OBJ_FLAG_HIDDEN);
+          }
 
 # OTA uses the api encryption key.
 ota:
@@ -119,172 +201,52 @@ touchscreen:
           format: "touch x=%d y=%d raw_x=%d raw_y=%d"
           args: [touch.x, touch.y, touch.x_raw, touch.y_raw]
 
-binary_sensor:
-  - platform: gpio
-    id: taste_a
-    name: Taste A
-    internal: true
-    pin:
-      number: GPIO2
-      inverted: true
-    # Short press only. HA decides between Gemütlich and Schlafen gehen.
-    on_click:
-      min_length: 50ms
-      max_length: 1s
-      then:
-        - homeassistant.action:
-            action: script.lunactl_taste_a
-  - platform: gpio
-    id: taste_b
-    name: Taste B
-    internal: true
-    pin:
-      number: GPIO1
-      inverted: true
-    on_press:
-      - logger.log: "Taste B pressed"
-    on_release:
-      - logger.log: "Taste B released"
-
 font:
-  - id: font_tile
+  - id: font_item
     file: "gfonts://Nunito@800"
     size: 28
     bpp: 4
-    # Latin core includes the German umlauts (Gemütlich).
     glyphsets: [GF_Latin_Core]
-  # Material Design Icons, pinned to a release.
-  - id: font_icon
-    file: https://raw.githubusercontent.com/Templarian/MaterialDesign-Webfont/v7.4.47/fonts/materialdesignicons-webfont.ttf
-    size: 60
-    bpp: 4
-    glyphs:
-      - "\U000F05A8" # white-balance-sunny: Hell
-      - "\U000F14F7" # book-open-variant: Lesen
-      - "\U000F04B9" # sofa: Gemütlich
-      - "\U000F0594" # weather-night: Schlafen gehen
 
-# Each page is a tile of the tileview; swiping drags to the next one.
-# The 2x2 grid of 164 px tiles stays inside the round 466 px display.
 lvgl:
   displays: [amoled]
   touchscreens: [touch]
   bg_color: 0x000000
-  style_definitions:
-    - id: tile
-      width: 164
-      height: 164
-      radius: 44
-      shadow_width: 0
-      text_font: font_tile
-      text_align: center
-      pad_row: 4
   widgets:
-    - tileview:
-        id: pages
-        width: 100%
-        height: 100%
-        bg_opa: transp
-        tiles:
-          - id: licht
-            row: 0
-            column: 0
-            dir: HOR
-            widgets:
-              - button:
-                  styles: tile
-                  align: center
-                  x: -87
-                  y: -87
-                  bg_color: 0xF5C542
-                  text_color: 0x1A1A1A
-                  layout:
-                    type: flex
-                    flex_flow: column
-                    flex_align_main: center
-                    flex_align_cross: center
-                    flex_align_track: center
-                  widgets:
-                    - label:
-                        text: "\U000F05A8"
-                        text_font: font_icon
-                    - label:
-                        text: Hell
-                  on_click:
-                    - homeassistant.action:
-                        action: script.lunactl_hell
-              - button:
-                  styles: tile
-                  align: center
-                  x: 87
-                  y: -87
-                  bg_color: 0x0F766E
-                  text_color: 0xFFFFFF
-                  layout:
-                    type: flex
-                    flex_flow: column
-                    flex_align_main: center
-                    flex_align_cross: center
-                    flex_align_track: center
-                  widgets:
-                    - label:
-                        text: "\U000F14F7"
-                        text_font: font_icon
-                    - label:
-                        text: Lesen
-                  on_click:
-                    - homeassistant.action:
-                        action: script.lunactl_lesen
-              - button:
-                  styles: tile
-                  align: center
-                  x: -87
-                  y: 87
-                  bg_color: 0xC2410C
-                  text_color: 0xFFFFFF
-                  layout:
-                    type: flex
-                    flex_flow: column
-                    flex_align_main: center
-                    flex_align_cross: center
-                    flex_align_track: center
-                  widgets:
-                    - label:
-                        text: "\U000F04B9"
-                        text_font: font_icon
-                    - label:
-                        text: Gemütlich
-                  on_click:
-                    - homeassistant.action:
-                        action: script.lunactl_gemuetlich
-              - button:
-                  styles: tile
-                  align: center
-                  x: 87
-                  y: 87
-                  bg_color: 0x3730A3
-                  text_color: 0xFFFFFF
-                  layout:
-                    type: flex
-                    flex_flow: column
-                    flex_align_main: center
-                    flex_align_cross: center
-                    flex_align_track: center
-                  widgets:
-                    - label:
-                        text: "\U000F0594"
-                        text_font: font_icon
-                    - label:
-                        text: "Schlafen\ngehen"
-                  on_click:
-                    - homeassistant.action:
-                        action: script.lunactl_schlafen_gehen
-    # Page dots at the bottom edge, one per tile; the active one is white.
-    - obj:
-        align: bottom_mid
-        y: -21
-        width: 10
-        height: 10
-        radius: 5
-        border_width: 0
-        bg_color: 0xFFFFFF
+    - label:
+        id: manifest_status
+        align: center
+        text: Keine Verbindung
+        text_font: font_item
+        text_color: 0xFFFFFF
+    - button:
+        id: single_item
+        align: center
+        width: 280
+        height: 280
+        radius: 140
+        hidden: true
+        bg_color: 0x000000
+        text_color: 0xFFFFFF
+        shadow_width: 0
+        widgets:
+          - label:
+              id: item_label
+              align: center
+              width: 240
+              text_align: center
+              long_mode: WRAP
+              text_font: font_item
+              text: ""
+        on_click:
+          - if:
+              condition:
+                lambda: return id(manifest_core).tappable();
+              then:
+                - homeassistant.action:
+                    action: script.lunactl_run
+                    data:
+                      action: !lambda return id(manifest_core).item().action;
+                      data: !lambda return id(manifest_core).item().data;
+                    on_error:
+                      - lambda: 'ESP_LOGW("lunactl", "Item action failed: %s", error.c_str());'

@@ -1,0 +1,26 @@
+# Disposable HA only. The reference scripts are copied here unchanged by run.sh.
+http:
+api:
+script: !include scripts.yaml
+input_boolean:
+  lunactl_example:
+    name: lunactl example
+input_text:
+  contract_result:
+    max: 255
+homeassistant:
+  packages:
+    test_helpers:
+      script:
+        contract_echo:
+          sequence:
+            - action: input_text.set_value
+              target:
+                entity_id: input_text.contract_result
+              data:
+                value: "{{ payload | to_json }}"
+        contract_no_data:
+          sequence:
+            - action: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.lunactl_example

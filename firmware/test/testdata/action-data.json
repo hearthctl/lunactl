@@ -1,0 +1,81 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Beispiel",
+              "color": "#B91360",
+              "action": {
+                "action": "script.contract_echo",
+                "target": {
+                  "entity_id": [
+                    "script.contract_echo"
+                  ]
+                },
+                "data": {
+                  "payload": {
+                    "text": "Grüße \"hi\"\\\n",
+                    "enabled": true,
+                    "values": [
+                      1,
+                      2.5,
+                      null
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "tap"
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "call": {
+          "service": "script.lunactl_run",
+          "action": "script.contract_echo",
+          "data": "{\"target\":{\"entity_id\":[\"script.contract_echo\"]},\"data\":{\"payload\":{\"text\":\"Grüße \\\"hi\\\"\\\\\\n\",\"enabled\":true,\"values\":[1,2.5,null]}}}"
+        },
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360"
+        }
+      }
+    ]
+  }
+}

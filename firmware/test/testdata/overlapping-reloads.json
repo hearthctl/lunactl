@@ -1,0 +1,91 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Grüße",
+              "color": "#00aBcD",
+              "action": {
+                "action": "input_boolean.toggle",
+                "target": {
+                  "entity_id": "input_boolean.lunactl_example"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Beispiel",
+              "color": "#B91360",
+              "action": {
+                "action": "input_boolean.toggle",
+                "target": {
+                  "entity_id": "input_boolean.lunactl_example"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "request": 2
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 3
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "item": {
+          "label": "Grüße",
+          "color": "#00aBcD"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "error": "Stale Manifest response",
+        "item": {
+          "label": "Grüße",
+          "color": "#00aBcD"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "error"
+    },
+    {
+      "type": "tap"
+    },
+    {
+      "type": "manifest",
+      "raw": "{"
+    },
+    {
+      "type": "manifest",
+      "manifest": {}
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Beispiel",
+              "color": "#B91360",
+              "action": {
+                "action": "input_boolean.toggle",
+                "target": {
+                  "entity_id": "input_boolean.lunactl_example"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "disconnect"
+    },
+    {
+      "type": "tap"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Beispiel",
+              "color": "#B91360",
+              "action": {
+                "action": "input_boolean.toggle",
+                "target": {
+                  "entity_id": "input_boolean.lunactl_example"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Beispiel",
+              "color": "#B91360",
+              "action": {
+                "action": "input_boolean.toggle",
+                "target": {
+                  "entity_id": "input_boolean.lunactl_example"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "request": 2
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 2,
+        "pages": []
+      }
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Beispiel",
+              "color": "#B91360",
+              "action": {
+                "action": "input_boolean.toggle",
+                "target": {
+                  "entity_id": "input_boolean.lunactl_example"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "error": "Invalid JSON"
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "error": "Unknown or invalid schema version"
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360"
+        }
+      },
+      {
+        "status": "Keine Verbindung",
+        "tappable": false
+      },
+      {
+        "status": "Keine Verbindung",
+        "tappable": false
+      },
+      {
+        "status": "Keine Verbindung",
+        "tappable": false,
+        "error": "Stale Manifest response"
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360"
+        },
+        "request": 5
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360"
+        },
+        "error": "Stale Manifest response"
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360"
+        },
+        "error": "Unknown or invalid schema version"
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360"
+        }
+      }
+    ]
+  }
+}
