@@ -100,6 +100,44 @@ func TestManifestToTap(t *testing.T) {
 	}
 }
 
+func TestManifestToButtonGestures(t *testing.T) {
+	for _, gesture := range []string{"a_short", "a_long", "b_short", "b_long"} {
+		t.Run(gesture, func(t *testing.T) {
+			call(t, "input_boolean.turn_off", map[string]any{"entity_id": "input_boolean.lunactl_example"}, false)
+			manifest := call(t, "script.lunactl_manifest", map[string]any{"mac": "aa:bb:cc:dd:ee:ff"}, true)
+			manifest["buttons"] = map[string]any{gesture: map[string]any{
+				"action": "input_boolean.toggle", "target": map[string]any{"entity_id": "input_boolean.lunactl_example"},
+			}}
+			events := []map[string]any{
+				{"type": "connect"}, {"type": "fetch"}, {"type": "manifest", "manifest": manifest},
+				{"type": "sleep"}, {"type": "button", "key": gesture[:1], "pressed": true, "now": 0},
+			}
+			duration := 999
+			if strings.HasSuffix(gesture, "_long") {
+				duration = 1001
+				events = append(events, map[string]any{"type": "button", "key": gesture[:1], "pressed": true, "now": 1000})
+			}
+			events = append(events, map[string]any{"type": "button", "key": gesture[:1], "pressed": false, "now": duration})
+			got := testutil.Host(t, events)
+			snapshots := got["snapshots"].([]any)
+			press := snapshots[4].(map[string]any)
+			if press["display_on"] != true || press["wake"] != true || press["call"] != nil {
+				t.Fatalf("press must wake before dispatching: %v", press)
+			}
+			calls := 0
+			for _, value := range snapshots {
+				if invocation, ok := value.(map[string]any)["call"].(map[string]any); ok {
+					calls++
+					call(t, invocation["service"].(string), map[string]any{"action": invocation["action"], "data": invocation["data"]}, false)
+				}
+			}
+			if calls != 1 || state(t, "input_boolean.lunactl_example") != "on" {
+				t.Fatalf("gesture must run its action exactly once: %v", got)
+			}
+		})
+	}
+}
+
 func TestUnknownMAC(t *testing.T) {
 	manifest := call(t, "script.lunactl_manifest", map[string]any{"mac": "00:00:00:00:00:00"}, true)
 	if len(manifest) != 0 {

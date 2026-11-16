@@ -28,7 +28,7 @@ func TestProductionAdapter(t *testing.T) {
 		return match[1]
 	}
 	callback := extract(`(?s)capture_response: true\s+on_success:\s+- lambda: \|-\n(.*?)\n            - script.execute:`)
-	fields := extract(`(?s)action: script.lunactl_run\s+data:\n(.*?)\n                    on_error:`)
+	fields := extract(`(?s)on_click:.*?action: script.lunactl_run\s+data:\n(.*?)\n                    on_error:`)
 	expressions := regexp.MustCompile(`(?m)^\s+(action|data): !lambda ([^\n]+)$`).FindAllStringSubmatch(fields, -1)
 	if len(expressions) != 2 {
 		t.Fatal("expected two string field bindings")
@@ -145,6 +145,126 @@ int main() {
  if (!pending || !manifest_core.tappable() || starts != 2 || stops != 1) return 7;
  disconnect("Home Assistant third");
  if (pending || manifest_core.connected() || ha_clients || stops != 2) return 8;
+}
+`
+	checkAdapter(t, source)
+}
+
+// Exercise the actual polling, wake and action-field expressions with a dark
+// display. The golden cases exercise the core; this checks the device wiring.
+func TestProductionButtonAdapter(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join(testutil.Root(), "esphome/lunactl.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	extract := func(pattern string) string {
+		t.Helper()
+		match := regexp.MustCompile(pattern).FindStringSubmatch(string(raw))
+		if match == nil {
+			t.Fatalf("button adapter missing: %s", pattern)
+		}
+		return match[1]
+	}
+	handle := extract(`(?s)  - id: handle_key\n.*?lambda: \|-\n(.*?)\n  - id:`)
+	wake := extract(`(?s)  - id: wake_display\n.*?lambda: \|-\n(.*?)\n  - id:`)
+	fields := extract(`(?s)  - id: run_button_action\n.*?action: script.lunactl_run\s+data:\n(.*?)\n          on_error:`)
+	var bindings strings.Builder
+	for _, field := range regexp.MustCompile(`(?m)^\s+(action|data): !lambda ([^\n]+)$`).FindAllStringSubmatch(fields, -1) {
+		fmt.Fprintf(&bindings, "out[\"%s\"] = [&]() -> std::string { %s }();\n", field[1], field[2])
+	}
+	poll := extract(`(?s)interval:\n(.*?)\nbutton:`)
+	var polling strings.Builder
+	for _, key := range regexp.MustCompile(`id: handle_key\s+key: ([01])\s+pressed: !lambda ([^\n]+)`).FindAllStringSubmatch(poll, -1) {
+		fmt.Fprintf(&polling, "handle_key(%s, [&]() -> bool { %s }());\n", key[1], key[2])
+	}
+	if strings.Count(polling.String(), "handle_key(") != 2 || !strings.Contains(poll, "interval: 10ms") {
+		t.Fatal("expected both keys to be polled every 10 ms")
+	}
+	for _, key := range []struct{ id, pin string }{{"key_a", "GPIO2"}, {"key_b", "GPIO1"}} {
+		block := extract(`(?s)    id: ` + key.id + `\n(.*?)\n      - delayed_on_off: 10ms`)
+		for _, setting := range []string{"internal: true", "number: " + key.pin, "mode: INPUT", "inverted: true"} {
+			if !strings.Contains(block, setting) {
+				t.Fatalf("%s missing %s", key.id, setting)
+			}
+		}
+	}
+	source := `#include "core.h"
+#include <vector>
+#define id(name) name
+uint32_t now = 0;
+uint32_t millis() { return now; }
+lunactl::Core manifest_core;
+struct Sensor { bool state{false}; } key_a, key_b;
+struct Display {
+ int brightness{0};
+ void set_brightness(int value) { brightness = value; }
+} amoled;
+struct UI {
+ bool paused{true};
+ int wakes{0};
+ void set_paused(bool value, bool) { paused = value; ++wakes; }
+} manifest_ui;
+struct Wake { void execute() { ` + wake + ` } } wake_display;
+struct Runner {
+ std::vector<std::string> actions, payloads;
+ void execute(std::string action, std::string data) {
+   JsonDocument out;
+   ` + bindings.String() + `
+   if (out.size() != 2 || !out["action"].is<const char *>() || !out["data"].is<const char *>()) std::exit(1);
+   actions.push_back(out["action"].as<std::string>());
+   payloads.push_back(out["data"].as<std::string>());
+ }
+} run_button_action;
+void handle_key(uint8_t key, bool pressed) { ` + handle + ` }
+void poll() { ` + polling.String() + ` }
+int main() {
+ JsonDocument manifest;
+ deserializeJson(manifest, R"({"schema":1,"pages":[{"type":"single","item":{"label":"Keys","color":"#123456","action":{"action":"script.item"}}}],"buttons":{}})");
+ const char *names[] = {"a_short", "a_long", "b_short", "b_long"};
+ for (auto name : names) {
+   manifest["buttons"][name]["action"] = std::string("script.") + name;
+   manifest["buttons"][name]["target"]["entity_id"] = "script.expected";
+   manifest["buttons"][name]["data"]["text"] = "Grüße \"quoted\"\n";
+ }
+ manifest_core.set_connected(true);
+ std::string error;
+ if (!manifest_core.accept(manifest_core.begin_fetch(), manifest, error)) return 2;
+ for (int gesture = 0; gesture < 4; ++gesture) {
+   auto &sensor = gesture < 2 ? key_a : key_b;
+   amoled.brightness = 0;
+   manifest_ui.paused = true;
+   sensor.state = true;
+   now += 2000;
+   poll();
+   if (amoled.brightness != 0xD0 || manifest_ui.paused || manifest_ui.wakes != gesture + 1) return 3;
+   if (run_button_action.actions.size() != static_cast<size_t>(gesture)) return 4;
+   now += 999;
+   poll();
+   if (run_button_action.actions.size() != static_cast<size_t>(gesture)) return 5;
+   if (gesture % 2) { ++now; poll(); }
+   sensor.state = false;
+   poll();
+   poll();
+   if (run_button_action.actions.size() != static_cast<size_t>(gesture + 1)) return 6;
+   if (run_button_action.actions.back() != std::string("script.") + names[gesture]) return 7;
+   JsonDocument payload;
+   if (deserializeJson(payload, run_button_action.payloads.back())) return 8;
+   if (payload["target"]["entity_id"] != "script.expected" || payload["data"]["text"] != "Grüße \"quoted\"\n") return 9;
+ }
+ // Unbound keys wake even without HA or a Manifest, but send no action.
+ manifest_core = lunactl::Core{};
+ for (auto sensor : {&key_a, &key_b}) {
+   amoled.brightness = 0;
+   manifest_ui.paused = true;
+   sensor->state = true;
+   poll();
+   if (amoled.brightness != 0xD0 || manifest_ui.paused) return 10;
+   now += 1000;
+   poll();
+   sensor->state = false;
+   poll();
+ }
+ if (run_button_action.actions.size() != 4) return 11;
 }
 `
 	checkAdapter(t, source)

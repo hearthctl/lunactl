@@ -75,6 +75,41 @@ globals:
     type: lunactl::Core
     restore_value: false
 
+# StopWatch: Taste A (yellow) = GPIO2, Taste B (blue) = GPIO1, active low.
+# Debounce both edges before the core measures a press.
+binary_sensor:
+  - platform: gpio
+    id: key_a
+    internal: true
+    pin:
+      number: GPIO2
+      mode: INPUT
+      inverted: true
+    filters:
+      - delayed_on_off: 10ms
+  - platform: gpio
+    id: key_b
+    internal: true
+    pin:
+      number: GPIO1
+      mode: INPUT
+      inverted: true
+    filters:
+      - delayed_on_off: 10ms
+
+interval:
+  # Polling lets a long gesture fire while the key is still held.
+  - interval: 10ms
+    then:
+      - script.execute:
+          id: handle_key
+          key: 0
+          pressed: !lambda return id(key_a).state;
+      - script.execute:
+          id: handle_key
+          key: 1
+          pressed: !lambda return id(key_b).state;
+
 button:
   - platform: template
     name: Manifest neu laden
@@ -88,6 +123,36 @@ button:
                 request: !lambda return id(manifest_core).begin_fetch();
 
 script:
+  - id: wake_display
+    then:
+      - lambda: |-
+          // Restore the CO5300's existing default brightness and LVGL activity.
+          // Display timeout and Manifest brightness are implemented in issue #9.
+          id(amoled).set_brightness(0xD0);
+          id(manifest_ui).set_paused(false, false);
+  - id: run_button_action
+    mode: parallel
+    parameters:
+      action: string
+      data: string
+    then:
+      - homeassistant.action:
+          action: script.lunactl_run
+          data:
+            action: !lambda return action;
+            data: !lambda return data;
+          on_error:
+            - lambda: 'ESP_LOGW("lunactl", "Button action failed: %s", error.c_str());'
+  - id: handle_key
+    parameters:
+      key: uint8_t
+      pressed: bool
+    then:
+      - lambda: |-
+          auto event = id(manifest_core).button(static_cast<lunactl::Key>(key), pressed, millis());
+          if (event.wake) id(wake_display).execute();
+          if (!event.action.action.empty())
+            id(run_button_action).execute(event.action.action, event.action.data);
   - id: manifest_on_connect
     mode: restart
     then:
@@ -214,6 +279,7 @@ font:
     glyphsets: [GF_Latin_Core]
 
 lvgl:
+  id: manifest_ui
   displays: [amoled]
   touchscreens: [touch]
   bg_color: 0x000000

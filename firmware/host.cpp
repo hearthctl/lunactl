@@ -10,10 +10,12 @@ int main() {
     if (deserializeJson(input, line, DeserializationOption::NestingLimit(64))) return 1;
     lunactl::Core core;
     uint32_t request = 0;
+    bool display_on = true;
     auto snapshots = output["snapshots"].to<JsonArray>();
     for (JsonObjectConst event : input["events"].as<JsonArrayConst>()) {
       std::string type = event["type"].as<std::string>();
       std::string error;
+      lunactl::ButtonEvent button_event;
       if (type == "connect") core.set_connected(true);
       else if (type == "disconnect") core.set_connected(false);
       else if (type == "fetch") request = core.begin_fetch();
@@ -21,20 +23,32 @@ int main() {
         auto token = event["request"].isNull() ? request : event["request"].as<uint32_t>();
         if (event["raw"].is<const char *>()) core.accept_json(token, event["raw"].as<std::string>(), error);
         else core.accept(token, event["manifest"], error);
-      } else if (type != "tap" && type != "error") return 2;
+      } else if (type == "button") {
+        std::string key = event["key"].as<std::string>();
+        if (key != "a" && key != "b") return 2;
+        button_event = core.button(key == "a" ? lunactl::Key::A : lunactl::Key::B,
+                                   event["pressed"].as<bool>(), event["now"].as<uint32_t>());
+        if (button_event.wake) display_on = true;
+      } else if (type == "sleep") display_on = false;
+      else if (type != "tap" && type != "error") return 2;
       auto snapshot = snapshots.add<JsonObject>();
       snapshot["status"] = core.status();
       snapshot["tappable"] = core.tappable();
       if (type == "fetch") snapshot["request"] = request;
       if (!error.empty()) snapshot["error"] = error;
+      if (type == "button" || type == "sleep") snapshot["display_on"] = display_on;
+      if (type == "button") snapshot["wake"] = button_event.wake;
+      const lunactl::Action *action = nullptr;
+      if (!button_event.action.action.empty()) action = &button_event.action;
       if (core.tappable()) {
         snapshot["item"]["label"] = core.item().label;
         snapshot["item"]["color"] = core.item().color;
-        if (type == "tap") {
-          snapshot["call"]["service"] = "script.lunactl_run";
-          snapshot["call"]["action"] = core.item().action;
-          snapshot["call"]["data"] = core.item().data;
-        }
+        if (type == "tap") action = &core.item();
+      }
+      if (action != nullptr) {
+        snapshot["call"]["service"] = "script.lunactl_run";
+        snapshot["call"]["action"] = action->action;
+        snapshot["call"]["data"] = action->data;
       }
     }
     serializeJson(output, std::cout);
