@@ -1,7 +1,7 @@
 esphome:
   name: lunactl
   # Copy the header, and include its type before ESPHome's static globals.
-  includes: [<core.h>, lunactl/core.h]
+  includes: [<core.h>, lunactl/core.h, <battery.h>, lunactl/battery.h]
   # Runs after the I2C bus (1000) and before the M5IOE1 setup (IO, 900).
   # Mirrors M5GFX's StopWatch power-on. Verified on device: on a battery cold
   # boot the M5IOE1 NACKs for ~50 ms (M5GFX allows up to 500 ms), and the
@@ -74,6 +74,9 @@ globals:
   - id: manifest_core
     type: lunactl::Core
     restore_value: false
+  - id: battery
+    type: lunactl::Battery
+    restore_value: false
 
 button:
   - platform: template
@@ -88,6 +91,11 @@ button:
                 request: !lambda return id(manifest_core).begin_fetch();
 
 script:
+  - id: render_battery
+    then:
+      - lambda: |-
+          lv_label_set_text(id(battery_level_text), id(battery).text().c_str());
+          lv_label_set_text(id(battery_hint), id(battery).hint());
   - id: manifest_on_connect
     mode: restart
     then:
@@ -148,6 +156,30 @@ i2c:
   sda: GPIO47
   scl: GPIO48
 
+i2c_device:
+  id: pmic
+  address: 0x6E
+
+sensor:
+  - platform: template
+    id: battery_level
+    name: Akkustand
+    device_class: battery
+    state_class: measurement
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+    update_interval: 10s
+    lambda: |-
+      const bool valid = id(battery).poll([](uint8_t reg, uint8_t *data, size_t length) {
+        if (id(pmic).read_register(reg, data, length) == i2c::ERROR_OK) return true;
+        delay(1);
+        return false;
+      });
+      if (!valid) ESP_LOGW("lunactl", "M5PM1 battery unavailable");
+      // Refresh also on failure, clearing any stale low-battery hint.
+      id(render_battery).execute();
+      return valid ? id(battery).level() : NAN;
+
 # Expander pin numbers are 0-based: number N is the expander's IO(N+1).
 m5ioe1:
   id: ioe
@@ -207,6 +239,11 @@ touchscreen:
           args: [touch.x, touch.y, touch.x_raw, touch.y_raw]
 
 font:
+  - id: font_battery
+    file: "gfonts://Nunito@800"
+    size: 20
+    bpp: 4
+    glyphsets: [GF_Latin_Core]
   - id: font_item
     file: "gfonts://Nunito@800"
     size: 28
@@ -255,3 +292,17 @@ lvgl:
                       data: !lambda return id(manifest_core).item().data;
                     on_error:
                       - lambda: 'ESP_LOGW("lunactl", "Item action failed: %s", error.c_str());'
+    - label:
+        id: battery_hint
+        align: bottom_mid
+        y: -64
+        text: ""
+        text_font: font_battery
+        text_color: 0xFFFFFF
+    - label:
+        id: battery_level_text
+        align: bottom_mid
+        y: -36
+        text: "Akku -- %"
+        text_font: font_battery
+        text_color: 0xFFFFFF
