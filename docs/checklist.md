@@ -1,7 +1,8 @@
 # On-device checklist
 
-Manual checks on the real StopWatch for issue #3. Record the firmware commit,
-HA version and results. Unchecked boxes are unverified, not passing.
+Manual checks on the real StopWatch for issue #13, starting with the tracer
+implemented in issue #3. Record the firmware commit, HA version and results.
+Unchecked boxes are unverified, not passing.
 
 Before starting:
 

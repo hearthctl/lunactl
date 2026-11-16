@@ -29,6 +29,9 @@ version, page count, colour, actions and targets. Contract cases fetch by MAC,
 feed the returned Manifest through the C++ host and execute its tap through
 `lunactl_run`, and check target/data forwarding and failures in real HA.
 
-Compilation and host tests cannot verify display, touch or the native API on
-hardware. Run [the device checklist](checklist.md) on the branch firmware and
-record the firmware commit and observations before declaring device acceptance.
+Issue [#3](https://github.com/hearthctl/lunactl/issues/3) is verified by the three
+automated seams above and `make check-firmware`. On-device acceptance belongs to
+issue [#13](https://github.com/hearthctl/lunactl/issues/13): compilation and host
+tests cannot verify display, touch or the native API on hardware. For that issue,
+run [the device checklist](checklist.md) and record the firmware commit and
+observations before declaring device acceptance.
