@@ -2,7 +2,9 @@ name: OCR
 run-name: "OCR PR #${{ github.event.pull_request.number }}"
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened, labeled, ready_for_review]
+    # `opened` is absent: a pull request created with its label also fires
+    # `labeled`, and both events would each run a full review.
+    types: [synchronize, reopened, labeled, ready_for_review]
 permissions:
   contents: read
   pull-requests: write
