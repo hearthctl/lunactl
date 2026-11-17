@@ -37,3 +37,19 @@ Before starting:
   logged and is not retried. Restore permission/action and confirm recovery.
 - [ ] Reboot/power cycle: no old Manifest appears before the new fetch. No
   unexpected errors occur during normal fetch, reload and tap.
+
+## Battery (#10)
+
+- [ ] On battery, **Akkustand** in HA and **Akku … %** on the display agree,
+  stay within 0–100% and are plausible for the measured cell voltage. Repeat
+  after a battery cold boot; record voltage, percentage and any I2C failures.
+- [ ] Connect USB with a partly discharged battery. The level still reflects
+  VBAT, rather than immediately becoming 100% from the USB supply. Disconnect
+  USB and confirm updates continue within 10 seconds. Repeat near full charge.
+- [ ] Below 20%, **Zurück an die Halterung** is visible and fully inside the
+  round display, alongside the level. At 20% or above it disappears. Check
+  while connected to USB and on battery, also with HA disconnected or no Manifest.
+- [ ] If PMIC reads fail, logs report **M5PM1 battery unavailable**, the display
+  shows **Akku -- %**, HA shows an unknown level, and no stale hint remains.
+  A successful read restores the level and appropriate hint. If reliable PMIC
+  readings cannot be achieved, record the failures and close #10 as won't-do.
