@@ -1,5 +1,6 @@
 import {LitElement, html, css} from "./vendor/lit-all.min.js";
 import {deviceList, deviceHeader} from "./devices.js";
+import "./preview-element.js";
 import {ManifestEditor} from "./manifest-editor.js";
 import {text, errorText} from "./strings.js";
 
@@ -22,6 +23,9 @@ class LunactlDesigner extends LitElement {
     select, textarea { color: var(--primary-text-color);
       background: var(--card-background-color); border: 1px solid var(--divider-color);
       border-radius: 6px; padding: 12px; box-sizing: border-box; width: 100%; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+    .workspace > div { min-width: 0; }
+    @media (max-width: 800px) { .workspace { grid-template-columns: 1fr; } }
     textarea { min-height: 55vh; resize: vertical; font: 14px/1.5 monospace;
       tab-size: 2; white-space: pre; }
     button { cursor: pointer; padding: 10px 14px; border-radius: 6px;
@@ -154,6 +158,10 @@ class LunactlDesigner extends LitElement {
           ${editor.status === "empty" ? html`
             <p>${text.noManifest}</p>
             <button @click=${() => editor.create()}>${text.create}</button>` : html`
+            <div class="workspace"><div>
+              <h3>${text.preview}</h3>
+              <lunactl-preview .source=${editor.source} .hass=${this.hass} .device=${this._selected}></lunactl-preview>
+            </div><div>
             <label for="manifest">${text.manifest}</label>
             <textarea id="manifest" spellcheck="false" autocapitalize="off"
               .value=${editor.source} aria-invalid=${editor.status === "invalid"}
@@ -161,7 +169,8 @@ class LunactlDesigner extends LitElement {
             <p class="hint">${text.autosaveHint}</p>
             <button @click=${() => this._copy(editor)}>${text.copy}</button>
             ${editor.status === "error" ? html`
-              <button @click=${() => editor.flush()}>${text.retry}</button>` : ""}`}
+              <button @click=${() => editor.flush()}>${text.retry}</button>` : ""}
+            </div></div>`}
           <p role="status">${this._notice}</p>
         ` : ""}
       </main>`;

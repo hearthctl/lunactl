@@ -1,5 +1,9 @@
 // All Designer text lives here, including API and JSON validation messages.
 export const text = {
+  preview: "Vorschau",
+  previewApproximation: "Annäherung an die Darstellung auf dem Gerät.",
+  previewFontsFailed: "Schriften konnten nicht geladen werden. Vorschau bitte neu laden.",
+  page: (n) => `Seite ${n}`,
   title: "lunactl Designer",
   menu: "Seitenleiste öffnen",
   device: "Gerät",

@@ -31,6 +31,12 @@ async def test_admin_panel_and_versioned_modules(hass, setup, hass_ws_client, ha
         assert response.status == 200
         assert response.content_type in ("text/javascript", "application/javascript")
         assert await response.read() == path.read_bytes()
+    for filename in ("nunito-800.ttf", "materialdesignicons-webfont.woff2"):
+        path = ROOT / "custom_components/lunactl/frontend/vendor" / filename
+        response = await http.get(f"{prefix}/vendor/{filename}")
+        assert response.status == 200
+        assert response.content_type in ("font/ttf", "font/woff2", "application/font-woff", "application/octet-stream", "application/x-font-ttf")
+        assert await response.read() == path.read_bytes()
     assert not store.records  # Opening the Designer never creates a Manifest.
     assert store.read(device.id)["manifest"] == {}
     entry = hass.config_entries.async_entries("lunactl")[0]
