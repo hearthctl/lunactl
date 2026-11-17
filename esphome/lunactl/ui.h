@@ -27,7 +27,7 @@ class UI {
     }
     hole_ = box(root_, 177, 177, 112, 112, 0x000000, 56);
     clock_ = label(hole_, text, 0, 38, 112);
-    dots_ = box(root_, 0, 407, 1, 28, 0x000000, 14);
+    dots_ = box(root_, 0, 437, 1, 28, 0x000000, 14);
     for (int i = 0; i < 6; ++i) dots[i] = box(dots_, 11 + i * 18, 9, 10, 10, 0x666666, 5);
   }
 

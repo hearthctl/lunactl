@@ -1,4 +1,5 @@
 #include "../esphome/lunactl/core.h"
+#include "../esphome/lunactl/battery.h"
 #include <iostream>
 
 static void item_view(JsonObject out, const lunactl::Item &item) {
@@ -16,6 +17,8 @@ int main() {
     JsonDocument input, output;
     if (deserializeJson(input, line, DeserializationOption::NestingLimit(64))) return 1;
     lunactl::Core core;
+    lunactl::Battery battery;
+    bool battery_seen = false;
     uint32_t request = 0;
     auto snapshots = output["snapshots"].to<JsonArray>();
     for (JsonObjectConst event : input["events"].as<JsonArrayConst>()) {
@@ -40,10 +43,26 @@ int main() {
           core.press(event["x"], event["y"]);
           tapped = core.release(event["x"], event["y"]);
         }
+      } else if (type == "battery") {
+        battery_seen = true;
+        size_t index = 0;
+        auto reads = event["reads"].as<JsonArrayConst>();
+        battery.poll([&](uint8_t reg, uint8_t *data, size_t length) {
+          if (index >= reads.size()) return false;
+          auto read = reads[index++];
+          if (read["reg"] != reg || read["bytes"].size() != length) return false;
+          for (size_t i = 0; i < length; ++i) data[i] = read["bytes"][i].as<uint8_t>();
+          return true;
+        });
       } else if (type != "error") return 2;
       auto snapshot = snapshots.add<JsonObject>();
       snapshot["status"] = core.status();
       snapshot["tappable"] = core.tappable();
+      if (battery_seen) {
+        snapshot["battery"]["level"] = battery.level();
+        snapshot["battery"]["text"] = battery.text();
+        snapshot["battery"]["hint"] = battery.hint();
+      }
       if (type == "fetch") snapshot["request"] = request;
       if (!error.empty()) snapshot["error"] = error;
       if (type == "manifest" && !core.warnings().empty()) {

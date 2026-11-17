@@ -211,7 +211,7 @@ class Core {
     if (!tappable() || x < 0 || x >= 466 || y < 0 || y >= 466) return -1;
     int dx = x - 233, dy = y - 233;
     if (dx * dx + dy * dy > 233 * 233) return -1;
-    if (page_count() > 1 && y >= 407 && y < 435 &&
+    if (page_count() > 1 && y >= 437 && y < 465 &&
         x >= dots_left() && x < dots_left() + dots_width()) return -1;
     if (!pie()) return dx * dx + dy * dy <= 140 * 140 ? 0 : -1;
     if (dx * dx + dy * dy <= 56 * 56 || (dx >= -3 && dx < 3) || (dy >= -3 && dy < 3)) return -1;
@@ -235,7 +235,7 @@ class Core {
       return -1;
     }
     if (std::abs(dx) > 20 || std::abs(dy) > 20) return -1;
-    if (page_count() > 1 && y >= 407 && y < 435 && press_y_ >= 407 && press_y_ < 435 &&
+    if (page_count() > 1 && y >= 437 && y < 465 && press_y_ >= 437 && press_y_ < 465 &&
         x >= dots_left() + 6 && x < dots_left() + 6 + static_cast<int>(page_count()) * 18) {
       show_page((x - dots_left() - 6) / 18);
       return -1;
