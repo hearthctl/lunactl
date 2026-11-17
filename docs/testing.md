@@ -21,6 +21,11 @@ packages are used. `PODMAN` can select a different Podman command, and
 `HA_TEST_PORT` changes the default local port 18123. It deliberately fails if HA
 cannot start; unavailable infrastructure does not count as a passing check.
 
+Where Podman cannot run, as in the Kelos agent pods, do not install or work
+around it. Run the other three checks and leave `make check-contracts` to CI,
+which runs `make check` on every pull request and must be green before a merge.
+State in the pull request that the contract check was left to CI.
+
 Golden cases cover a single Item and tap, UTF-8/nested action data, missing
 target/data, reload success, invalid replacement, initial errors, disconnect,
 and stale replies from old connections or overlapping reloads. Size cases
