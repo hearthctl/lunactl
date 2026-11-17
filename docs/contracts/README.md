@@ -1,4 +1,10 @@
-# Tracer contract
+# Home Assistant contract
+
+For a complete room setup, use [household.md](../household.md) and the
+[example Manifest](../../examples/child-room.json). This file describes the
+reference scripts used by the current firmware. [ADR 0003](../adr/0003-manifeste-aus-dem-designer-in-ha.md)
+plans their replacement by the Designer and HA integration (#35/#36); those
+components are not implemented in this checkout yet.
 
 Copy [scripts.yaml](scripts.yaml) into the household's Home Assistant scripts
 (for example, `script: !include scripts.yaml` in `configuration.yaml`). Replace
@@ -25,7 +31,10 @@ A `single` page has an `item`. A `pie` page has `quarters`: exactly four entries
 clockwise from top-left (top-left, top-right, bottom-right, bottom-left). Each is
 an Item or `null` for a dark, inert quarter. Without `center`, the small hole
 shows HA's local time (`--:--` before time sync). The clock hole and dividers
-are inert. `center` belongs to issue #7 and is currently rejected.
+are inert. An optional `center` Item creates a large center with label, live
+value and countdown ring, curved quarter labels and colour, and the clock in
+the top gap. Center icons and quarter icons/values/countdowns are not displayed
+in that form. See the [complete field and icon reference](../manifest.md).
 
 Items require `label`, `color` (`#RRGGBB`) and `action`, with an optional `icon`.
 An action has an HA `action` name and optional `target` and `data` objects.

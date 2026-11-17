@@ -24,6 +24,16 @@ cannot start; unavailable infrastructure does not count as a passing check.
 
 Plain `make` runs `make verify`.
 
+For issue [#11](https://github.com/hearthctl/lunactl/issues/11),
+`TestManifestSchemaAndCoreAgree/child-room-example` reads the actual
+[`examples/child-room.json`](../examples/child-room.json), enforces the 32 KiB
+limit, validates it against the schema and checks firmware-core acceptance.
+It runs in `make verify`. Review [household.md](household.md) and
+[manifest.md](manifest.md) against the schema and current contract when changing
+the example. The [checklist](checklist.md) maps every #13 criterion to physical
+checks, including temporary variants for behaviours outside the daily example.
+Completing those unchecked hardware results is the separate device ticket.
+
 `make verify` must pass before a pull request is opened. `make e2e` needs
 infrastructure and is run only by CI, where the one check named `verify` runs
 `make verify` and then `make e2e` on the pull request merged on top of the
