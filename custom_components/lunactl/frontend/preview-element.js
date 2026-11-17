@@ -43,8 +43,10 @@ class LunactlPreview extends LitElement {
   }
   disconnectedCallback() { super.disconnectedCallback(); clearInterval(this._tick); }
   willUpdate(changed) {
-    if (changed.has("device")) this._page = 0;
-    if (changed.has("page") && Number.isInteger(this.page)) this._page = this.page;
+    if (changed.has("device") || changed.has("page")) {
+      if (Number.isInteger(this.page)) this._page = this.page;
+      else if (changed.has("device")) this._page = 0;
+    }
     const {manifest} = parseManifest(this.source);
     const count = Array.isArray(manifest?.pages) ? Math.min(6, manifest.pages.length) : 0;
     this._page = Math.max(0, Math.min(this._page, count - 1));
