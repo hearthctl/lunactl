@@ -10,7 +10,7 @@ Run from the repository root:
 make check-core       # seam 1: C++ host, Go tables and golden snapshots
 make check-schema     # seam 2: valid/invalid Manifests, schema/core agreement
 make check-contracts  # seam 3: disposable HA, reference scripts and host → action
-make check-firmware  # ESPHome config and ESP32-S3 compile with example secrets
+make check-firmware   # ESPHome config and ESP32-S3 compile with example secrets
 make verify           # core, schema and firmware: needs no infrastructure
 make e2e              # contracts: needs Podman
 ```
