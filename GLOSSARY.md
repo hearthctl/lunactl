@@ -50,6 +50,10 @@ _Avoid_: Bestätigung, Ack
 Die gesamte Beschreibung, die das Gerät aus Home Assistant holt und darstellt: welche Seiten es gibt, was in jedem Slot steht und was die Tasten auslösen.
 _Avoid_: Layout, Config, Belegung
 
+**Designer**:
+Die Seite in Home Assistant, auf der ein Haushalt das Manifest jedes Geräts zusammenstellt und in einer Vorschau sieht.
+_Avoid_: Editor, Builder, Panel, Konfigurator
+
 **Page type**:
 Eine fest in die Firmware eingebaute Anordnung einer Seite. Das Manifest wählt pro Seite einen Page type und befüllt dessen Slots.
 _Avoid_: Template, Vorlage
