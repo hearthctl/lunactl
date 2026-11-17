@@ -26,7 +26,7 @@
     {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false},
     {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": true},
     {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false},
-    {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false,"call": {"service": "script.lunactl_run","action": "script.b_long","data": "{\"target\":{\"area_id\":\"child_room\"},\"data\":{}}"}},
+    {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false,"call": {"service": "lunactl.run","action": "script.b_long","data": "{\"target\":{\"area_id\":\"child_room\"},\"data\":{}}"}},
     {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false},
     {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false},
     {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false},
@@ -34,7 +34,7 @@
     {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": false,"wake": false},
     {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": true},
     {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false},
-    {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false,"call": {"service": "script.lunactl_run","action": "script.b_long","data": "{\"target\":{\"area_id\":\"child_room\"},\"data\":{}}"}},
+    {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false,"call": {"service": "lunactl.run","action": "script.b_long","data": "{\"target\":{\"area_id\":\"child_room\"},\"data\":{}}"}},
     {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false},
     {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false},
     {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"display_on": true,"wake": false}

@@ -31,7 +31,7 @@ func TestProductionAdapter(t *testing.T) {
 		return match[1]
 	}
 	callback := extract(`(?s)capture_response: true\s+on_success:\s+- lambda: \|-\n(.*?)\n            - script.execute:`)
-	fields := extract(`(?s)on_release:.*?action: script.lunactl_run\s+data:\n(.*?)\n                    on_error:`)
+	fields := extract(`(?s)on_release:.*?action: lunactl.run\s+data:\n(.*?)\n                    on_error:`)
 	expressions := regexp.MustCompile(`(?m)^\s+(action|data): !lambda ([^\n]+)$`).FindAllStringSubmatch(fields, -1)
 	if len(expressions) != 2 {
 		t.Fatal("expected two string field bindings")
@@ -337,7 +337,7 @@ func TestProductionButtonAdapter(t *testing.T) {
 	}
 	handle := extract(`(?s)  - id: handle_key\n.*?lambda: \|-\n(.*?)\n  - id:`)
 	wake := extract(`(?s)  - id: wake_display\n.*?lambda: \|-\n(.*?)\n  - id:`)
-	fields := extract(`(?s)  - id: run_button_action\n.*?action: script.lunactl_run\s+data:\n(.*?)\n          on_error:`)
+	fields := extract(`(?s)  - id: run_button_action\n.*?action: lunactl.run\s+data:\n(.*?)\n          on_error:`)
 	var bindings strings.Builder
 	for _, field := range regexp.MustCompile(`(?m)^\s+(action|data): !lambda ([^\n]+)$`).FindAllStringSubmatch(fields, -1) {
 		fmt.Fprintf(&bindings, "out[\"%s\"] = [&]() -> std::string { %s }();\n", field[1], field[2])

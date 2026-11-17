@@ -1,5 +1,8 @@
 esphome:
   name: lunactl
+  project:
+    name: hearthctl.lunactl
+    version: "1.0"
   # Arc labels need the A8 transform for rotated glyphs (see the curved-text spike).
   build_flags:
     - -DLV_USE_ARCLABEL=1
@@ -190,7 +193,7 @@ script:
       data: string
     then:
       - homeassistant.action:
-          action: script.lunactl_run
+          action: lunactl.run
           data:
             action: !lambda return action;
             data: !lambda return data;
@@ -230,7 +233,7 @@ script:
       request: uint32_t
     then:
       - homeassistant.action:
-          action: script.lunactl_manifest
+          action: lunactl.manifest
           data:
             mac: !lambda return get_mac_address_pretty();
           capture_response: true
@@ -481,7 +484,7 @@ lvgl:
                 lambda: return id(tapped_slot) >= 0;
               then:
                 - homeassistant.action:
-                    action: script.lunactl_run
+                    action: lunactl.run
                     data:
                       action: !lambda return id(manifest_core).item(id(tapped_slot)).action;
                       data: !lambda return id(manifest_core).item(id(tapped_slot)).data;

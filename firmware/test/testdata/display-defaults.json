@@ -405,7 +405,7 @@
         "brightness": 70,
         "display_brightness": 179,
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "script.home",
           "data": "{\"target\":{},\"data\":{}}"
         }

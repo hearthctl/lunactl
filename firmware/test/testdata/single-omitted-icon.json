@@ -141,7 +141,7 @@
           "value": "23.4 °C"
         },
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "script.example",
           "data": "{\"target\":{},\"data\":{}}"
         }

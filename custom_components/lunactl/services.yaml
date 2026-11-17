@@ -1,0 +1,19 @@
+manifest:
+  fields:
+    mac:
+      required: true
+      example: "AA:BB:CC:DD:EE:FF"
+      selector:
+        text:
+run:
+  fields:
+    action:
+      required: true
+      example: "light.turn_on"
+      selector:
+        text:
+    data:
+      required: true
+      example: '{"target":{"entity_id":"light.bed"},"data":{}}'
+      selector:
+        text:

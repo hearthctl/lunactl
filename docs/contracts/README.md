@@ -1,20 +1,11 @@
 # Home Assistant contract
 
-For a complete room setup, use [household.md](../household.md) and the
-[example Manifest](../../examples/child-room.json). This file describes the
-reference scripts used by the current firmware. [ADR 0003](../adr/0003-manifeste-aus-dem-designer-in-ha.md)
-plans their replacement by the Designer and HA integration (#35/#36); those
-components are not implemented in this checkout yet.
+For installation through HACS, use [household.md](../household.md). The
+integration owns Manifest storage and supplies the two firmware actions. Enable
+**Allow the device to perform Home Assistant actions** in HA's ESPHome options.
+MAC lookup uses HA's device registry and normalizes case and separators.
 
-Copy [scripts.yaml](scripts.yaml) into the household's Home Assistant scripts
-(for example, `script: !include scripts.yaml` in `configuration.yaml`). Replace
-the example MAC with the StopWatch's Wi-Fi MAC. Input MACs must use
-colon-separated notation; the reference normalizes letter case to uppercase. Its example Item toggles
-`input_boolean.lunactl_example`; create that helper in HA or replace the action.
-Reload scripts after edits. Enable **Allow the device to perform Home Assistant
-actions** in HA's ESPHome integration.
-
-`script.lunactl_manifest(mac)` returns the Manifest itself as a response mapping,
+`lunactl.manifest(mac)` returns the Manifest itself as a response mapping,
 not a JSON string or a `manifest` wrapper. An unmapped MAC returns `{}`. ESPHome
 uses `capture_response: true`; its callback envelope exposes that mapping as
 `response["response"]`. The Manifest must fit within 32 KiB. It is never saved
@@ -90,7 +81,7 @@ connected without a valid Manifest it shows **Kein Manifest**. Neither state
 can run an Item's action. Reconnecting refetches; the previous valid Manifest
 stays in RAM until replaced. Rebooting always starts without a Manifest.
 
-A tap or bound key gesture calls `script.lunactl_run` with exactly two string fields:
+A tap or bound key gesture calls `lunactl.run` with exactly two string fields:
 
 ```json
 {
@@ -100,9 +91,53 @@ A tap or bound key gesture calls `script.lunactl_run` with exactly two string fi
 ```
 
 `data` is JSON text containing the original action's `target` and `data`.
-Missing objects become `{}`. The reference script decodes this envelope and
+Missing objects become `{}`. The integration decodes this envelope and
 passes both objects to HA without flattening targets or converting nested data
-to strings. House logic stays in HA; the firmware only calls these two scripts.
+to strings. House logic stays in HA; the firmware calls these two integration actions.
 Errors are logged and actions are not automatically retried.
 
-The snippets here are the exact files loaded by `make check-contracts`.
+`make verify` installs the actual integration into disposable HA 2026.9.3
+under Podman and exercises the contract, including save/validate/delete.
+
+## Internal API
+
+The admin websocket API uses HA's `/api/websocket` authentication. Commands:
+
+```json
+{"id": 1, "type": "lunactl/devices"}
+{"id": 2, "type": "lunactl/manifest/get", "device_id": "<HA device ID>"}
+{"id": 3, "type": "lunactl/manifest/save", "device_id": "<HA device ID>", "revision": 0, "manifest": {"schema": 1, "pages": [{"type": "single", "item": {"label": "Test", "color": "#123456", "action": {"action": "light.turn_on"}}}]}}
+```
+
+`devices` returns the devices with manufacturer `hearthctl` and model `lunactl`.
+`get` and `save` return `device_id`, `name`, `manifest`, `revision` (0 before the
+first save), `online`, `firmware_version`, `schema_version`, `highest_schema`,
+`required_firmware` (e.g. `2.0`) and `will_restart`. A save's `will_restart`
+indicates new entity/attribute subscriptions compared with those fetched by the
+device, or its previous Manifest before the first fetch observed by HA. New
+subscriptions imply a restart and reset that baseline; removing references alone
+retains subscriptions, matching the firmware core. Pass an optional `manifest` to `lunactl/manifest/get` to validate a proposed
+change and preview `will_restart` without saving it. A read without a proposed
+Manifest returns `will_restart: false`. Availability comes
+from the device's ESPHome entity states, including the reload button.
+
+A save validates against min(device firmware major, highest shipped schema),
+then writes the lowest schema that accepts the content, checking each version
+in order. The input `schema` must be an integer; its value is canonicalized.
+Unparseable registry firmware versions refuse saving with `unknown_firmware`
+(**Firmware-Version unbekannt**). Stale revisions fail with `stale_revision`
+(**Manifest wurde inzwischen geändert**). Invalid content fails with
+`invalid_manifest`. Errors preserve the current revision and Manifest.
+
+A rollback never modifies stored content: `lunactl.manifest` returns it unchanged,
+even if its required schema is newer than the device. Firmware logs and rejects
+unsupported schemas. Every released schema is bundled with the HACS integration;
+stored Manifests need no migration.
+
+Saves persist before returning and debounce each device's reload button for
+10 seconds. Offline reload attempts are dropped; reconnect fetches anyway.
+Deleting a device deletes its Manifest. Registry renames rewrite defined entity
+references and script action names in every Manifest, increment revisions and
+use the same reload delay. Action `data` remains opaque. Missing entity, device,
+area, floor and label references raise one repair issue per device, checked at
+startup, on saves and registry/state changes; restoring references clears it.

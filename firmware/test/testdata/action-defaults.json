@@ -57,7 +57,7 @@
         "status": "",
         "tappable": true,
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "script.contract_no_data",
           "data": "{\"target\":{},\"data\":{}}"
         },

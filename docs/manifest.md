@@ -63,7 +63,7 @@ digits and underscores. Optional `target` accepts only `entity_id`, `device_id`,
 `area_id`, `floor_id` and `label_id`; each selector is a nonempty string or a
 nonempty array of nonempty strings. Optional `data` is an object and may contain
 nested objects, arrays and scalar values. Missing `target`/`data` become `{}`.
-Both retain their structure through `script.lunactl_run`. HA validates whether
+Both retain their structure through `lunactl.run`. HA validates whether
 the selected action, target and data make sense. Conditional household logic
 belongs in an HA script, not the Manifest.
 

@@ -320,7 +320,7 @@
           }
         ],
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "script.hell",
           "data": "{\"target\":{\"entity_id\":\"script.hell\"},\"data\":{\"slot\":0,\"text\":\"Grüße\"}}"
         }
@@ -365,7 +365,7 @@
           }
         ],
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "script.lesen",
           "data": "{\"target\":{\"entity_id\":\"script.lesen\"},\"data\":{\"slot\":1,\"text\":\"Grüße\"}}"
         }
@@ -410,7 +410,7 @@
           }
         ],
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "script.schlafen",
           "data": "{\"target\":{\"entity_id\":\"script.schlafen\"},\"data\":{\"slot\":2,\"text\":\"Grüße\"}}"
         }
@@ -455,7 +455,7 @@
           }
         ],
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "script.gemuetlich",
           "data": "{\"target\":{\"entity_id\":\"script.gemuetlich\"},\"data\":{\"slot\":3,\"text\":\"Grüße\"}}"
         }

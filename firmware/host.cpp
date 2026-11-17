@@ -141,7 +141,7 @@ int main() {
         if (tapped >= 0) action = &core.item(tapped);
       }
       if (action != nullptr) {
-        snapshot["call"]["service"] = "script.lunactl_run";
+        snapshot["call"]["service"] = "lunactl.run";
         snapshot["call"]["action"] = action->action;
         snapshot["call"]["data"] = action->data;
       }

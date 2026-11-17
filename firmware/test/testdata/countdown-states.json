@@ -333,7 +333,7 @@
           }
         },
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "script.example",
           "data": "{\"target\":{},\"data\":{}}"
         }

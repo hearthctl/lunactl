@@ -1,7 +1,7 @@
 # Tracer checks
 
 Requirements: Go as specified by `go.mod`, a C++17 compiler (`CXX`), curl,
-sha256sum and uv; `make e2e` also needs Podman. The host uses the same pinned
+sha256sum, uv and Podman. The host uses the same pinned
 ArduinoJson version as ESPHome; `make` downloads and checks its header in
 `.build/`.
 
@@ -10,13 +10,15 @@ Run from the repository root:
 ```sh
 make check-core       # seam 1: C++ host, Go tables and golden snapshots
 make check-schema     # seam 2: valid/invalid Manifests, schema/core agreement
-make check-contracts  # seam 3: disposable HA, reference scripts and host → action
+make check-contracts  # seam 3: disposable HA, integration and host → action
 make check-firmware   # ESPHome config and ESP32-S3 compile with example secrets
-make verify           # core, schema and firmware: needs no infrastructure
+make check-integration # HA storage, lifecycle, websocket API and translations
+make verify           # every automated #35 criterion, including Podman HA
 make e2e              # contracts: needs Podman
 ```
 
-The contract runner creates its own local HA and test user, runs the Go tests,
+The contract runner creates its own local HA and test user, installs the actual
+integration with isolated test registry fixtures, runs the Go and websocket tests,
 and removes its container on exit. No household URL, credentials, entities or
 packages are used. `PODMAN` can select a different Podman command, and
 `HA_TEST_PORT` changes the default local port 18123. It deliberately fails if HA
@@ -34,8 +36,7 @@ the example. The [checklist](checklist.md) maps every #13 criterion to physical
 checks, including temporary variants for behaviours outside the daily example.
 Completing those unchecked hardware results is the separate device ticket.
 
-`make verify` must pass before a pull request is opened. `make e2e` needs
-infrastructure and is run only by CI, where the one check named `verify` runs
+`make verify` must pass before a pull request is opened. `make e2e` is also available separately. CI's check named `verify` runs
 `make verify` and then `make e2e` on the pull request merged on top of the
 current base branch. It must be green before a merge.
 
@@ -58,7 +59,7 @@ Schema cases accept sparse/full/empty Pie pages, mixed pages and optional or
 known icons; they reject unknown icons, invalid quarter counts/Items/icons and
 a seventh page, with schema/core agreement. Contract cases fetch by MAC, feed
 the returned Manifest through the C++ host and execute its tap through
-`lunactl_run`, and check target/data forwarding and failures in real HA.
+`lunactl.run`, and check target/data forwarding and failures in real HA.
 
 Issue [#7](https://github.com/hearthctl/lunactl/issues/7) adds `pie-center`,
 `pie-center-countdown`, `pie-center-reload` and `pie-center-subscriptions`
@@ -87,7 +88,7 @@ adapter test
 compiles the actual YAML polling, wake and action lambdas with display stubs,
 checking key mapping, wake and dispatch. Schema/core agreement cases validate
 all four bindings with the shared action/target/data cases. Contract tests run
-each bound gesture from a dark display through the host and `lunactl_run` in
+each bound gesture from a dark display through the host and `lunactl.run` in
 disposable HA. Run `make verify` and `make e2e` for these checks and the firmware compile.
 
 Issue [#9](https://github.com/hearthctl/lunactl/issues/9) adds `display-defaults`,
@@ -157,3 +158,20 @@ documents PWR_SRC at 0x04 and VBAT_L/H at 0x22/0x23 in millivolts. The sensor
 polls every 10 seconds and retries up to three times. Invalid data, missing BAT
 or exhausted I2C retries publish an unknown level and clear the hint; the next
 successful poll recovers without restarting.
+
+Issue [#35](https://github.com/hearthctl/lunactl/issues/35) adds HA 2026.9.3
+integration tests for persistence and failed writes, invalid/stale saves,
+per-device debounce boundaries and offline drops, registry deletion and renames
+(including script actions and opaque action data), repair issues across every
+reference registry, firmware older/equal/newer than the integration, unknown
+versions, lowest-schema stamping, rollback fetches, availability and restart
+prediction. A synthetic additive v2 exercises version drift without releasing
+an unneeded schema. Packaging tests compare every bundled schema byte-for-byte
+and tie firmware project major to the core's highest accepted schema. Hassfest
+validates metadata, action descriptions and English/German translations.
+All run through `make verify` with the firmware compile and Podman contracts.
+
+`HASSFEST` can override the hassfest command (for example, to supply emulation
+on ARM hosts; the official image is amd64). `PODMAN` selects the contract runtime.
+These overrides must still run the validator and disposable HA; they do not
+skip checks.

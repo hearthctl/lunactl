@@ -2159,7 +2159,7 @@
           "glyph": "󰖨"
         },
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "script.hell",
           "data": "{\"target\":{\"entity_id\":\"script.hell\"},\"data\":{\"slot\":0,\"text\":\"Grüße\"}}"
         }

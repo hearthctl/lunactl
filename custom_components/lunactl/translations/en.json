@@ -1,0 +1,51 @@
+{
+  "title": "lunactl",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up lunactl",
+        "description": "Store Manifests for your lunactl devices in Home Assistant."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Already configured. Only one configuration is needed."
+    }
+  },
+  "issues": {
+    "missing_references": {
+      "title": "Missing Manifest references for {device}",
+      "description": "The Manifest for {device} refers to missing Home Assistant objects:\n\n{references}\n\nUpdate the Manifest or restore the referenced objects."
+    }
+  },
+  "services": {
+    "manifest": {
+      "name": "Get Manifest",
+      "description": "Return the stored Manifest for a device, or an empty object.",
+      "fields": {
+        "mac": {
+          "name": "MAC address",
+          "description": "The device Wi-Fi MAC address."
+        }
+      }
+    },
+    "run": {
+      "name": "Run action",
+      "description": "Run an Item or key action in Home Assistant.",
+      "fields": {
+        "action": {
+          "name": "Action",
+          "description": "The Home Assistant action name."
+        },
+        "data": {
+          "name": "Action payload",
+          "description": "JSON text with target and data objects."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "invalid_action_data": {
+      "message": "Action data must be JSON text containing target and data objects."
+    }
+  }
+}

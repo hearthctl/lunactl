@@ -82,12 +82,12 @@ func run(t *testing.T, action string, payload any) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	call(t, "script.lunactl_run", map[string]any{"action": action, "data": string(raw)}, false)
+	call(t, "lunactl.run", map[string]any{"action": action, "data": string(raw)}, false)
 }
 
 func TestManifestToTap(t *testing.T) {
 	call(t, "input_boolean.turn_off", map[string]any{"entity_id": "input_boolean.lunactl_example"}, false)
-	manifest := call(t, "script.lunactl_manifest", map[string]any{"mac": "aa:bb:cc:dd:ee:ff"}, true)
+	manifest := call(t, "lunactl.manifest", map[string]any{"mac": "aa:bb:cc:dd:ee:ff"}, true)
 	got := testutil.Host(t, []map[string]any{{"type": "connect"}, {"type": "fetch"}, {"type": "manifest", "manifest": manifest}, {"type": "tap"}})
 	last := got["snapshots"].([]any)[3].(map[string]any)
 	if last["tappable"] != true || last["item"].(map[string]any)["label"] != "Beispiel" || last["item"].(map[string]any)["color"] != "#B91360" {
@@ -104,7 +104,7 @@ func TestManifestToButtonGestures(t *testing.T) {
 	for _, gesture := range []string{"a_short", "a_long", "b_short", "b_long"} {
 		t.Run(gesture, func(t *testing.T) {
 			call(t, "input_boolean.turn_off", map[string]any{"entity_id": "input_boolean.lunactl_example"}, false)
-			manifest := call(t, "script.lunactl_manifest", map[string]any{"mac": "aa:bb:cc:dd:ee:ff"}, true)
+			manifest := call(t, "lunactl.manifest", map[string]any{"mac": "aa:bb:cc:dd:ee:ff"}, true)
 			manifest["buttons"] = map[string]any{gesture: map[string]any{
 				"action": "input_boolean.toggle", "target": map[string]any{"entity_id": "input_boolean.lunactl_example"},
 			}}
@@ -139,7 +139,7 @@ func TestManifestToButtonGestures(t *testing.T) {
 }
 
 func TestUnknownMAC(t *testing.T) {
-	manifest := call(t, "script.lunactl_manifest", map[string]any{"mac": "00:00:00:00:00:00"}, true)
+	manifest := call(t, "lunactl.manifest", map[string]any{"mac": "00:00:00:00:00:00"}, true)
 	if len(manifest) != 0 {
 		t.Fatalf("unknown device received Manifest: %v", manifest)
 	}
@@ -187,7 +187,7 @@ func TestRunErrors(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			call(t, "input_boolean.turn_off", map[string]any{"entity_id": "input_boolean.lunactl_example"}, false)
-			status, _ := request(t, http.MethodPost, "/api/services/script/lunactl_run", map[string]any{"action": tc.action, "data": tc.data})
+			status, _ := request(t, http.MethodPost, "/api/services/lunactl/run", map[string]any{"action": tc.action, "data": tc.data})
 			if status < 400 {
 				t.Fatalf("bad action reported success: HTTP %d", status)
 			}
