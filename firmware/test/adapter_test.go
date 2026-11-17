@@ -120,6 +120,8 @@ func TestProductionTouchAdapter(t *testing.T) {
 	source := `#include "core.h"
 #define id(name) name
 struct lv_point_t { int x, y; };
+uint32_t millis() { return 0; }
+struct { void execute() {} } wake_display;
 int main() {
  lunactl::Core manifest_core;
  int tapped_slot = -1;
@@ -360,12 +362,14 @@ int main() {
  if (!manifest_core.accept(manifest_core.begin_fetch(), manifest, error)) return 2;
  for (int gesture = 0; gesture < 4; ++gesture) {
    auto &sensor = gesture < 2 ? key_a : key_b;
-   amoled.brightness = 0;
+   manifest_core.sleep();
+   wake_display.execute();
    manifest_ui.paused = true;
+   int wakes_before = manifest_ui.wakes;
    sensor.state = true;
    now += 2000;
    poll();
-   if (amoled.brightness != 0xD0 || manifest_ui.paused || manifest_ui.wakes != gesture + 1) return 3;
+   if (amoled.brightness != 179 || manifest_ui.paused || manifest_ui.wakes != wakes_before + 1) return 3;
    if (run_button_action.actions.size() != static_cast<size_t>(gesture)) return 4;
    now += 999;
    poll();
@@ -383,11 +387,12 @@ int main() {
  // Unbound keys wake even without HA or a Manifest, but send no action.
  manifest_core = lunactl::Core{};
  for (auto sensor : {&key_a, &key_b}) {
-   amoled.brightness = 0;
+   manifest_core.sleep();
+   wake_display.execute();
    manifest_ui.paused = true;
    sensor->state = true;
    poll();
-   if (amoled.brightness != 0xD0 || manifest_ui.paused) return 10;
+   if (amoled.brightness != 179 || manifest_ui.paused) return 10;
    now += 1000;
    poll();
    sensor->state = false;

@@ -25,15 +25,16 @@ func TestCoreGolden(t *testing.T) {
 				t.Fatal(err)
 			}
 			var tc struct {
-				Events []map[string]any `json:"events"`
-				Want   map[string]any   `json:"want"`
+				Events  []map[string]any `json:"events"`
+				Display bool             `json:"display"`
+				Want    map[string]any   `json:"want"`
 			}
 			decoder := json.NewDecoder(bytes.NewReader(raw))
 			decoder.UseNumber()
 			if err := decoder.Decode(&tc); err != nil {
 				t.Fatal(err)
 			}
-			got := testutil.Host(t, tc.Events)
+			got := testutil.Host(t, tc.Events, tc.Display)
 			// JSON text is the wire contract; member order inside it is immaterial.
 			for _, result := range []map[string]any{got, tc.Want} {
 				for _, value := range result["snapshots"].([]any) {

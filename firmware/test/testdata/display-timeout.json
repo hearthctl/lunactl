@@ -1,0 +1,865 @@
+{
+  "display": true,
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Home",
+              "color": "#123456",
+              "action": {
+                "action": "script.home"
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              null,
+              null,
+              null,
+              null
+            ]
+          }
+        ],
+        "display": {
+          "timeout": 2.5
+        }
+      }
+    },
+    {
+      "type": "page",
+      "index": 1
+    },
+    {
+      "type": "tick",
+      "now": 2499
+    },
+    {
+      "type": "tick",
+      "now": 2500
+    },
+    {
+      "type": "press",
+      "x": 233,
+      "y": 233,
+      "now": 2501
+    },
+    {
+      "type": "release",
+      "x": 233,
+      "y": 233,
+      "now": 2502
+    },
+    {
+      "type": "press",
+      "x": 233,
+      "y": 233,
+      "now": 2503
+    },
+    {
+      "type": "release",
+      "x": 233,
+      "y": 233,
+      "now": 2504
+    },
+    {
+      "type": "tick",
+      "now": 5003
+    },
+    {
+      "type": "tick",
+      "now": 5004
+    },
+    {
+      "type": "press",
+      "x": 233,
+      "y": 233,
+      "now": 5005
+    },
+    {
+      "type": "tick",
+      "now": 10000
+    },
+    {
+      "type": "release",
+      "x": 233,
+      "y": 233,
+      "now": 10001
+    },
+    {
+      "type": "tick",
+      "now": 12500
+    },
+    {
+      "type": "tick",
+      "now": 12501
+    },
+    {
+      "type": "button",
+      "key": "a",
+      "pressed": true,
+      "now": 12502
+    },
+    {
+      "type": "tick",
+      "now": 20000
+    },
+    {
+      "type": "button",
+      "key": "a",
+      "pressed": false,
+      "now": 20001
+    },
+    {
+      "type": "tick",
+      "now": 22500
+    },
+    {
+      "type": "tick",
+      "now": 22501
+    },
+    {
+      "type": "button",
+      "key": "b",
+      "pressed": true,
+      "now": 4294967000
+    },
+    {
+      "type": "button",
+      "key": "b",
+      "pressed": false,
+      "now": 4294967100
+    },
+    {
+      "type": "tick",
+      "now": 2303
+    },
+    {
+      "type": "tick",
+      "now": 2304
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Home",
+              "color": "#123456",
+              "action": {
+                "action": "script.home"
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              null,
+              null,
+              null,
+              null
+            ]
+          }
+        ],
+        "display": {
+          "timeout": 0
+        }
+      }
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Home",
+              "color": "#123456",
+              "action": {
+                "action": "script.home"
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              null,
+              null,
+              null,
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 70,
+        "display_brightness": 179,
+        "request": 2
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ],
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ],
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": false,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 0
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179,
+        "call": {
+          "service": "script.lunactl_run",
+          "action": "script.home",
+          "data": "{\"target\":{},\"data\":{}}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": false,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 0
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": false,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 0
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179,
+        "wake": true
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179,
+        "wake": false
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": false,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 0
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179,
+        "wake": true
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179,
+        "wake": false
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": true,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": false,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 0
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": false,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 0,
+        "request": 3
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": false,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 0,
+        "error": "Invalid display timeout"
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": false,
+        "timeout_ms": 2500,
+        "brightness": 70,
+        "display_brightness": 0,
+        "request": 4
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "display_on": false,
+        "timeout_ms": 10000,
+        "brightness": 70,
+        "display_brightness": 0
+      }
+    ]
+  }
+}

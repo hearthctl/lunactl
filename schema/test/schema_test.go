@@ -137,6 +137,41 @@ func TestManifestSchemaAndCoreAgree(t *testing.T) {
 			cases = append(cases, manifestCase{"value-" + pageType + "-" + tc.name, tc.valid, raw})
 		}
 	}
+	type displayCase struct {
+		name  string
+		valid bool
+		value any
+	}
+	displayCases := []displayCase{
+		{"empty", true, map[string]any{}},
+		{"timeout", true, map[string]any{"timeout": 2.5}},
+		{"minimum", true, map[string]any{"timeout": 0.001}},
+		{"maximum", true, map[string]any{"timeout": 4294967.295}},
+		{"brightness", true, map[string]any{"brightness": "input_number.display_brightness"}},
+		{"both", true, map[string]any{"timeout": 10, "brightness": "sensor.brightness"}},
+		{"unknown", false, map[string]any{"extra": true}},
+	}
+	for i, value := range []any{nil, true, "display", 1, []any{}} {
+		displayCases = append(displayCases, displayCase{fmt.Sprintf("type-%d", i), false, value})
+	}
+	for i, value := range []any{nil, true, "10", 0, -1, 0.0009, 4294967.296, []any{}, map[string]any{}} {
+		displayCases = append(displayCases, displayCase{fmt.Sprintf("timeout-invalid-%d", i), false, map[string]any{"timeout": value}})
+	}
+	for i, value := range []any{nil, true, 70, "", "sensor", "Sensor.brightness", "sensor.brightness.extra", []any{}, map[string]any{"entity": "sensor.brightness"}} {
+		displayCases = append(displayCases, displayCase{fmt.Sprintf("brightness-invalid-%d", i), false, map[string]any{"brightness": value}})
+	}
+	for _, tc := range displayCases {
+		var manifest map[string]any
+		if err := json.Unmarshal(cases[0].Manifest, &manifest); err != nil {
+			t.Fatal(err)
+		}
+		manifest["display"] = tc.value
+		raw, err := json.Marshal(manifest)
+		if err != nil {
+			t.Fatal(err)
+		}
+		cases = append(cases, manifestCase{"display-" + tc.name, tc.valid, raw})
+	}
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
 			var manifest any

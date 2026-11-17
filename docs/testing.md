@@ -54,12 +54,29 @@ release at 999 ms, long at 1000 ms while held, no repeat or short after long,
 and the full action payload. Further golden cases cover absent, empty and
 partial bindings, simultaneous keys, millis wraparound, offline cancellation
 and atomic reload/replacement. `sleep` is a host fixture for a dark display;
-automatic display timeout belongs to issue #9. The production adapter test
+automatic timeout is also exercised by the display cases below. The production
+adapter test
 compiles the actual YAML polling, wake and action lambdas with display stubs,
 checking key mapping, wake and dispatch. Schema/core agreement cases validate
 all four bindings with the shared action/target/data cases. Contract tests run
 each bound gesture from a dark display through the host and `lunactl_run` in
 disposable HA. Run `make verify` and `make e2e` for these checks and the firmware compile.
+
+Issue [#9](https://github.com/hearthctl/lunactl/issues/9) adds `display-defaults`,
+`display-timeout` and `display-brightness` golden cases. They check the 10-second
+and 70% defaults, an empty `display`, a custom fractional timeout, the exact
+sleep boundary, return to home, wake-only taps/swipes/page dots, subsequent Item
+actions, held touches/keys, offline wake and millis wraparound. Brightness cases
+check fractional and 0/100% states, missing/empty/unknown/unavailable, invalid and
+nonfinite numbers, out-of-range fallbacks, updates during sleep, disconnect,
+reconnect, removal and invalid/stale replacements. Subscription cases check the
+initial reconnect and restart for a new brightness entity; the production
+subscription adapter also checks deduplication with Item references. Display
+adapter tests compile the actual YAML polling, touch and brightness lambdas,
+checking wake consumption, live rendering, fallback on disconnect, the initial
+70% setting and suppression of unchanged display commands. Schema/core agreement
+covers display types, bounds, entity names and unknown fields. All run in
+`make verify`, including the ESPHome configuration and ESP32-S3 compile.
 
 Issue [#5](https://github.com/hearthctl/lunactl/issues/5) adds `value-*` golden
 cases for the [value contract](values.md): repeated/reordered and multi-digit

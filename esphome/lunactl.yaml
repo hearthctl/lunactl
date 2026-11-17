@@ -120,6 +120,7 @@ interval:
           id: handle_key
           key: 1
           pressed: !lambda return id(key_b).state;
+      - script.execute: update_display
 
   - interval: 1s
     then:
@@ -167,10 +168,15 @@ script:
   - id: wake_display
     then:
       - lambda: |-
-          // Restore the CO5300's existing default brightness and LVGL activity.
-          // Display timeout and Manifest brightness are implemented in issue #9.
-          id(amoled).set_brightness(0xD0);
-          id(manifest_ui).set_paused(false, false);
+          // Keep LVGL input running while dark: the core consumes the wake touch.
+          // Only send a CO5300 command when the effective brightness changes.
+          static int previous = -1;
+          int brightness = id(manifest_core).display_brightness();
+          if (brightness != previous) {
+            id(amoled).set_brightness(brightness);
+            previous = brightness;
+            id(manifest_ui).set_paused(false, false);
+          }
   - id: run_button_action
     mode: parallel
     parameters:
@@ -194,6 +200,11 @@ script:
           if (event.wake) id(wake_display).execute();
           if (!event.action.action.empty())
             id(run_button_action).execute(event.action.action, event.action.data);
+  - id: update_display
+    then:
+      - lambda: |-
+          if (id(manifest_core).tick(millis())) id(render_manifest).execute();
+          id(wake_display).execute();
   - id: render_battery
     then:
       - lambda: |-
@@ -244,6 +255,7 @@ script:
           lv_obj_move_foreground(id(touch_surface));
           if (core.tappable()) lv_obj_add_flag(id(manifest_status), LV_OBJ_FLAG_HIDDEN);
           else lv_obj_remove_flag(id(manifest_status), LV_OBJ_FLAG_HIDDEN);
+          id(wake_display).execute();
 
 # HA supplies local time and timezone; no household credentials or entity needed.
 time:
@@ -318,6 +330,7 @@ display:
   - platform: mipi_spi
     id: amoled
     model: CO5300
+    brightness: 179  # 70% of the CO5300's 0–255 range.
     bus_mode: quad
     color_order: rgb
     cs_pin: GPIO39
@@ -441,11 +454,12 @@ lvgl:
         # both triggers (components/lvgl/trigger.py:add_trigger).
         on_press:
           - lambda: |-
-              id(manifest_core).press(point.x, point.y);
-              id(page_ui).highlight(id(manifest_core), point.x, point.y);
+              bool active = id(manifest_core).press(point.x, point.y, millis());
+              id(page_ui).highlight(id(manifest_core), active ? point.x : -1, active ? point.y : -1);
+              id(wake_display).execute();
         on_release:
           - lambda: |-
-              id(tapped_slot) = id(manifest_core).release(point.x, point.y);
+              id(tapped_slot) = id(manifest_core).release(point.x, point.y, millis());
           - script.execute: render_manifest
           - if:
               condition:

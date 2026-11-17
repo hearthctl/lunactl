@@ -55,7 +55,7 @@ int main() {
  auto sync = [&]() { `+match[1]+` };
  manifest_core.set_connected(true);
  std::string error;
- const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"Temperatur","color":"#123456","action":{"action":"script.example"},"value":{"format":"{0} / {1}","refs":[{"entity":"sensor.room","decimals":1,"decimal_comma":true},{"entity":"climate.room","attribute":"hvac_action","map":{"heating":"Heizen"}},{"entity":"sensor.room"}]}}}]})";
+ const char *manifest = R"({"schema":1,"display":{"brightness":"sensor.room"},"pages":[{"type":"single","item":{"label":"Temperatur","color":"#123456","action":{"action":"script.example"},"value":{"format":"{0} / {1}","refs":[{"entity":"sensor.room","decimals":1,"decimal_comma":true},{"entity":"climate.room","attribute":"hvac_action","map":{"heating":"Heizen"}},{"entity":"sensor.room"}]}}}]})";
  if (!manifest_core.accept_json(manifest_core.begin_fetch(), manifest, error)) return 1;
  sync();
  if (server.subscriptions.size() != 2 || server.clients[0]->drops != 1 || server.clients[1]->drops != 1 || App.reboots) return 2;
@@ -69,7 +69,7 @@ int main() {
  if (manifest_core.value() != "-- / --") return 5;
  temp.callback({"21.26"});
  mode.callback({"heating"});
- if (manifest_core.value() != "21,3 / Heizen" || render_manifest.calls != 3) return 6;
+ if (manifest_core.value() != "21,3 / Heizen" || manifest_core.brightness() != 21.26 || render_manifest.calls != 3) return 6;
  sync();
  if (server.subscriptions.size() != 2 || server.clients[0]->drops != 1 || App.reboots) return 7;
  // Replacement keeps the original registry strings alive for the API.
