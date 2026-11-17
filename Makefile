@@ -28,6 +28,8 @@ check-schema: .build/manifest-host
 .PHONY: check-frontend
 check-frontend:
 	echo 'e44caa21b3f434eccbb580c00dba2d895aa81c65fc0bf84524ca4326fffaf3ae  custom_components/lunactl/frontend/vendor/lit-all.min.js' | sha256sum -c -
+	echo 'c5776505c7b3df3c3ca763477b795d6bbc6517760bede0462ab77d1fb44954a6  custom_components/lunactl/frontend/vendor/nunito-800.ttf' | sha256sum -c -
+	echo '662fefa8f2f8a95c18588d21774789c107c64e771cbe65a69af46291c4311afc  custom_components/lunactl/frontend/vendor/materialdesignicons-webfont.woff2' | sha256sum -c -
 	rg --files custom_components/lunactl/frontend frontend/test -g '*.js' -g '*.mjs' | xargs -n 1 node --check
 	node --test frontend/test/*.test.mjs
 

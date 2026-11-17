@@ -10,7 +10,7 @@ Run from the repository root:
 ```sh
 make check-core       # seam 1: C++ host, Go tables and golden snapshots
 make check-schema     # seam 2: valid/invalid Manifests, schema/core agreement
-make check-frontend   # pinned Lit checksum, ES module syntax, Node golden tables
+make check-frontend   # pinned Lit/font checksums, ES module syntax, Node goldens
 make check-contracts  # seam 3: disposable HA, integration and host → action
 make check-firmware   # ESPHome config and ESP32-S3 compile with example secrets
 make check-integration # HA storage, lifecycle and websocket API
@@ -25,7 +25,14 @@ on the DOM-free editing/device logic. Table-driven golden cases cover explicit
 creation, debounce, German validation/save states, stale revisions and reload,
 offline/restart feedback and in-flight edits. To intentionally update snapshots,
 run `UPDATE_GOLDEN=1 node --test frontend/test/*.test.mjs` and review the diff.
-HA tests check the admin-only panel, versioned static modules and unload/reload.
+The read-only preview has SVG goldens for Single, Single with countdown, Pie,
+Pie with center, empty quarters, an Item without an icon, live values and page
+navigation. The JS formatter and countdown port read the firmware's golden
+files directly (no duplicate fixtures), including ties-to-even numeric rounding,
+placeholder substitution, timestamp offsets and timer lifecycle states. Tests
+also check live state/time changes, partial JSON drafts, XML escaping and all
+44 icon glyphs against the firmware. The SVG geometry points to `ui.h`/`core.h`.
+HA tests check the admin-only panel, versioned static modules and fonts, and unload/reload.
 These checks run in `make verify` and CI with Node only, without browser tests.
 
 The contract runner creates its own local HA and test user, installs the actual
