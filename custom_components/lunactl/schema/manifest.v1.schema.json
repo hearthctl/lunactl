@@ -1,0 +1,297 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "lunactl Manifest, schema 1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "pages"
+  ],
+  "properties": {
+    "schema": {
+      "type": "integer",
+      "const": 1
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "item"
+            ],
+            "properties": {
+              "type": {
+                "const": "single"
+              },
+              "item": {
+                "$ref": "#/$defs/item"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "quarters"
+            ],
+            "properties": {
+              "type": {
+                "const": "pie"
+              },
+              "center": {
+                "$ref": "#/$defs/item",
+                "description": "Large center Item; quarters show curved labels and colour only."
+              },
+              "quarters": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "$ref": "#/$defs/item"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "buttons": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "a_short": {
+          "$ref": "#/$defs/action"
+        },
+        "a_long": {
+          "$ref": "#/$defs/action"
+        },
+        "b_short": {
+          "$ref": "#/$defs/action"
+        },
+        "b_long": {
+          "$ref": "#/$defs/action"
+        }
+      }
+    },
+    "display": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "timeout": {
+          "type": "number",
+          "minimum": 0.001,
+          "maximum": 4294967.295,
+          "default": 10,
+          "description": "Idle seconds, rounded to milliseconds."
+        },
+        "brightness": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+\\.[a-z0-9_]+$",
+          "description": "Entity state in percent (0–100); missing or invalid states use 70%."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "selector": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+\\.[a-z0-9_]+$"
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "entity_id": {
+              "$ref": "#/$defs/selector"
+            },
+            "device_id": {
+              "$ref": "#/$defs/selector"
+            },
+            "area_id": {
+              "$ref": "#/$defs/selector"
+            },
+            "floor_id": {
+              "$ref": "#/$defs/selector"
+            },
+            "label_id": {
+              "$ref": "#/$defs/selector"
+            }
+          }
+        },
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "color",
+        "action"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "action": {
+          "$ref": "#/$defs/action"
+        },
+        "icon": {
+          "type": "string",
+          "enum": [
+            "mdi:lightbulb",
+            "mdi:lightbulb-off",
+            "mdi:ceiling-light",
+            "mdi:lamp",
+            "mdi:desk-lamp",
+            "mdi:led-strip-variant",
+            "mdi:string-lights",
+            "mdi:white-balance-sunny",
+            "mdi:book-open-variant",
+            "mdi:sofa",
+            "mdi:weather-night",
+            "mdi:bed",
+            "mdi:sleep",
+            "mdi:brightness-6",
+            "mdi:palette",
+            "mdi:snowflake",
+            "mdi:fire",
+            "mdi:thermometer",
+            "mdi:air-conditioner",
+            "mdi:fan",
+            "mdi:water-percent",
+            "mdi:power",
+            "mdi:timer-outline",
+            "mdi:plus-circle",
+            "mdi:stop-circle",
+            "mdi:hand-wave",
+            "mdi:bell-ring",
+            "mdi:home",
+            "mdi:door",
+            "mdi:window-closed",
+            "mdi:blinds",
+            "mdi:check-circle",
+            "mdi:close-circle",
+            "mdi:wifi-off",
+            "mdi:battery-alert",
+            "mdi:music",
+            "mdi:television",
+            "mdi:gamepad-variant",
+            "mdi:star",
+            "mdi:heart",
+            "mdi:alarm",
+            "mdi:calendar",
+            "mdi:robot-vacuum",
+            "mdi:help-circle"
+          ],
+          "description": "HA MDI name from this authoritative list of 44 compiled-in icons. Unknown names reject the Manifest. Omit icon to show no icon in Single or Pie quarters, keeping label/value positions unchanged. mdi:help-circle is a normal selectable icon."
+        },
+        "value": {
+          "$ref": "#/$defs/value"
+        },
+        "countdown": {
+          "type": "string",
+          "pattern": "^timer\\.[a-z0-9_]+$",
+          "description": "HA timer entity. Single and Pie center show remaining time and a ring while active, using finishes_at and duration."
+        }
+      }
+    },
+    "value": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "refs"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Zero-based {n} placeholders; unknown tokens remain literal."
+        },
+        "refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/valueReference"
+          }
+        }
+      }
+    },
+    "valueReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entity"
+      ],
+      "properties": {
+        "entity": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+\\.[a-z0-9_]+$"
+        },
+        "attribute": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decimals": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 6
+        },
+        "decimal_comma": {
+          "type": "boolean"
+        },
+        "map": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

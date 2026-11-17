@@ -1,0 +1,6 @@
+{
+  "domain": "lunactl_contract",
+  "name": "Disposable lunactl contract fixtures",
+  "version": "1.0.0",
+  "dependencies": ["lunactl"]
+}

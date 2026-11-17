@@ -7,13 +7,10 @@ their purpose; the Manifest has no page-name field. See the [Manifest field
 reference](manifest.md), [contract](contracts/README.md) and
 [on-device checklist](checklist.md).
 
-These instructions describe the firmware currently in this repository, which
-calls `script.lunactl_manifest` and `script.lunactl_run`.
-[ADR 0003](adr/0003-manifeste-aus-dem-designer-in-ha.md) specifies the upcoming
-Designer and required HA integration; their implementation is tracked in
-[#35](https://github.com/hearthctl/lunactl/issues/35) and
-[#36](https://github.com/hearthctl/lunactl/issues/36). They are not an installation
-path for this firmware yet.
+The firmware requires the lunactl Home Assistant integration
+([ADR 0003](adr/0003-manifeste-aus-dem-designer-in-ha.md)). Manifests live in
+HA's integration storage, one per device. Household scripts still implement
+room logic; the integration supplies the firmware contract.
 
 ## 1. Prepare the household actions and entities
 
@@ -44,41 +41,30 @@ The keys work from any page, including when the display is dark. The Klima
 center always runs Klima aus, even when its countdown is hidden. The Papa Item
 always runs Papa rufen, including while showing Papa kommt.
 
-## 2. Install and map the contract scripts
+## 2. Install lunactl through HACS
 
-Copy [contracts/scripts.yaml](contracts/scripts.yaml) into HA's scripts. For
-example, use `script: !include scripts.yaml` in `configuration.yaml` and put the
-two script definitions in that `scripts.yaml` (merge them into an existing file
-if necessary). Do not add another `script:` wrapper to the included file.
+In HACS, add `https://github.com/hearthctl/lunactl` as a custom repository of
+category **Integration**, download **lunactl**, and restart Home Assistant
+(2026.9.3 or newer). In Settings → Devices & services → Add integration, select
+**lunactl** and confirm. Only one config entry is needed for all devices.
 
-The reference contains a minimal **Beispiel** Item for contract smoke checks. To
-try it first, create `input_boolean.lunactl_example`. For the room example,
-replace that Manifest under `sequence` → `variables` → `manifests` →
-`"AA:BB:CC:DD:EE:FF"` with the contents of `examples/child-room.json`.
-JSON objects are valid YAML values. From the repo root, this prints the room
-Manifest indented to paste immediately below that MAC key, replacing its old
-`schema` and `pages` block:
+After connecting the StopWatch through ESPHome (step 3), its project metadata
+identifies it as manufacturer `hearthctl`, model `lunactl`, with firmware `1.0`.
+The integration maps its Wi-Fi MAC internally through HA's device registry.
 
-```sh
-python3 - <<'PY'
-import json
-from pathlib import Path
-manifest = json.loads(Path("examples/child-room.json").read_text())
-print("\n".join(" " * 12 + line for line in json.dumps(manifest, ensure_ascii=False, indent=2).splitlines()))
-PY
-```
+There is no Designer UI in this increment. Use the admin websocket API in
+[the contract](contracts/README.md#internal-api) to list devices, read the current
+revision, then save `examples/child-room.json` with your household references.
+Each save must include the revision it was based on. Read again and reconcile
+if another client changed it. Validation failures leave the stored Manifest
+unchanged. Saving automatically requests **Manifest neu laden** 10 seconds
+after the last save; offline devices fetch on their next connection.
 
-Replace the MAC key with the StopWatch's actual **Wi-Fi MAC**, as shown in its
-ESPHome logs. Use colon-separated notation; the script uppercases incoming
-MACs, so store the key uppercase. Keep the `manifest` lookup and `stop` response
-steps after the mapping. Leave `lunactl_run` intact: it forwards each Item/key
-action's full `target`/`data` envelope. Reload HA scripts after every edit.
-
-In Developer Tools → Actions, call `script.lunactl_manifest` with `mac` set to
-that Wi-Fi MAC and inspect its response. It must be the Manifest mapping itself,
-with `schema`, `pages`, `buttons` and `display`, without a wrapper or JSON string.
-An unmapped MAC returns `{}`. Schema validation checks the shape, not whether HA
-entities and actions exist.
+In Developer Tools → Actions, call `lunactl.manifest` with the device's Wi-Fi
+MAC. Its response must be the Manifest mapping, without a wrapper or JSON text.
+An unknown MAC or a device without a stored Manifest returns `{}`. Enable
+**Allow the device to perform Home Assistant actions** in ESPHome's device
+options. Repair issues identify missing household references.
 
 ## 3. Flash and connect the StopWatch
 
@@ -103,8 +89,8 @@ uvx esphome@2026.10.2 logs esphome/lunactl.yaml --no-states
 
 The initial Manifest with entity references makes one extra API reconnect so HA
 learns the subscriptions. After reconnect, Licht is home; swipe to Klima and
-Papa or tap the page dots. Use HA's **Manifest neu laden** button after changing
-the returned Manifest. Labels, colours, actions and formatting apply without a
+Papa or tap the page dots. Saves automatically reload the Manifest after 10 seconds of inactivity;
+HA's **Manifest neu laden** button also fetches it manually. Labels, colours, actions and formatting apply without a
 reflash; a new entity/attribute reference needs a device restart, requested by
 the firmware automatically. A reboot always fetches again; no Manifest persists
 in device flash. See [values.md](values.md) for subscription details.
@@ -119,13 +105,13 @@ contacts your household HA nor proves physical display/touch behaviour.
 Then perform [checklist.md](checklist.md) in a test HA on the StopWatch and record
 the results for [#13](https://github.com/hearthctl/lunactl/issues/13). Its temporary
 Manifest variants cover behaviours that the everyday three-page example does
-not exercise. The current contract scripts are also exercised in a disposable
-HA by CI's `make e2e`; see [testing.md](testing.md).
+not exercise. The integration and contract are exercised in a disposable
+HA by `make verify`; see [testing.md](testing.md).
 
 If the panel shows **Keine Verbindung**, check Wi-Fi, HA's ESPHome connection
 and the API encryption key. **Kein Manifest** after connecting means no valid
-Manifest was fetched: check script installation, action permission, the MAC
-mapping and rejection/error logs. An invalid replacement keeps the previous
+Manifest was fetched: check integration installation, action permission, the device registry
+MAC and rejection/error logs. An invalid replacement keeps the previous
 valid Manifest. Missing values show `--`; a hidden countdown can mean an inactive
 timer or unsynced HA time. See [values.md](values.md) and [countdown.md](countdown.md)
 for all fallback states. Failed actions are logged and are not retried.

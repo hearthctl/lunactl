@@ -1,7 +1,9 @@
-# Disposable HA only. The reference scripts are copied here unchanged by run.sh.
+# Disposable HA only. Test fixtures create a registry device and seed its Manifest.
 http:
 api:
-script: !include scripts.yaml
+websocket_api:
+config:
+lunactl_contract:
 input_boolean:
   lunactl_example:
     name: lunactl example

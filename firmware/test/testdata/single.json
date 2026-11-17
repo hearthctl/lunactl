@@ -67,7 +67,7 @@
         "status": "",
         "tappable": true,
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "input_boolean.toggle",
           "data": "{\"target\":{\"entity_id\":\"input_boolean.lunactl_example\"},\"data\":{}}"
         },

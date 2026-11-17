@@ -15,7 +15,7 @@ $(ARDUINOJSON):
 	$(CXX) $(CXXFLAGS) -I.build/include firmware/host.cpp -o $@
 
 .PHONY: verify e2e check-core check-schema check-contracts
-verify: check-core check-schema check-firmware
+verify: check-core check-schema check-integration check-firmware check-contracts
 e2e: check-contracts
 
 check-core: .build/manifest-host
@@ -24,8 +24,26 @@ check-core: .build/manifest-host
 check-schema: .build/manifest-host
 	go test -count=1 -v ./schema/test
 
-check-contracts: .build/manifest-host
+check-contracts: .build/manifest-host .build/ha-venv/.lunactl-ready
 	./contracts/test/run.sh
+
+# HA unit tests exercise actual registries/services/storage; contract tests use
+# the same HA version in Podman. Hassfest validates integration metadata/texts.
+.build/ha-venv/.lunactl-ready: integration/requirements.txt
+	uv venv --python 3.14 --allow-existing .build/ha-venv
+	uv pip install --python .build/ha-venv/bin/python -r integration/requirements.txt
+	touch $@
+
+.PHONY: check-integration check-hassfest
+check-integration: .build/ha-venv/.lunactl-ready
+	.build/ha-venv/bin/python -m pytest integration/test -v
+	$(MAKE) check-hassfest
+
+PODMAN ?= podman
+HASSFEST_IMAGE ?= ghcr.io/home-assistant/hassfest@sha256:a02392184579d55a89cc26e7eb1b5555b19bd944bc25c09e92680237d23c7e7e
+HASSFEST ?= $(PODMAN) run --rm -v $(CURDIR):/github/workspace:ro $(HASSFEST_IMAGE)
+check-hassfest:
+	$(HASSFEST)
 
 # Validates and compiles the firmware with the example secrets, so it runs
 # without the real secrets file.

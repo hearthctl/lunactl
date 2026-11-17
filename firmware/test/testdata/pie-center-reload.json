@@ -349,7 +349,7 @@
           }
         ],
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "script.heat",
           "data": "{\"target\":{},\"data\":{}}"
         }
@@ -508,7 +508,7 @@
           }
         ],
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "script.papa",
           "data": "{\"target\":{},\"data\":{}}"
         }
@@ -892,7 +892,7 @@
           }
         ],
         "call": {
-          "service": "script.lunactl_run",
+          "service": "lunactl.run",
           "action": "script.papa",
           "data": "{\"target\":{},\"data\":{}}"
         }

@@ -1,0 +1,51 @@
+{
+  "title": "lunactl",
+  "config": {
+    "step": {
+      "user": {
+        "title": "lunactl einrichten",
+        "description": "Manifeste für lunactl-Geräte in Home Assistant speichern."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Bereits eingerichtet. Es wird nur eine Konfiguration benötigt."
+    }
+  },
+  "issues": {
+    "missing_references": {
+      "title": "Fehlende Manifest-Verweise für {device}",
+      "description": "Das Manifest für {device} verweist auf fehlende Home-Assistant-Objekte:\n\n{references}\n\nPasse das Manifest an oder stelle die Objekte wieder her."
+    }
+  },
+  "services": {
+    "manifest": {
+      "name": "Manifest abrufen",
+      "description": "Das gespeicherte Manifest eines Geräts oder ein leeres Objekt zurückgeben.",
+      "fields": {
+        "mac": {
+          "name": "MAC-Adresse",
+          "description": "Die WLAN-MAC-Adresse des Geräts."
+        }
+      }
+    },
+    "run": {
+      "name": "Aktion ausführen",
+      "description": "Eine Item- oder Tastenaktion in Home Assistant ausführen.",
+      "fields": {
+        "action": {
+          "name": "Aktion",
+          "description": "Der Name der Home-Assistant-Aktion."
+        },
+        "data": {
+          "name": "Aktionsdaten",
+          "description": "JSON-Text mit target- und data-Objekten."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "invalid_action_data": {
+      "message": "Aktionsdaten müssen JSON-Text mit target- und data-Objekten sein."
+    }
+  }
+}

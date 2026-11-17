@@ -22,8 +22,8 @@ Before starting:
 
 - Flash this branch: `uvx esphome@2026.10.2 run esphome/lunactl.yaml`, using the
   household's local `esphome/secrets.yaml`.
-- Follow [household setup](household.md): install the reference scripts, map this
-  device's MAC to the room example and prepare its test entities/actions. Keep a
+- Follow [household setup](household.md): install the HACS integration, save the
+  room example for this device and prepare its test entities/actions. Keep a
   copy of that working Manifest for restoration after each variant.
 - Enable **Allow the device to perform Home Assistant actions** for lunactl.
 - Start logs with `uvx esphome@2026.10.2 logs esphome/lunactl.yaml --no-states`.
@@ -31,8 +31,8 @@ Before starting:
   For gesture, icon and touch tests, replace actions with
   `{"action":"input_boolean.toggle","target":{"entity_id":"input_boolean.lunactl_example"}}`
   and create that helper. This avoids repeated notifications and appliance runs.
-- For every temporary variant below, edit the MAC's returned Manifest, reload HA
-  scripts, then press **Manifest neu laden**. Return to the saved room example
+- For every temporary variant below, save the changed Manifest via the internal API,
+  then wait for its delayed reload. Return to the saved room example
   after each section. A new reference automatically restarts the device.
 - To keep the display awake during visual checks, temporarily set
   `display.timeout` to `120`; restore `10` for the display tests.
@@ -47,23 +47,24 @@ Before starting:
 
 - [ ] With HA stopped/disconnected, boot shows **Keine Verbindung** and touch
   triggers no action. Opening a log viewer alone leaves that state unchanged.
-- [ ] Connect HA. The call to `script.lunactl_manifest` contains the StopWatch's
+- [ ] Connect HA. The call to `lunactl.manifest` contains the StopWatch's
   actual Wi-Fi MAC. Licht appears first, then navigating to Papa shows its
   **Papa rufen** Single Item in `#B91360`, fully inside the round display.
-- [ ] Tap a lit Item: it visibly reacts and calls `script.lunactl_run` once.
+- [ ] Tap a lit Item: it visibly reacts and calls `lunactl.run` once.
   Its `action` and JSON-text `data` match the Manifest. With the test helper
   action, the helper toggles exactly once. Check a target-bearing Licht action
   and a script action with omitted target/data (forwarded as empty objects).
-- [ ] Change label and colour in HA, reload the scripts, and press **Manifest
+- [ ] Change label and colour in HA, save the Manifest, and press **Manifest
   neu laden** in HA. The Item updates without reflashing.
-- [ ] Replace the Manifest with an invalid colour, missing action or `schema: 2`.
-  Reload logs a rejection, keeps the previous Item, and its tap still runs the
-  previous action. Correcting the Manifest and reloading recovers.
+- [ ] Try saving an invalid colour or missing action. Saving fails, keeps the
+  previous revision and Item, and its tap still runs the previous action.
+  Firmware rejection of malformed or unsupported schemas is covered by the
+  host tests; the integration prevents storing those through the normal API.
 - [ ] Disconnect HA while the log viewer remains open. **Keine Verbindung**
   replaces the Item, and touch cannot run it. Reconnect fetches again.
-- [ ] Remove the device's MAC mapping and reboot. **Kein Manifest** appears;
-  no action can be tapped. Restore the mapping and use **Manifest neu laden**
-  to recover. A missing/failed `lunactl_manifest` call also logs its error and
+- [ ] In the test HA, remove and re-add the ESPHome device, then reboot it. Its
+  deleted Manifest yields **Kein Manifest**; no action can be tapped. Save the
+  room Manifest for the re-added device to recover. A missing/failed `lunactl.manifest` call also logs its error and
   leaves **Kein Manifest** on a fresh connection.
 - [ ] Deny action permission or make the Item's action fail. A failed tap is
   logged and is not retried. Restore permission/action and confirm recovery.

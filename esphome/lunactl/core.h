@@ -18,6 +18,8 @@
 
 namespace lunactl {
 
+inline constexpr int MAX_SCHEMA_VERSION = 1;
+
 constexpr size_t MAX_MANIFEST_BYTES = 32 * 1024;
 constexpr size_t CENTER_SLOT = 4;
 constexpr int CENTER_HOLE_RADIUS = 168;
@@ -27,7 +29,7 @@ constexpr std::array<int, 4> QUARTER_ANGLES{{225, 315, 45, 135}};
 
 struct Action {
   std::string action;
-  // lunactl_run's JSON-text field contains the complete target/data pair.
+  // lunactl.run's JSON-text field contains the complete target/data pair.
   std::string data;
 };
 
@@ -242,7 +244,9 @@ inline bool parse_manifest(JsonVariantConst root, Manifest &manifest, std::strin
   auto reject = [&error](const char *message) { error = message; return false; };
   if (measureJson(root) > MAX_MANIFEST_BYTES) return reject("Manifest exceeds 32 KiB");
   if (!keys(root, {"schema", "pages", "buttons", "display"})) return reject("Invalid Manifest fields");
-  if (!root["schema"].is<double>() || root["schema"].as<double>() != 1)
+  if (!root["schema"].is<double>() || (root["schema"].as<double>() < 1 ||
+      root["schema"].as<double>() > MAX_SCHEMA_VERSION ||
+      root["schema"].as<double>() != static_cast<int>(root["schema"].as<double>())))
     return reject("Unknown or invalid schema version");
   auto display = root["display"];
   if (!display.isUnbound()) {

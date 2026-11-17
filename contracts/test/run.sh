@@ -10,15 +10,19 @@ url="http://127.0.0.1:${port}"
 client_id="${url}/"
 read -ra podman_cmd <<< "${PODMAN:-podman}"
 container() { "${podman_cmd[@]}" "$@"; }
-cleanup() { container rm -f --time 30 "$name" >/dev/null; }
+cleanup() {
+  result=$?
+  if (( result != 0 )); then container logs "$name"; fi
+  container rm -f --time 30 "$name" >/dev/null
+}
 trap cleanup EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 
 container create --name "$name" -p "127.0.0.1:${port}:8123" "$image" >/dev/null
 container cp config/configuration.yaml "$name:/config/configuration.yaml"
-# The documentation is the tested reference, not a second copy.
-container cp ../../docs/contracts/scripts.yaml "$name:/config/scripts.yaml"
+container cp config/custom_components "$name:/config/custom_components"
+container cp ../../custom_components/lunactl "$name:/config/custom_components/lunactl"
 container start "$name" >/dev/null
 
 wait_for() {
@@ -47,3 +51,4 @@ core_ready() {
 }
 wait_for core_ready
 HA_URL="$url" HA_TOKEN="$HA_TOKEN" go test -count=1 -v . "$@"
+HA_URL="$url" HA_TOKEN="$HA_TOKEN" ../../.build/ha-venv/bin/python integration_contract.py
