@@ -1,5 +1,7 @@
 # Die Firmware rendert ein Manifest aus Home Assistant
 
+Die Aussagen zur Auslieferung der Vertrags-Scripts ohne eigene HA-Integration sowie die Script-Aufrufe unter „Abruf“ und „Aktionen“ sind durch [ADR 0003: Manifeste entstehen im Designer und liegen in Home Assistant](0003-manifeste-aus-dem-designer-in-ha.md) abgelöst. Dort übernimmt eine verpflichtende lunactl-Integration den Vertrag und die Speicherung der Manifeste. Die Firmware bleibt ein Renderer.
+
 Die Firmware weiß nichts über Lichter, Klima oder Papa. Sie holt sich ein Manifest aus Home Assistant und stellt es dar: welche Seiten es gibt, welches Item in welchem Slot steht und was die Tasten auslösen. Fest in der Firmware stehen nur die Page types, die Symbolliste, das Formatieren von Werten und das Geräteverhalten (Aufwachen, Uhr, Akku, Offline-Anzeige). Jeder Haushalt baut sein Manifest selbst; Szenen, Timer und Automationen wie Klima-Lauf oder Papa rufen sind Haus-Logik und liegen bei uns in hearth. lunactl liefert die Firmware, das Manifest-Schema und die zwei Vertrags-Scripts `lunactl_manifest` und `lunactl_run` als getestete Referenz in der Doku, die ein Haushalt einmal übernimmt. Die beiden Repos hängen nur über diesen Vertrag zusammen, nicht über Script-Namen der Haus-Logik oder eine gemeinsame Package-Datei.
 
 ## Vertrag
