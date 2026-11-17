@@ -105,6 +105,27 @@ for (const scenario of read("cases.json")) {
   });
 }
 
+test("conflict reload preserves edits made during the read", async () => {
+  const server = new Server({...base, revision: base.revision + 1});
+  const editor = new ManifestEditor(copy(base), (message) => server.call(message), () => {}, new Clock());
+  editor.edit(JSON.stringify(base.manifest));
+  await editor.flush();
+  assert.equal(editor.status, "conflict");
+
+  const hold = {kind: "read"};
+  server.holds.push(hold);
+  const reload = editor.reload();
+  const draft = JSON.stringify({...base.manifest, pages: []});
+  editor.edit(draft);
+  hold.release();
+  await reload;
+
+  assert.equal(editor.source, draft);
+  assert.equal(editor.status, "conflict");
+  assert.equal(editor.record.revision, base.revision);
+  editor.close();
+});
+
 for (const {name, source, error} of read("parsing.json")) {
   test(`parse: ${name}`, () => {
     const result = parseManifest(source);

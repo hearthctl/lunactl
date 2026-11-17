@@ -146,10 +146,13 @@ export class ManifestEditor {
   async reload() {
     // The read must finish before dropping local changes or releasing a conflict.
     const generation = this.generation;
+    const version = this.version;
     try {
       const result = await this.callWS({type: "lunactl/manifest/get",
         device_id: this.record.device_id});
-      if (!this.closed && generation === this.generation) this.replace(result);
+      if (!this.closed && generation === this.generation && version === this.version) {
+        this.replace(result);
+      }
     } catch (failure) {
       this.error = errorText(failure);
       this.changed();
