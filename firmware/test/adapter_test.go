@@ -78,6 +78,18 @@ int main() {
  ` + bindings.String() + `
  if (out["action"] != "script.pie" || deserializeJson(payload, out["data"].as<std::string>())) return 9;
  if (payload["data"]["slot"] != 2 || payload["target"].size() != 0) return 10;
+ deserializeJson(envelope, R"({"response":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null],"center":{"label":"Center","color":"#111827","action":{"action":"script.center","target":{"entity_id":"script.expected"},"data":{"slot":"center"}}}}]}})");
+ response = envelope.as<JsonObjectConst>();
+ {
+ ` + callback + `
+ }
+ manifest_core.press(233, 233);
+ tapped_slot = manifest_core.release(233, 233);
+ if (tapped_slot != 4) return 11;
+ out.clear();
+ ` + bindings.String() + `
+ if (out["action"] != "script.center" || deserializeJson(payload, out["data"].as<std::string>())) return 12;
+ if (payload["target"]["entity_id"] != "script.expected" || payload["data"]["slot"] != "center") return 13;
 
 }
 `
@@ -175,6 +187,20 @@ int main() {
  press({130, 130});
  release({130, 130});
  if (page_ui.slot != -1 || tapped_slot != -1) return 12;
+ manifest_core.set_connected(true);
+ if (!manifest_core.accept_json(manifest_core.begin_fetch(), R"({"schema":1,"pages":[{"type":"pie","quarters":[{"label":"Quarter","color":"#123456","action":{"action":"script.quarter"}},null,null,null],"center":{"label":"Center","color":"#111827","action":{"action":"script.center"}}}]})", error)) return 13;
+ press({233, 233});
+ if (page_ui.slot != 4) return 14;
+ release({233, 233});
+ if (tapped_slot != 4 || manifest_core.item(tapped_slot).action != "script.center") return 15;
+ press({90, 90});
+ release({90, 90});
+ if (tapped_slot != 0 || manifest_core.item(tapped_slot).action != "script.quarter") return 16;
+ for (lv_point_t point : {lv_point_t{233, 20}, {233, 80}, {440, 233}, {376, 90}, {390, 233}}) {
+   press(point);
+   release(point);
+   if (page_ui.slot != -1 || tapped_slot != -1) return 17;
+ }
 }
 `
 	checkAdapter(t, source)

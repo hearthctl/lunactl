@@ -43,10 +43,24 @@ checks quarter taps, inert areas, swipes, page dots and replacement cancellation
 with ESPHome's widget-relative point argument. The firmware build verifies the
 generated callback signatures.
 Schema cases accept sparse/full/empty Pie pages, mixed pages and optional or
-unknown icons; they reject invalid quarter counts/Items/icons, a seventh page
-and the deferred `center` field, with schema/core agreement. Contract cases fetch
-by MAC, feed the returned Manifest through the C++ host and execute its tap through
+unknown icons; they reject invalid quarter counts/Items/icons and a seventh page,
+with schema/core agreement. Contract cases fetch by MAC, feed the returned Manifest through the C++ host and execute its tap through
 `lunactl_run`, and check target/data forwarding and failures in real HA.
+
+Issue [#7](https://github.com/hearthctl/lunactl/issues/7) adds `pie-center`,
+`pie-center-countdown`, `pie-center-reload` and `pie-center-subscriptions`
+goldens. They check all five Slot actions and full center action data, curved
+quarter labels and colour without icons or values, the large center's label,
+live value and countdown, clock formatting in the top gap, empty quarters,
+inert gaps/ring/outside touches, navigation, replacement cancellation and
+subscription deduplication across hidden centers. Countdown cases cover local
+ticking, restart, pause, cancel, expiry, unsynced time and disconnect clearing.
+Schema/core agreement reuses the Item, value and countdown validation cases for
+`center`, accepting an omitted center and rejecting null or malformed Items.
+Production adapter checks exercise center touch/action dispatch and the actual
+UI's arc geometry, label direction, colour, fonts, clock, live updates and
+transitions between both Pie forms and Single. `make verify` runs these checks
+and compiles the firmware with arc labels and A8 glyph transforms enabled.
 
 Issue [#8](https://github.com/hearthctl/lunactl/issues/8) adds a golden file per
 gesture (`button-a-short`, `button-a-long`, `button-b-short`, `button-b-long`),

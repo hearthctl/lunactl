@@ -1509,8 +1509,8 @@
     }
   },
   {
-    "name": "pie-center-deferred",
-    "valid": false,
+    "name": "pie-center",
+    "valid": true,
     "manifest": {
       "schema": 1,
       "pages": [

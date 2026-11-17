@@ -45,6 +45,10 @@
               "type": {
                 "const": "pie"
               },
+              "center": {
+                "$ref": "#/$defs/item",
+                "description": "Large center Item; quarters show curved labels and colour only."
+              },
               "quarters": {
                 "type": "array",
                 "minItems": 4,
@@ -187,7 +191,7 @@
         "countdown": {
           "type": "string",
           "pattern": "^timer\\.[a-z0-9_]+$",
-          "description": "HA timer entity. Single shows remaining time and a ring while active, using finishes_at and duration."
+          "description": "HA timer entity. Single and Pie center show remaining time and a ring while active, using finishes_at and duration."
         }
       }
     },

@@ -14,7 +14,8 @@ An Item can reference a Home Assistant timer:
 
 `countdown` is an optional `timer.object_id` string. Single displays the
 remaining time below the label and optional live value, with a ring around the
-Item. Pie quarters accept the reference but do not display a countdown.
+Item. A Pie `center` Item shows the label above the remaining time, the optional
+live value below it, and the same ring around the Item. Pie quarters accept the reference but do not display a countdown.
 The Item keeps its action whether or not the timer is running.
 
 The device subscribes to the timer's state, `finishes_at` and `duration`, sharing
