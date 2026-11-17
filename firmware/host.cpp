@@ -2,11 +2,13 @@
 #include "../esphome/lunactl/battery.h"
 #include <iostream>
 
-static void item_view(JsonObject out, const lunactl::Item &item) {
+static void item_view(JsonObject out, const lunactl::Core &core, size_t slot = 0) {
+  const auto &item = core.item(slot);
   out["label"] = item.label;
   out["color"] = item.color;
   out["icon"] = item.icon;
   out["glyph"] = lunactl::resolve_icon(item.icon.c_str()).glyph;
+  if (item.value.present) out["value"] = core.value(slot);
 }
 
 // One JSON line per scenario: {"events": [...]}; one snapshot per event.
@@ -27,9 +29,12 @@ int main() {
       std::string error;
       int tapped = -1;
       lunactl::ButtonEvent button_event;
+      lunactl::ConnectionAction connection_action = lunactl::ConnectionAction::NONE;
       if (type == "connect") core.set_connected(true);
       else if (type == "disconnect") core.set_connected(false);
       else if (type == "fetch") request = core.begin_fetch();
+      else if (type == "sync") connection_action = core.take_connection_action();
+      else if (type == "state") core.set_state({event["entity"].as<std::string>(), event["attribute"] | ""}, event["state"].as<std::string>());
       else if (type == "manifest") {
         auto token = event["request"].isNull() ? request : event["request"].as<uint32_t>();
         if (event["raw"].is<const char *>()) core.accept_json(token, event["raw"].as<std::string>(), error);
@@ -73,6 +78,16 @@ int main() {
         snapshot["battery"]["hint"] = battery.hint();
       }
       if (type == "fetch") snapshot["request"] = request;
+      if (type == "sync") {
+        snapshot["connection_action"] = connection_action == lunactl::ConnectionAction::RECONNECT ? "reconnect" :
+            connection_action == lunactl::ConnectionAction::RESTART ? "restart" : "none";
+        auto subscriptions = snapshot["subscriptions"].to<JsonArray>();
+        for (const auto &ref : core.subscriptions()) {
+          auto subscription = subscriptions.add<JsonObject>();
+          subscription["entity"] = ref.entity;
+          if (!ref.attribute.empty()) subscription["attribute"] = ref.attribute;
+        }
+      }
       if (!error.empty()) snapshot["error"] = error;
       if (type == "manifest" && !core.warnings().empty()) {
         auto warnings = snapshot["warnings"].to<JsonArray>();
@@ -96,10 +111,10 @@ int main() {
           for (size_t slot = 0; slot < 4; ++slot) {
             auto quarter = quarters.add<JsonObject>();
             quarter["tappable"] = core.slot_tappable(slot);
-            if (core.slot_tappable(slot)) item_view(quarter, core.item(slot));
+            if (core.slot_tappable(slot)) item_view(quarter, core, slot);
             else quarter["color"] = "#202020";
           }
-        } else item_view(snapshot["item"].to<JsonObject>(), core.item());
+        } else item_view(snapshot["item"].to<JsonObject>(), core);
         if (tapped >= 0) action = &core.item(tapped);
       }
       if (action != nullptr) {

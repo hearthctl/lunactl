@@ -61,6 +61,20 @@ all four bindings with the shared action/target/data cases. Contract tests run
 each bound gesture from a dark display through the host and `lunactl_run` in
 disposable HA. Run `make verify` and `make e2e` for these checks and the firmware compile.
 
+Issue [#5](https://github.com/hearthctl/lunactl/issues/5) adds `value-*` golden
+cases for the [value contract](values.md): repeated/reordered and multi-digit
+placeholders, entity states and attributes, decimals, decimal comma, exact maps,
+UTF-8, missing/unavailable and invalid numeric states, and live updates across
+Single and Pie pages. Subscription goldens verify deduplication across hidden
+pages, the single boot reconnect, cache clearing on disconnect, retained
+subscriptions on removal, and restart for new entities or attributes. Invalid
+replacements preserve the Manifest and subscriptions. Schema/core agreement
+checks the optional value fields and their invalid forms on both Page types.
+The production-adapter test compiles the actual subscription lambda and exercises
+registration, callback-driven rendering, socket closure and restart. All run in
+`make verify`, including the ESPHome compile. Reconnect timing on hardware remains
+part of issue #13.
+
 Issue [#3](https://github.com/hearthctl/lunactl/issues/3) is verified by the three
 automated seams above and `make check-firmware`. On-device acceptance belongs to
 issue [#13](https://github.com/hearthctl/lunactl/issues/13): compilation and host
