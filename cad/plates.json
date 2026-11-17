@@ -1,0 +1,14 @@
+{
+  "plates": [
+    {
+      "plate_name": "Koerper",
+      "need_arrange": true,
+      "objects": [{"path": "parts/wandhalter/generated/print/wandhalter_body.stl", "count": 1, "filaments": [1], "assemble_index": [0]}]
+    },
+    {
+      "plate_name": "Steckeraufnahme",
+      "need_arrange": true,
+      "objects": [{"path": "parts/wandhalter/generated/print/wandhalter_carrier.stl", "count": 1, "filaments": [1], "assemble_index": [0]}]
+    }
+  ]
+}

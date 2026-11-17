@@ -3,3 +3,4 @@ esphome/secrets.yaml
 esphome/.esphome/
 esphome/.check/
 .build/
+__pycache__/

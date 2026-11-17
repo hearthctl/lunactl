@@ -1,0 +1,117 @@
+{
+    "error_string": "Success.",
+    "export_time": 418,
+    "layer_height": 0.20000000298023224,
+    "plate_index": 0,
+    "prepare_time": 24,
+    "return_code": 0,
+    "sliced_plates": [
+        {
+            "feature_type_times": {
+                "Bottom surface": 84.22236633300781,
+                "Bridge": 122.12732696533203,
+                "Custom": 297.6737060546875,
+                "Flush": 30.0,
+                "Gap infill": 34.49724578857422,
+                "Inner wall": 172.73350524902344,
+                "Internal solid infill": 218.93240356445313,
+                "Outer wall": 228.2195587158203,
+                "Overhang wall": 2.405038833618164,
+                "Sparse infill": 213.07496643066406,
+                "Top surface": 69.42372131347656,
+                "Travel": 255.25399780273438,
+                "Undefined": 246.26803588867188
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 11.87288761138916,
+                    "total_used_g": 11.87288761138916
+                }
+            ],
+            "generate_support_material_time": 14,
+            "id": 1,
+            "infill_time": 63,
+            "layer_filament_change": 0,
+            "main_predication": 1370.867919921875,
+            "make_perimeters_time": 47,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 80.9465560913086,
+                        "height": 19.5,
+                        "width": 87.62914276123047,
+                        "x": 133.2604217529297,
+                        "y": 115.53225708007813,
+                        "z": 0.0
+                    },
+                    "id": 15,
+                    "name": "wandhalter_body_1",
+                    "triangle_count": 8404
+                }
+            ],
+            "sliced_time": 364,
+            "sliced_time_with_cache": 212,
+            "total_predication": 1719.5250244140625,
+            "triangle_count": 8404,
+            "warning_message": ""
+        },
+        {
+            "feature_type_times": {
+                "Bottom surface": 10.947237968444824,
+                "Bridge": 8.78029727935791,
+                "Custom": 297.91107177734375,
+                "Flush": 30.0,
+                "Gap infill": 18.20683479309082,
+                "Inner wall": 88.62850189208984,
+                "Internal solid infill": 31.08946418762207,
+                "Outer wall": 106.45499420166016,
+                "Sparse infill": 70.40857696533203,
+                "Top surface": 16.643320083618164,
+                "Travel": 53.627601623535156,
+                "Undefined": 44.391632080078125
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 1.9692835807800293,
+                    "total_used_g": 1.9692835807800293
+                }
+            ],
+            "generate_support_material_time": 1,
+            "id": 2,
+            "infill_time": 5,
+            "layer_filament_change": 0,
+            "main_predication": 374.81280517578125,
+            "make_perimeters_time": 4,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 18.2449951171875,
+                        "height": 14.649999618530273,
+                        "width": 16.400012969970703,
+                        "x": 586.7999877929688,
+                        "y": 150.87750244140625,
+                        "z": 0.0
+                    },
+                    "id": 35,
+                    "name": "wandhalter_carrier_1",
+                    "triangle_count": 108
+                }
+            ],
+            "sliced_time": 62,
+            "sliced_time_with_cache": 48,
+            "total_predication": 723.4572143554688,
+            "triangle_count": 108,
+            "warning_message": ""
+        }
+    ],
+    "sparse_infill_density": 15.0,
+    "wall_loops": 2
+}

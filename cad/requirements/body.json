@@ -1,0 +1,314 @@
+{
+  "schema": 1,
+  "solid_count": 1,
+  "dimensions_mm": {
+    "x": {
+      "nominal": 54.5,
+      "tolerance": 0.01
+    },
+    "y": {
+      "nominal": 70.37,
+      "tolerance": 0.01
+    },
+    "z": {
+      "nominal": 19.5,
+      "tolerance": 0.01
+    }
+  },
+  "probes": [
+    {
+      "name": "plug bay is open",
+      "center_mm": [
+        0,
+        -34,
+        8
+      ],
+      "size_mm": [
+        8,
+        8,
+        6
+      ],
+      "expect": "empty"
+    },
+    {
+      "name": "bay roof is closed",
+      "center_mm": [
+        0,
+        -34,
+        17.3
+      ],
+      "size_mm": [
+        8,
+        8,
+        3
+      ],
+      "expect": "solid"
+    },
+    {
+      "name": "plate slot for the plug shell",
+      "center_mm": [
+        0,
+        -21.5,
+        2
+      ],
+      "size_mm": [
+        6,
+        4,
+        2
+      ],
+      "expect": "empty"
+    },
+    {
+      "name": "cable slot through the tip",
+      "center_mm": [
+        0,
+        -45.2,
+        7
+      ],
+      "size_mm": [
+        2.5,
+        2.5,
+        10
+      ],
+      "expect": "empty"
+    },
+    {
+      "name": "right stop pad",
+      "center_mm": [
+        10.8,
+        -25.5,
+        10
+      ],
+      "size_mm": [
+        2,
+        2,
+        6
+      ],
+      "expect": "solid"
+    },
+    {
+      "name": "left stop pad",
+      "center_mm": [
+        -10.8,
+        -25.5,
+        10
+      ],
+      "size_mm": [
+        2,
+        2,
+        6
+      ],
+      "expect": "solid"
+    },
+    {
+      "name": "lip closed at the bottom",
+      "center_mm": [
+        8,
+        -24.32,
+        19.3
+      ],
+      "size_mm": [
+        1,
+        0.3,
+        0.3
+      ],
+      "expect": "solid"
+    },
+    {
+      "name": "right power button relief",
+      "center_mm": [
+        19.02,
+        -19.02,
+        12.5
+      ],
+      "size_mm": [
+        0.5,
+        0.5,
+        4
+      ],
+      "expect": "empty"
+    },
+    {
+      "name": "left power button relief",
+      "center_mm": [
+        -19.02,
+        -19.02,
+        12.5
+      ],
+      "size_mm": [
+        0.5,
+        0.5,
+        4
+      ],
+      "expect": "empty"
+    },
+    {
+      "name": "rim closed outside the relief",
+      "center_mm": [
+        20.2,
+        -20.2,
+        12.5
+      ],
+      "size_mm": [
+        0.8,
+        0.8,
+        4
+      ],
+      "expect": "solid"
+    },
+    {
+      "name": "speaker cut-out",
+      "center_mm": [
+        0,
+        20,
+        2
+      ],
+      "size_mm": [
+        16,
+        10,
+        2
+      ],
+      "expect": "empty"
+    },
+    {
+      "name": "right screw hole",
+      "center_mm": [
+        14,
+        0,
+        1
+      ],
+      "size_mm": [
+        2,
+        2,
+        1.5
+      ],
+      "expect": "empty"
+    },
+    {
+      "name": "left screw hole",
+      "center_mm": [
+        -14,
+        0,
+        1
+      ],
+      "size_mm": [
+        2,
+        2,
+        1.5
+      ],
+      "expect": "empty"
+    },
+    {
+      "name": "right rim end stands",
+      "center_mm": [
+        26.6,
+        -3.2,
+        10
+      ],
+      "size_mm": [
+        0.4,
+        0.6,
+        6
+      ],
+      "expect": "solid"
+    },
+    {
+      "name": "left rim end stands",
+      "center_mm": [
+        -26.6,
+        -3.2,
+        10
+      ],
+      "size_mm": [
+        0.4,
+        0.6,
+        6
+      ],
+      "expect": "solid"
+    },
+    {
+      "name": "nothing beside the device above the rim end, right",
+      "center_mm": [
+        28,
+        4,
+        10
+      ],
+      "size_mm": [
+        4,
+        6,
+        18
+      ],
+      "expect": "empty"
+    },
+    {
+      "name": "nothing beside the device above the rim end, left",
+      "center_mm": [
+        -28,
+        4,
+        10
+      ],
+      "size_mm": [
+        4,
+        6,
+        18
+      ],
+      "expect": "empty"
+    }
+  ],
+  "walls": [
+    {
+      "name": "rim, relief wall and bay walls; the rim thins to 1.0 mm at its ends (RIM_END)",
+      "plane": "XY",
+      "at_mm": 12.62,
+      "min_mm": 0.95
+    }
+  ],
+  "manufacturing": {
+    "material": {
+      "product": "Bambu PLA Basic",
+      "source": "provisional; workbench profile h2d-engineering/pla.json. Final material not chosen."
+    },
+    "orientation": {
+      "bed_face": "wall face, XY at Z=0",
+      "reason": "flat plate on the bed; rim and lip grow upwards and print without support"
+    },
+    "support": {
+      "policy": "forbidden"
+    },
+    "fits": [
+      "device rim to holder rim: 0.3 mm per side (RAD_CLEAR)",
+      "device rim to stop pads: contact, no clearance",
+      "power button to relief: 1.0 mm radially (RELIEF_CLEAR_R)",
+      "carrier to bay: 0.2 mm per side (CARRIER_CLEAR), 0.3 mm to the bridged roof (ROOF_GAP)"
+    ],
+    "loads": [
+      "docking and undocking by hand, USB-C mating force up to 20 N per the USB-C spec; not calculated",
+      "lifting the device out is resisted only by the USB-C socket's own retention; the rim holds sideways and against tipping forward"
+    ],
+    "physical_tests": [
+      "DONE 2026-11-17: printed in PLA; the device docks, sits flush with the glass and is held by the plug alone",
+      "PENDING: power button is not pressed while the device is docked or being docked",
+      "PENDING: retention after many docking cycles"
+    ],
+    "artifacts": {
+      "geometry": "../parts/wandhalter/generated/cad/wandhalter_body.step"
+    },
+    "requirements": [
+      {
+        "id": "BODY-X",
+        "stage": "geometry",
+        "check": "dimension_x_mm"
+      },
+      {
+        "id": "BODY-Y",
+        "stage": "geometry",
+        "check": "dimension_y_mm"
+      },
+      {
+        "id": "BODY-Z",
+        "stage": "geometry",
+        "check": "dimension_z_mm"
+      }
+    ]
+  }
+}

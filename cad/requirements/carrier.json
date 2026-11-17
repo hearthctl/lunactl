@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "solid_count": 1,
+  "dimensions_mm": {
+    "x": {
+      "nominal": 16.4,
+      "tolerance": 0.01
+    },
+    "y": {
+      "nominal": 18.245,
+      "tolerance": 0.01
+    },
+    "z": {
+      "nominal": 14.65,
+      "tolerance": 0.01
+    }
+  },
+  "probes": [
+    {
+      "name": "plug pocket is open",
+      "center_mm": [
+        0,
+        -33,
+        12.4
+      ],
+      "size_mm": [
+        8,
+        10,
+        3.5
+      ],
+      "expect": "empty"
+    },
+    {
+      "name": "block behind the plug",
+      "center_mm": [
+        0,
+        -33,
+        5
+      ],
+      "size_mm": [
+        8,
+        10,
+        8
+      ],
+      "expect": "solid"
+    },
+    {
+      "name": "right ledge under the plug shoulder",
+      "center_mm": [
+        3.5,
+        -42.0,
+        12.4
+      ],
+      "size_mm": [
+        1.5,
+        1.5,
+        3.5
+      ],
+      "expect": "solid"
+    },
+    {
+      "name": "slot for the cable",
+      "center_mm": [
+        0,
+        -42.0,
+        12.8
+      ],
+      "size_mm": [
+        3,
+        1.5,
+        3
+      ],
+      "expect": "empty"
+    },
+    {
+      "name": "latch strip in front of the overmold, under the metal shell",
+      "center_mm": [
+        0,
+        -26.0,
+        10.6
+      ],
+      "size_mm": [
+        6,
+        0.3,
+        0.4
+      ],
+      "expect": "solid"
+    },
+    {
+      "name": "latch beside the metal shell",
+      "center_mm": [
+        4.7,
+        -25.9,
+        12.4
+      ],
+      "size_mm": [
+        0.3,
+        0.4,
+        2
+      ],
+      "expect": "solid"
+    },
+    {
+      "name": "slot for the metal shell",
+      "center_mm": [
+        0,
+        -25.8,
+        12.4
+      ],
+      "size_mm": [
+        7,
+        0.6,
+        2
+      ],
+      "expect": "empty"
+    }
+  ],
+  "manufacturing": {
+    "material": {
+      "product": "Bambu PLA Basic",
+      "source": "provisional; workbench profile h2d-engineering/pla.json. Final material not chosen."
+    },
+    "orientation": {
+      "bed_face": "back of the carrier, XY at Z=0",
+      "reason": "pocket opens upwards; jaws, ledge and rails are vertical walls"
+    },
+    "support": {
+      "policy": "forbidden"
+    },
+    "fits": [
+      "plug overmold to jaws: 0.2 mm total interference (PLUG_SQUEEZE); plug measured by the user on 2026-11-16",
+      "latch to overmold face 0.1 mm (LATCH_GAP_PLUG), latch to the housing flat 0.25 mm (LATCH_GAP_DEV), latch slot to metal shell 0.25 mm per side (LATCH_CLEAR)"
+    ],
+    "loads": [
+      "USB-C unmating force 8 to 20 N per the USB-C spec pulls the overmold face against the latch; latch bears on a 0.6 to 0.75 mm rim of the face; not calculated"
+    ],
+    "physical_tests": [
+      "DONE 2026-11-17: plug presses in between ledge and latch by hand",
+      "DONE 2026-11-17: plug stays in the carrier when the device is pulled out",
+      "DONE 2026-11-17: device charges with the plug sitting 1.25 mm lower (insertion 4.9 mm instead of 6.2 mm)"
+    ]
+  }
+}

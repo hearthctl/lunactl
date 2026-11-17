@@ -1,0 +1,149 @@
+{
+  "status": "pass",
+  "scope": "exported STEP geometry only",
+  "findings": [
+    {
+      "name": "valid_brep",
+      "status": "pass",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "positive_volume",
+      "status": "pass",
+      "actual": 2949.1623512499996,
+      "expected": ">0 mm3"
+    },
+    {
+      "name": "solid_count",
+      "status": "pass",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "dimension_x_mm",
+      "status": "pass",
+      "actual": 16.4,
+      "expected": {
+        "nominal": 16.4,
+        "tolerance": 0.01
+      }
+    },
+    {
+      "name": "dimension_y_mm",
+      "status": "pass",
+      "actual": 18.244999999999997,
+      "expected": {
+        "nominal": 18.245,
+        "tolerance": 0.01
+      }
+    },
+    {
+      "name": "dimension_z_mm",
+      "status": "pass",
+      "actual": 14.650000000000002,
+      "expected": {
+        "nominal": 14.65,
+        "tolerance": 0.01
+      }
+    },
+    {
+      "name": "plug pocket is open",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "block behind the plug",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "right ledge under the plug shoulder",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "slot for the cable",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "latch strip in front of the overmold, under the metal shell",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "latch beside the metal shell",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "slot for the metal shell",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    }
+  ],
+  "manufacturing": {
+    "material": {
+      "product": "Bambu PLA Basic",
+      "source": "provisional; workbench profile h2d-engineering/pla.json. Final material not chosen."
+    },
+    "orientation": {
+      "bed_face": "back of the carrier, XY at Z=0",
+      "reason": "pocket opens upwards; jaws, ledge and rails are vertical walls"
+    },
+    "support": {
+      "policy": "forbidden"
+    },
+    "fits": [
+      "plug overmold to jaws: 0.2 mm total interference (PLUG_SQUEEZE); plug measured by the user on 2026-11-16",
+      "latch to overmold face 0.1 mm (LATCH_GAP_PLUG), latch to the housing flat 0.25 mm (LATCH_GAP_DEV), latch slot to metal shell 0.25 mm per side (LATCH_CLEAR)"
+    ],
+    "loads": [
+      "USB-C unmating force 8 to 20 N per the USB-C spec pulls the overmold face against the latch; latch bears on a 0.6 to 0.75 mm rim of the face; not calculated"
+    ],
+    "physical_tests": [
+      "DONE 2026-11-17: plug presses in between ledge and latch by hand",
+      "DONE 2026-11-17: plug stays in the carrier when the device is pulled out",
+      "DONE 2026-11-17: device charges with the plug sitting 1.25 mm lower (insertion 4.9 mm instead of 6.2 mm)"
+    ]
+  },
+  "manufacturing_evaluated": false,
+  "limits": [
+    "Probes test small boxes with 98% solid / at most 2% material for empty; no general feature recognition.",
+    "Wall checks sample named cross-sections; no global minimum-wall guarantee.",
+    "Material, load capacity, physical fit, orientation and support require separate evidence."
+  ],
+  "model": "cad/parts/wandhalter/generated/cad/wandhalter_carrier.step",
+  "model_sha256": "90bc06e4e8cd62dff3a15acf49055c7e5ca5f0cba4b2cac2798e8a115834b599",
+  "requirements_sha256": "f8b6dc124fe15da09beddb35d1d40966c678c9f48607382c55201c2cd33171ec",
+  "schema": 1
+}
