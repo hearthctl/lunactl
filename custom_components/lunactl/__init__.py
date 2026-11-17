@@ -92,7 +92,7 @@ def ws_devices(hass, connection, msg):
             msg["id"],
             [
                 store.read(device.id)
-                for device in dr.async_get(hass).devices
+                for device in dr.async_get(hass).devices.values()
                 if device.manufacturer == "hearthctl" and device.model == "lunactl"
             ],
         )

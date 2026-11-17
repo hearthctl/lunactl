@@ -138,7 +138,7 @@ class ManifestStore:
 
     def fetch(self, mac):
         address = dr.format_mac(mac)
-        for device in dr.async_get(self.hass).devices:
+        for device in dr.async_get(self.hass).devices.values():
             if device.manufacturer != "hearthctl" or device.model != "lunactl":
                 continue
             if (dr.CONNECTION_NETWORK_MAC, address) in device.connections:
