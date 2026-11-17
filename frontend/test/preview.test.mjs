@@ -78,11 +78,17 @@ const cases = [
   {name: "without-icon", manifest: {...single, pages: [{type: "single", item: {...item, icon: undefined}}]}},
   {name: "live-value", manifest: {...single, pages: [{type: "single", item: {...item, value: {format: "{0} °C", refs: [{entity: "sensor.room", attribute: "temperature", decimals: 1, decimal_comma: true}]}}}]}, states: {"sensor.room": {state: "on", attributes: {temperature: 21.26}}}},
   {name: "pages", manifest: {schema: 1, pages: [...single.pages, ...pie.pages]}, page: 1},
+  {name: "select-single", manifest: single, editor: {selectedSlot: 0}},
+  {name: "select-quarter", manifest: pie, editor: {selectedSlot: 2}},
+  {name: "select-empty-center", manifest: pie, editor: {selectedSlot: 4}},
+  {name: "select-center", manifest: {...pie, pages: [{...pie.pages[0], center: item}]}, editor: {selectedSlot: 4}},
+  {name: "select-empty-quarter", manifest: {pages: [{type: "pie", quarters: [null, null, null, null]}]}, editor: {selectedSlot: 0}},
+  {name: "select-empty-ring-quarter", manifest: {...pie, pages: [{...pie.pages[0], center: item, quarters: [null, null, null, null]}]}, editor: {selectedSlot: 1}},
 ];
 for (const scenario of cases) {
   test(`SVG golden: ${scenario.name}`, () => {
     const before = structuredClone(scenario);
-    const svg = renderPreview(scenario.manifest, scenario.states, time, scenario.page);
+    const svg = renderPreview(scenario.manifest, scenario.states, time, scenario.page, scenario.editor);
     const url = new URL(`golden/svg/${scenario.name}.svg`, import.meta.url);
     if (process.env.UPDATE_GOLDEN === "1") { mkdirSync(new URL("golden/svg/", import.meta.url), {recursive: true}); writeFileSync(url, svg); }
     assert.equal(svg, readFileSync(url, "utf8"));
@@ -102,7 +108,7 @@ test("preview follows unsaved JSON, live HA states, ticks, clock and page change
   assert.match(renderPreview(countdown.manifest, timer, time), /1:30/);
   assert.match(renderPreview(countdown.manifest, timer, {...time, timestamp: time.timestamp + 1}), /1:29/);
   assert.doesNotMatch(renderPreview(countdown.manifest, timer, {...time, timestamp: time.timestamp + 90}), /stroke-linecap/);
-  const pages = cases.at(-1).manifest;
+  const pages = cases.find((c) => c.name === "pages").manifest;
   assert.match(renderPreview(pages, {}, time, 0), /aria-pressed="true"/);
   assert.doesNotMatch(renderPreview(pages, {}, time, 0), />12:00</);
   assert.match(renderPreview(pages, {}, {...time, clock: "12:01"}, 1), />12:01</);

@@ -30,32 +30,37 @@ function ring(item, states, now) {
   const indicator = countdown.ring === 1000 ? full : arc(152, -90, -90 + countdown.ring * 0.36);
   return {text: countdown.text, svg: `<g fill="none" stroke-width="8" stroke-linecap="round"><path d="${full}" stroke="${mix(0, 175)}"/><path d="${indicator}" stroke="${mix(255, 160)}"/></g>`};
 }
-function mainSlot(item, states, now, center) {
+function slotGroup(slot, type, item, editor) {
+  return `<g data-slot="${slot}"${editor ? ` role="button" tabindex="0" aria-label="${esc(text.slot(type, slot))}${item == null ? `: ${esc(text.addItem)}` : ""}" aria-pressed="${editor.selectedSlot === slot}" data-empty="${item == null}"` : ""}>`;
+}
+function mainSlot(item, states, now, center, editor) {
   const countdown = ring(item, states, now);
-  return `<g data-slot="${center ? 4 : 0}"><circle cx="233" cy="233" r="${ITEM_R}" fill="${color(item)}"/>` +
+  return slotGroup(center ? 4 : 0, center ? "pie" : "single", item, editor) + `<circle cx="233" cy="233" r="${ITEM_R}" fill="${color(item)}"/>` +
     (center ? label(item?.label, C, 149) + label(countdown.text, C, 198, 48) :
       label((typeof item?.icon === "string" && Object.hasOwn(icons, item.icon) ? icons[item.icon] : ""), C, 138, 48, "Lunactl MDI") + label(item?.label, C, 213) + label(countdown.text, C, 307)) +
-    label(formatValue(item?.value, states), C, 267) + countdown.svg + "</g>";
+    label(formatValue(item?.value, states), C, 267) + countdown.svg +
+    (editor && item == null ? label("+", C, 200, 48) : "") + "</g>";
 }
 
 // Accept partial JSON drafts without throwing. This does not validate or save.
 // time = {timestamp: Unix seconds, clock: HH:MM in HA's configured timezone}.
-export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0) {
+export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0, editor = null) {
   const pages = Array.isArray(manifest?.pages) ? manifest.pages.slice(0, 6) : [];
   const index = Math.max(0, Math.min(pages.length - 1, Number.isInteger(pageIndex) ? pageIndex : 0));
   const page = pages[index];
   let body = "";
-  if (page?.type === "single") body = mainSlot(page.item, states, time.timestamp, false);
+  if (page?.type === "single") body = mainSlot(page.item, states, time.timestamp, false, editor);
   else if (page?.type === "pie") {
     const center = page.center && typeof page.center === "object";
     const quarters = Array.isArray(page.quarters) ? page.quarters : [];
     for (let slot = 0; slot < 4; slot++) {
       const item = quarters[slot];
-      body += `<g data-slot="${slot}">`;
+      body += slotGroup(slot, "pie", item, editor);
       if (center) {
         const start = ANGLES[slot] - QUARTER_ANGLE / 2, end = ANGLES[slot] + QUARTER_ANGLE / 2;
         const middle = (R + CENTER_HOLE) / 2;
-        body += `<path d="${arc(middle, start, end)}" fill="none" stroke="${color(item)}" stroke-width="${R - CENTER_HOLE}"/>`;
+        body += editor ? `<path d="${arc(R, start, end)} L ${point(CENTER_HOLE, end)} A ${CENTER_HOLE} ${CENTER_HOLE} 0 0 0 ${point(CENTER_HOLE, start)} Z" fill="${color(item)}"/>` :
+          `<path d="${arc(middle, start, end)}" fill="none" stroke="${color(item)}" stroke-width="${R - CENTER_HOLE}"/>`;
         const id = `label-${slot}`;
         body += `<defs><path id="${id}" d="${slot < 2 ? arc(LABEL_R, start, end) : arc(LABEL_R, end, start, false)}"/></defs>`;
         if (item?.label) body += `<text font-family="Lunactl Nunito" font-size="28" font-weight="800" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle"><textPath href="#${id}" startOffset="50%">${esc(item.label)}</textPath></text>`;
@@ -68,11 +73,21 @@ export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0) {
         body += label((typeof item?.icon === "string" && Object.hasOwn(icons, item.icon) ? icons[item.icon] : ""), x, y - 54, 48, "Lunactl MDI") +
           label(item?.label, x, y + 4) + label(formatValue(item?.value, states), x, y + 38);
       }
+      if (editor && item == null) {
+        const radius = center ? (R + CENTER_HOLE) / 2 : 140;
+        const [x, y] = point(radius, ANGLES[slot]).split(" ");
+        body += label("+", x, Number(y) - 16, 32);
+      }
       body += "</g>";
     }
-    if (center) body += mainSlot(page.center, states, time.timestamp, true);
-    else body += '<path d="M 233 0 V 466 M 0 233 H 466" stroke="#000000" stroke-width="6"/><circle cx="233" cy="233" r="56" fill="#000000"/>';
+    if (center) body += mainSlot(page.center, states, time.timestamp, true, editor);
+    else {
+      body += '<path d="M 233 0 V 466 M 0 233 H 466" stroke="#000000" stroke-width="6"/>';
+      if (editor) body += slotGroup(4, "pie", null, editor);
+      body += '<circle cx="233" cy="233" r="56" fill="#000000"/>';
+    }
     body += label(/^\d{2}:\d{2}$/.test(time.clock) ? time.clock : "--:--", C, center ? 3 : 215, center ? 20 : 28);
+    if (!center && editor) body += label("+", C, 247, 24) + "</g>";
   }
   if (pages.length > 1) {
     const width = pages.length * 18 + 14, left = (466 - width) / 2;

@@ -1,0 +1,466 @@
+[
+  {
+    "step": "initial",
+    "status": "saved",
+    "state": "Gespeichert",
+    "error": "",
+    "revision": 2,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"pie\",\n      \"quarters\": [\n        {\n          \"label\": \"A\",\n          \"color\": \"#4378AA\",\n          \"action\": {\n            \"action\": \"script.a\"\n          }\n        },\n        null,\n        {\n          \"label\": \"B\",\n          \"color\": \"#4378AA\",\n          \"action\": {\n            \"action\": \"script.a\"\n          }\n        },\n        null\n      ],\n      \"center\": {\n        \"label\": \"C\",\n        \"color\": \"#4378AA\",\n        \"action\": {\n          \"action\": \"script.a\"\n        }\n      }\n    }\n  ]\n}",
+    "frame": {
+      "page": 0,
+      "slot": null,
+      "view": "visual",
+      "pendingSwitch": null,
+      "canUndo": false,
+      "canRedo": false
+    },
+    "calls": []
+  },
+  {
+    "step": "two dropped Items announced without editing",
+    "status": "saved",
+    "state": "Gespeichert",
+    "error": "",
+    "revision": 2,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"pie\",\n      \"quarters\": [\n        {\n          \"label\": \"A\",\n          \"color\": \"#4378AA\",\n          \"action\": {\n            \"action\": \"script.a\"\n          }\n        },\n        null,\n        {\n          \"label\": \"B\",\n          \"color\": \"#4378AA\",\n          \"action\": {\n            \"action\": \"script.a\"\n          }\n        },\n        null\n      ],\n      \"center\": {\n        \"label\": \"C\",\n        \"color\": \"#4378AA\",\n        \"action\": {\n          \"action\": \"script.a\"\n        }\n      }\n    }\n  ]\n}",
+    "frame": {
+      "page": 0,
+      "slot": 2,
+      "view": "visual",
+      "pendingSwitch": {
+        "type": "single",
+        "dropped": [
+          {
+            "label": "A",
+            "color": "#4378AA",
+            "action": {
+              "action": "script.a"
+            }
+          },
+          {
+            "label": "B",
+            "color": "#4378AA",
+            "action": {
+              "action": "script.a"
+            }
+          }
+        ]
+      },
+      "canUndo": false,
+      "canRedo": false
+    },
+    "calls": []
+  },
+  {
+    "step": "no save before confirmation",
+    "status": "saved",
+    "state": "Gespeichert",
+    "error": "",
+    "revision": 2,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"pie\",\n      \"quarters\": [\n        {\n          \"label\": \"A\",\n          \"color\": \"#4378AA\",\n          \"action\": {\n            \"action\": \"script.a\"\n          }\n        },\n        null,\n        {\n          \"label\": \"B\",\n          \"color\": \"#4378AA\",\n          \"action\": {\n            \"action\": \"script.a\"\n          }\n        },\n        null\n      ],\n      \"center\": {\n        \"label\": \"C\",\n        \"color\": \"#4378AA\",\n        \"action\": {\n          \"action\": \"script.a\"\n        }\n      }\n    }\n  ]\n}",
+    "frame": {
+      "page": 0,
+      "slot": 2,
+      "view": "visual",
+      "pendingSwitch": {
+        "type": "single",
+        "dropped": [
+          {
+            "label": "A",
+            "color": "#4378AA",
+            "action": {
+              "action": "script.a"
+            }
+          },
+          {
+            "label": "B",
+            "color": "#4378AA",
+            "action": {
+              "action": "script.a"
+            }
+          }
+        ]
+      },
+      "canUndo": false,
+      "canRedo": false
+    },
+    "calls": []
+  },
+  {
+    "step": "cancel leaves all Items intact",
+    "status": "saved",
+    "state": "Gespeichert",
+    "error": "",
+    "revision": 2,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"pie\",\n      \"quarters\": [\n        {\n          \"label\": \"A\",\n          \"color\": \"#4378AA\",\n          \"action\": {\n            \"action\": \"script.a\"\n          }\n        },\n        null,\n        {\n          \"label\": \"B\",\n          \"color\": \"#4378AA\",\n          \"action\": {\n            \"action\": \"script.a\"\n          }\n        },\n        null\n      ],\n      \"center\": {\n        \"label\": \"C\",\n        \"color\": \"#4378AA\",\n        \"action\": {\n          \"action\": \"script.a\"\n        }\n      }\n    }\n  ]\n}",
+    "frame": {
+      "page": 0,
+      "slot": 2,
+      "view": "visual",
+      "pendingSwitch": null,
+      "canUndo": false,
+      "canRedo": false
+    },
+    "calls": []
+  },
+  {
+    "step": "confirmed conversion keeps center and autosaves",
+    "status": "saved",
+    "state": "Gespeichert",
+    "error": "",
+    "revision": 3,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"single\",\n      \"item\": {\n        \"label\": \"C\",\n        \"color\": \"#4378AA\",\n        \"action\": {\n          \"action\": \"script.a\"\n        }\n      }\n    }\n  ]\n}",
+    "frame": {
+      "page": 0,
+      "slot": null,
+      "view": "visual",
+      "pendingSwitch": null,
+      "canUndo": true,
+      "canRedo": false
+    },
+    "calls": [
+      {
+        "type": "lunactl/manifest/get",
+        "device_id": "bedroom",
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "single",
+              "item": {
+                "label": "C",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lunactl/manifest/save",
+        "device_id": "bedroom",
+        "revision": 2,
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "single",
+              "item": {
+                "label": "C",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "step": "undo recovers and autosaves all dropped Items",
+    "status": "saved",
+    "state": "Gespeichert",
+    "error": "",
+    "revision": 4,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"pie\",\n      \"quarters\": [\n        {\n          \"label\": \"A\",\n          \"color\": \"#4378AA\",\n          \"action\": {\n            \"action\": \"script.a\"\n          }\n        },\n        null,\n        {\n          \"label\": \"B\",\n          \"color\": \"#4378AA\",\n          \"action\": {\n            \"action\": \"script.a\"\n          }\n        },\n        null\n      ],\n      \"center\": {\n        \"label\": \"C\",\n        \"color\": \"#4378AA\",\n        \"action\": {\n          \"action\": \"script.a\"\n        }\n      }\n    }\n  ]\n}",
+    "frame": {
+      "page": 0,
+      "slot": null,
+      "view": "visual",
+      "pendingSwitch": null,
+      "canUndo": false,
+      "canRedo": true
+    },
+    "calls": [
+      {
+        "type": "lunactl/manifest/get",
+        "device_id": "bedroom",
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "single",
+              "item": {
+                "label": "C",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lunactl/manifest/save",
+        "device_id": "bedroom",
+        "revision": 2,
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "single",
+              "item": {
+                "label": "C",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lunactl/manifest/get",
+        "device_id": "bedroom",
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                {
+                  "label": "A",
+                  "color": "#4378AA",
+                  "action": {
+                    "action": "script.a"
+                  }
+                },
+                null,
+                {
+                  "label": "B",
+                  "color": "#4378AA",
+                  "action": {
+                    "action": "script.a"
+                  }
+                },
+                null
+              ],
+              "center": {
+                "label": "C",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lunactl/manifest/save",
+        "device_id": "bedroom",
+        "revision": 3,
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                {
+                  "label": "A",
+                  "color": "#4378AA",
+                  "action": {
+                    "action": "script.a"
+                  }
+                },
+                null,
+                {
+                  "label": "B",
+                  "color": "#4378AA",
+                  "action": {
+                    "action": "script.a"
+                  }
+                },
+                null
+              ],
+              "center": {
+                "label": "C",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "step": "redo autosaves conversion",
+    "status": "saved",
+    "state": "Gespeichert",
+    "error": "",
+    "revision": 5,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"single\",\n      \"item\": {\n        \"label\": \"C\",\n        \"color\": \"#4378AA\",\n        \"action\": {\n          \"action\": \"script.a\"\n        }\n      }\n    }\n  ]\n}",
+    "frame": {
+      "page": 0,
+      "slot": null,
+      "view": "visual",
+      "pendingSwitch": null,
+      "canUndo": true,
+      "canRedo": false
+    },
+    "calls": [
+      {
+        "type": "lunactl/manifest/get",
+        "device_id": "bedroom",
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "single",
+              "item": {
+                "label": "C",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lunactl/manifest/save",
+        "device_id": "bedroom",
+        "revision": 2,
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "single",
+              "item": {
+                "label": "C",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lunactl/manifest/get",
+        "device_id": "bedroom",
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                {
+                  "label": "A",
+                  "color": "#4378AA",
+                  "action": {
+                    "action": "script.a"
+                  }
+                },
+                null,
+                {
+                  "label": "B",
+                  "color": "#4378AA",
+                  "action": {
+                    "action": "script.a"
+                  }
+                },
+                null
+              ],
+              "center": {
+                "label": "C",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lunactl/manifest/save",
+        "device_id": "bedroom",
+        "revision": 3,
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                {
+                  "label": "A",
+                  "color": "#4378AA",
+                  "action": {
+                    "action": "script.a"
+                  }
+                },
+                null,
+                {
+                  "label": "B",
+                  "color": "#4378AA",
+                  "action": {
+                    "action": "script.a"
+                  }
+                },
+                null
+              ],
+              "center": {
+                "label": "C",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lunactl/manifest/get",
+        "device_id": "bedroom",
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "single",
+              "item": {
+                "label": "C",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lunactl/manifest/save",
+        "device_id": "bedroom",
+        "revision": 4,
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "single",
+              "item": {
+                "label": "C",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

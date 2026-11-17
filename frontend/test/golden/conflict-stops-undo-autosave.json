@@ -1,0 +1,145 @@
+[
+  {
+    "step": "initial",
+    "status": "saved",
+    "state": "Gespeichert",
+    "error": "",
+    "revision": 2,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"pie\",\n      \"quarters\": [\n        null,\n        null,\n        null,\n        null\n      ]\n    }\n  ]\n}",
+    "frame": {
+      "page": 0,
+      "slot": null,
+      "view": "visual",
+      "pendingSwitch": null,
+      "canUndo": false,
+      "canRedo": false
+    },
+    "calls": []
+  },
+  {
+    "step": "history navigation preserves draft and conflict without further saves",
+    "status": "conflict",
+    "state": "Manifest wurde anderswo geändert",
+    "error": "",
+    "revision": 2,
+    "source": "{\"schema\":1,\"pages\":[{\"type\":\"pie\",\"quarters\":[null,null,null,null]}],\"display\":{\"timeout\":30}}",
+    "frame": {
+      "page": 0,
+      "slot": null,
+      "view": "visual",
+      "pendingSwitch": null,
+      "canUndo": true,
+      "canRedo": false
+    },
+    "calls": [
+      {
+        "type": "lunactl/manifest/get",
+        "device_id": "bedroom",
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                null,
+                null,
+                null,
+                null
+              ]
+            }
+          ],
+          "display": {
+            "timeout": 30
+          }
+        }
+      },
+      {
+        "type": "lunactl/manifest/save",
+        "device_id": "bedroom",
+        "revision": 2,
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                null,
+                null,
+                null,
+                null
+              ]
+            }
+          ],
+          "display": {
+            "timeout": 30
+          }
+        }
+      }
+    ]
+  },
+  {
+    "step": "reload adopts remote revision and clears history",
+    "status": "saved",
+    "state": "Gespeichert",
+    "error": "",
+    "revision": 3,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"pie\",\n      \"quarters\": [\n        null,\n        null,\n        null,\n        null\n      ]\n    }\n  ]\n}",
+    "frame": {
+      "page": 0,
+      "slot": null,
+      "view": "visual",
+      "pendingSwitch": null,
+      "canUndo": false,
+      "canRedo": false
+    },
+    "calls": [
+      {
+        "type": "lunactl/manifest/get",
+        "device_id": "bedroom",
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                null,
+                null,
+                null,
+                null
+              ]
+            }
+          ],
+          "display": {
+            "timeout": 30
+          }
+        }
+      },
+      {
+        "type": "lunactl/manifest/save",
+        "device_id": "bedroom",
+        "revision": 2,
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                null,
+                null,
+                null,
+                null
+              ]
+            }
+          ],
+          "display": {
+            "timeout": 30
+          }
+        }
+      },
+      {
+        "type": "lunactl/manifest/get",
+        "device_id": "bedroom"
+      }
+    ]
+  }
+]

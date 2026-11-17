@@ -1,4 +1,7 @@
 import {errorText, text} from "./strings.js";
+import {History} from "./history.js";
+import {canEditManifest, slotsFor, addPage, removePage, reorderPage,
+  switchPageType, addItem, removeItem} from "./manifest-operations.js";
 
 export const AUTOSAVE_MS = 1000;
 
@@ -40,6 +43,11 @@ export class ManifestEditor {
     this.record = record;
     this.source = Object.keys(record.manifest).length ?
       JSON.stringify(record.manifest, null, 2) : "";
+    this.history = new History(this.source);
+    this.view = "visual";
+    this.page = 0;
+    this.slot = null;
+    this.pendingSwitch = null;
     this.status = this.source ? "saved" : "empty";
     this.error = "";
     this.restartUntil = 0;
@@ -64,7 +72,25 @@ export class ManifestEditor {
 
   edit(source) {
     if (this.closed) return;
+    this.history.push(source);
+    this.setSource(source);
+  }
+
+  undo() { this.restore(this.history.undo()); }
+  redo() { this.restore(this.history.redo()); }
+  restore(source) {
+    if (source !== undefined && !this.closed) this.setSource(source);
+  }
+
+  setSource(source) {
     this.source = source;
+    if (parseManifest(source).error) this.view = "json";
+    this.pendingSwitch = null;
+    const manifest = this.manifest;
+    if (canEditManifest(manifest)) {
+      this.page = Math.min(this.page, manifest.pages.length - 1);
+      if (!slotsFor(manifest.pages[this.page]).includes(this.slot)) this.slot = null;
+    }
     this.version++;
     this.error = "";
     this.cancelTimer();
@@ -76,6 +102,80 @@ export class ManifestEditor {
     }
     this.changed();
   }
+
+  get manifest() { return parseManifest(this.source).manifest; }
+
+  setView(view) {
+    if (!["visual", "json"].includes(view) || parseManifest(this.source).error) return false;
+    this.view = view;
+    this.changed();
+    return true;
+  }
+
+  selectPage(page) {
+    if (!canEditManifest(this.manifest) || !Number.isInteger(page) ||
+        page < 0 || page >= this.manifest.pages.length) return;
+    this.page = page;
+    this.slot = null;
+    this.pendingSwitch = null;
+    this.changed();
+  }
+
+  selectSlot(slot) {
+    if (!slotsFor(this.manifest?.pages?.[this.page]).includes(slot)) return;
+    this.slot = slot;
+    this.changed();
+  }
+
+  apply(manifest) {
+    if (manifest) this.edit(JSON.stringify(manifest, null, 2));
+  }
+
+  addPage(type) {
+    const before = this.manifest;
+    const after = addPage(before, type);
+    if (after === before) return;
+    this.page = after.pages.length - 1;
+    this.slot = null;
+    this.apply(after);
+  }
+
+  removePage() { this.slot = null; this.apply(removePage(this.manifest, this.page)); }
+
+  reorderPage(direction) {
+    const before = this.manifest;
+    const after = reorderPage(before, this.page, direction);
+    if (before === after) return;
+    this.page += direction;
+    this.apply(after);
+  }
+
+  requestPageType(type) {
+    const before = this.manifest;
+    const plan = switchPageType(before, this.page, type);
+    if (plan.manifest === before) {
+      this.cancelPageType();
+      return;
+    }
+    if (plan.dropped.length) {
+      this.pendingSwitch = {type, dropped: plan.dropped};
+      this.changed();
+    } else {
+      this.slot = null;
+      this.apply(plan.manifest);
+    }
+  }
+
+  confirmPageType() {
+    if (!this.pendingSwitch) return;
+    const plan = switchPageType(this.manifest, this.page, this.pendingSwitch.type);
+    this.slot = null;
+    this.apply(plan.manifest);
+  }
+
+  cancelPageType() { this.pendingSwitch = null; this.changed(); }
+  addItem() { this.apply(addItem(this.manifest, this.page, this.slot)); }
+  removeItem() { this.apply(removeItem(this.manifest, this.page, this.slot)); }
 
   schedule() {
     this.timer = this.clock.setTimeout(() => {
@@ -119,6 +219,7 @@ export class ManifestEditor {
       // A response to an older edit may advance the revision, never erase typing.
       if (version === this.version) {
         this.source = JSON.stringify(result.manifest, null, 2);
+        this.history.replace(this.source);
         this.status = "saved";
         this.error = "";
       }

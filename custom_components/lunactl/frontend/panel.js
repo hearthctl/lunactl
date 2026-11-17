@@ -1,8 +1,12 @@
 import {LitElement, html, css} from "./vendor/lit-all.min.js";
 import {deviceList, deviceHeader} from "./devices.js";
 import "./preview-element.js";
-import {ManifestEditor} from "./manifest-editor.js";
+import {ManifestEditor, parseManifest} from "./manifest-editor.js";
+import {canEditManifest, slotItem} from "./manifest-operations.js";
 import {text, errorText} from "./strings.js";
+
+// Raw JSON may contain schema-invalid objects where a setting should be text.
+const settingText = (value) => typeof value === "object" ? JSON.stringify(value) : value;
 
 class LunactlDesigner extends LitElement {
   static properties = {
@@ -17,14 +21,24 @@ class LunactlDesigner extends LitElement {
       background: var(--app-header-background-color, var(--primary-color));
       color: var(--app-header-text-color, white); }
     h1 { font-size: 1.25rem; margin: 0; }
-    main { max-width: 1000px; margin: auto; padding: 24px; }
+    main { max-width: 1250px; margin: auto; padding: 24px; }
     label { display: block; font-weight: bold; margin: 16px 0 8px; }
     select, textarea, button { font: inherit; }
     select, textarea { color: var(--primary-text-color);
       background: var(--card-background-color); border: 1px solid var(--divider-color);
       border-radius: 6px; padding: 12px; box-sizing: border-box; width: 100%; }
-    .workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
-    .workspace > div { min-width: 0; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 466px) minmax(0, 1fr); gap: 24px; }
+    .workspace > div, .card { min-width: 0; }
+    .toolbar, .pages { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 16px 0; }
+    .toolbar select { width: auto; }
+    .toolbar label { margin: 0; }
+    .card { background: var(--card-background-color); border: 1px solid var(--divider-color);
+      border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .card h3 { margin-top: 0; }
+    button[aria-pressed="true"] { background: var(--primary-color); color: var(--text-primary-color, white); }
+    button:disabled { opacity: .45; cursor: default; }
+    code { overflow-wrap: anywhere; }
+    .confirmation { border: 2px solid var(--warning-color, #d69319); }
     @media (max-width: 800px) { .workspace { grid-template-columns: 1fr; } }
     textarea { min-height: 55vh; resize: vertical; font: 14px/1.5 monospace;
       tab-size: 2; white-space: pre; }
@@ -47,10 +61,19 @@ class LunactlDesigner extends LitElement {
     this._selected = "";
     this._error = "";
     this._notice = "";
+    this._onKeydown = (event) => {
+      if (!(event.ctrlKey || event.metaKey) || event.altKey || event.key.toLowerCase() !== "z") return;
+      const editor = this._editors.get(this._selected);
+      if (!editor || editor.status === "empty") return;
+      event.preventDefault();
+      if (event.shiftKey) editor.redo();
+      else editor.undo();
+    };
   }
 
   connectedCallback() {
     super.connectedCallback();
+    this.addEventListener("keydown", this._onKeydown);
     this._start();
   }
 
@@ -64,6 +87,7 @@ class LunactlDesigner extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+    this.removeEventListener("keydown", this._onKeydown);
     clearInterval(this._poll);
     this._poll = undefined;
     for (const editor of this._editors.values()) editor.close();
@@ -108,9 +132,123 @@ class LunactlDesigner extends LitElement {
       this._notice = text.copied;
     } catch {
       this._notice = text.copyFailed;
+      editor.setView("json");
+      await this.updateComplete;
       this.renderRoot.querySelector("textarea")?.select();
     }
     this.requestUpdate();
+  }
+
+  async _openJSON(editor) {
+    editor.setView("json");
+    await this.updateComplete;
+    this.renderRoot.querySelector("textarea")?.focus();
+  }
+
+  _pages(editor) {
+    const manifest = editor.manifest;
+    if (!canEditManifest(manifest)) return html`<p class="hint">${text.visualUnavailable}</p>`;
+    const pages = manifest.pages;
+    const page = pages[editor.page];
+    return html`
+      <nav class="pages" aria-label=${text.preview}>
+        ${pages.map((entry, i) => html`<button aria-pressed=${i === editor.page}
+          @click=${() => editor.selectPage(i)}>${text.page(i + 1)} · ${text.pageTypes[entry.type]}
+          ${i === 0 ? html`<strong> · ${text.start}</strong>` : ""}</button>`)}
+        <button aria-label=${text.addPage} ?disabled=${pages.length === 6}
+          @click=${() => { this._addingPage = !this._addingPage; this.requestUpdate(); }}>+</button>
+        ${this._addingPage && pages.length < 6 ? html`
+          ${["single", "pie"].map((type) => html`<button @click=${() => {
+            this._addingPage = false; editor.addPage(type);
+          }}>${text.pageTypes[type]}</button>`)}
+          <button @click=${() => { this._addingPage = false; this.requestUpdate(); }}>${text.cancel}</button>` : ""}
+      </nav>
+      <div class="toolbar">
+        <button aria-label=${text.previousPage} ?disabled=${editor.page === 0}
+          @click=${() => editor.reorderPage(-1)}>←</button>
+        <button aria-label=${text.nextPage} ?disabled=${editor.page === pages.length - 1}
+          @click=${() => editor.reorderPage(1)}>→</button>
+        <label for="page-type">${text.pageType}</label>
+        <select id="page-type" .value=${page.type} @change=${(event) => {
+          editor.requestPageType(event.target.value);
+          event.target.value = page.type;
+        }}>${["single", "pie"].map((type) => html`<option value=${type}
+          .selected=${type === page.type}>${text.pageTypes[type]}</option>`)}</select>
+        <button ?disabled=${pages.length === 1} @click=${() => editor.removePage()}>${text.removePage}</button>
+      </div>
+      ${editor.pendingSwitch ? html`<div role="alert" class="card confirmation">
+        <p>${text.pageTypes[page.type]} → ${text.pageTypes[editor.pendingSwitch.type]}:
+          <strong>${text.droppedItems(editor.pendingSwitch.dropped.length)}</strong>:
+          ${editor.pendingSwitch.dropped.map((item) => typeof item?.label === "string" ? item.label : text.newItem).join(", ")}</p>
+        <p>${text.undoRecovery}</p>
+        <button @click=${() => editor.confirmPageType()}>${text.switchType}</button>
+        <button @click=${() => editor.cancelPageType()}>${text.cancel}</button>
+      </div>` : ""}`;
+  }
+
+  _slotPanel(editor) {
+    const manifest = editor.manifest;
+    const page = manifest?.pages?.[editor.page];
+    const item = slotItem(page, editor.slot);
+    const path = `pages[${editor.page}].${page?.type === "single" ? "item" :
+      editor.slot === 4 ? "center" : `quarters[${editor.slot}]`}`;
+    return html`<section class="card" aria-label=${text.itemForm}>
+      ${editor.slot === null || !canEditManifest(manifest) ? html`<h3>${text.itemForm}</h3><p>${text.selectSlot}</p>` : html`
+        <p class="hint">${text.page(editor.page + 1)} · ${text.slot(page.type, editor.slot)}</p>
+        <h3>${typeof item?.label === "string" ? item.label : text.itemForm}</h3>
+        <p>${text.formPlaceholder}</p>
+        <p>${text.jsonPath}: <code>${path}</code></p>
+        ${item == null ? html`<button @click=${() => editor.addItem()}>${text.addItem}</button>
+          <p class="hint">${text.draftHint}</p>` : html`
+          <button @click=${() => editor.removeItem()}>${text.removeItem}</button>`}
+        <button @click=${() => this._openJSON(editor)}>${text.editJSON}</button>
+      `}
+    </section>`;
+  }
+
+  _settings(editor) {
+    const manifest = editor.manifest;
+    return html`
+      <section class="card"><h3>${text.buttons}</h3>
+        ${Object.entries(text.buttonNames).map(([key, name]) => html`
+          <p>${name}: <code>${settingText(manifest?.buttons?.[key]?.action || text.unbound)}</code></p>`)}
+        <button @click=${() => this._openJSON(editor)}>${text.editJSON}</button>
+      </section>
+      <section class="card"><h3>${text.display}</h3>
+        <p>${text.timeout}: ${settingText(manifest?.display?.timeout ?? 10)} ${text.seconds}</p>
+        <p>${text.brightness}: <code>${settingText(manifest?.display?.brightness ?? text.defaultBrightness)}</code></p>
+        <button @click=${() => this._openJSON(editor)}>${text.editJSON}</button>
+      </section>`;
+  }
+
+  _workspace(editor) {
+    return html`
+      <div class="toolbar">
+        <button aria-pressed=${editor.view === "visual"} ?disabled=${!!parseManifest(editor.source).error}
+          @click=${() => editor.setView("visual")}>${text.visual}</button>
+        <button aria-pressed=${editor.view === "json"} ?disabled=${!!parseManifest(editor.source).error}
+          @click=${() => this._openJSON(editor)}>${text.json}</button>
+        <button ?disabled=${!editor.history.canUndo} @click=${() => editor.undo()}>${text.undo}</button>
+        <button ?disabled=${!editor.history.canRedo} @click=${() => editor.redo()}>${text.redo}</button>
+      </div>
+      ${this._pages(editor)}
+      <div class="workspace"><div>
+        <h3>${text.preview}</h3>
+        <lunactl-preview .source=${editor.source} .hass=${this.hass} .device=${this._selected}
+          .page=${editor.page} .interactive=${canEditManifest(editor.manifest)} .selectedSlot=${editor.slot}
+          @page-select=${(event) => editor.selectPage(event.detail)}
+          @slot-select=${(event) => editor.selectSlot(event.detail)}></lunactl-preview>
+        ${editor.view === "visual" ? this._settings(editor) : ""}
+      </div><div>
+        ${editor.view === "visual" ? this._slotPanel(editor) : html`
+          <label for="manifest">${text.manifest}</label>
+          <textarea id="manifest" spellcheck="false" autocapitalize="off"
+            .value=${editor.source} aria-invalid=${editor.status === "invalid"}
+            @input=${(event) => editor.edit(event.target.value)}></textarea>
+          <button @click=${() => this._copy(editor)}>${text.copy}</button>`}
+      </div></div>
+      <p class="hint">${text.autosaveHint}</p>
+      ${editor.status === "error" ? html`<button @click=${() => editor.flush()}>${text.retry}</button>` : ""}`;
   }
 
   render() {
@@ -133,6 +271,7 @@ class LunactlDesigner extends LitElement {
           <select id="device" .value=${this._selected} @change=${(event) => {
             this._selected = event.target.value;
             this._notice = "";
+            this._addingPage = false;
             this.requestUpdate();
           }}>
             ${this._devices.map((device) => html`<option value=${device.device_id}
@@ -158,19 +297,7 @@ class LunactlDesigner extends LitElement {
           ${editor.status === "empty" ? html`
             <p>${text.noManifest}</p>
             <button @click=${() => editor.create()}>${text.create}</button>` : html`
-            <div class="workspace"><div>
-              <h3>${text.preview}</h3>
-              <lunactl-preview .source=${editor.source} .hass=${this.hass} .device=${this._selected}></lunactl-preview>
-            </div><div>
-            <label for="manifest">${text.manifest}</label>
-            <textarea id="manifest" spellcheck="false" autocapitalize="off"
-              .value=${editor.source} aria-invalid=${editor.status === "invalid"}
-              @input=${(event) => editor.edit(event.target.value)}></textarea>
-            <p class="hint">${text.autosaveHint}</p>
-            <button @click=${() => this._copy(editor)}>${text.copy}</button>
-            ${editor.status === "error" ? html`
-              <button @click=${() => editor.flush()}>${text.retry}</button>` : ""}
-            </div></div>`}
+            ${this._workspace(editor)}`}
           <p role="status">${this._notice}</p>
         ` : ""}
       </main>`;
