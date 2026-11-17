@@ -162,6 +162,62 @@
           "type": "string",
           "minLength": 1,
           "description": "HA MDI name. The 44 compiled-in icons are listed in docs/mockups/icons.png; unknown names use mdi:help-circle and log a warning. Omission uses the fallback without a warning."
+        },
+        "value": {
+          "$ref": "#/$defs/value"
+        }
+      }
+    },
+    "value": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "refs"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Zero-based {n} placeholders; unknown tokens remain literal."
+        },
+        "refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/valueReference"
+          }
+        }
+      }
+    },
+    "valueReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entity"
+      ],
+      "properties": {
+        "entity": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+\\.[a-z0-9_]+$"
+        },
+        "attribute": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decimals": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 6
+        },
+        "decimal_comma": {
+          "type": "boolean"
+        },
+        "map": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
         }
       }
     }

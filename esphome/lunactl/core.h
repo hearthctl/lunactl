@@ -10,6 +10,9 @@
 #include <vector>
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
+#include <cmath>
+#include <cerrno>
 #include "icons.h"
 
 namespace lunactl {
@@ -22,11 +25,30 @@ struct Action {
   std::string data;
 };
 
+struct Reference {
+  std::string entity, attribute;
+  bool operator==(const Reference &other) const {
+    return entity == other.entity && attribute == other.attribute;
+  }
+};
+struct ValueReference : Reference {
+  int decimals{-1};
+  bool decimal_comma{false};
+  std::vector<std::pair<std::string, std::string>> map;
+};
+struct Value {
+  bool present{false};
+  std::string format;
+  std::vector<ValueReference> refs;
+};
+enum class ConnectionAction { NONE, RECONNECT, RESTART };
+
 struct Item : Action {
   std::string icon{"mdi:help-circle"};
   std::string label;
   std::string color;
   uint32_t rgb{0};
+  Value value;
 };
 
 enum class Key : uint8_t { A, B };
@@ -62,6 +84,64 @@ inline bool action_name(JsonVariantConst value) {
     else if (!(c >= 'a' && c <= 'z') && !(c >= '0' && c <= '9') && c != '_') return false;
   }
   return dot;
+}
+
+inline bool parse_value(JsonVariantConst source, Value &value) {
+  if (!keys(source, {"format", "refs"}) || !nonempty_string(source["format"]) ||
+      !source["refs"].is<JsonArrayConst>() || source["refs"].size() == 0) return false;
+  value.present = true;
+  value.format = source["format"].as<std::string>();
+  for (JsonVariantConst ref : source["refs"].as<JsonArrayConst>()) {
+    if (!keys(ref, {"entity", "attribute", "decimals", "decimal_comma", "map"}) ||
+        !action_name(ref["entity"])) return false;
+    ValueReference result;
+    result.entity = ref["entity"].as<std::string>();
+    if (!ref["attribute"].isUnbound()) {
+      if (!nonempty_string(ref["attribute"])) return false;
+      result.attribute = ref["attribute"].as<std::string>();
+    }
+    if (!ref["decimals"].isUnbound()) {
+      if (!ref["decimals"].is<double>()) return false;
+      double digits = ref["decimals"].as<double>();
+      if (digits < 0 || digits > 6 || std::floor(digits) != digits) return false;
+      result.decimals = static_cast<int>(digits);
+    }
+    if (!ref["decimal_comma"].isUnbound()) {
+      if (!ref["decimal_comma"].is<bool>()) return false;
+      result.decimal_comma = ref["decimal_comma"].as<bool>();
+    }
+    if (!ref["map"].isUnbound()) {
+      if (!ref["map"].is<JsonObjectConst>()) return false;
+      for (JsonPairConst entry : ref["map"].as<JsonObjectConst>()) {
+        if (!entry.value().is<const char *>()) return false;
+        result.map.emplace_back(entry.key().c_str(), entry.value().as<std::string>());
+      }
+    }
+    value.refs.push_back(std::move(result));
+  }
+  return true;
+}
+
+inline std::string format_reference(const ValueReference &ref, const std::string &state) {
+  if (state.empty()) return "--";
+  for (const auto &entry : ref.map) if (entry.first == state) return entry.second;
+  if (state == "unknown" || state == "unavailable") return "--";
+  if (ref.decimals < 0 && !ref.decimal_comma) return state;
+  char *end = nullptr;
+  errno = 0;
+  double number = std::strtod(state.c_str(), &end);
+  if (end == state.c_str() || end != state.c_str() + state.size() || errno == ERANGE || !std::isfinite(number)) return "--";
+  std::string result = state;
+  if (ref.decimals >= 0) {
+    // A finite double in fixed notation fits in 317 bytes, including 6 decimals.
+    char text[320];
+    std::snprintf(text, sizeof(text), "%.*f", ref.decimals, number);
+    result = text;
+    if (result[0] == '-' && result.find_first_not_of("0.", 1) == std::string::npos)
+      result.erase(0, 1);  // Avoid a rounded negative zero, including halfway ties.
+  }
+  if (ref.decimal_comma) std::replace(result.begin(), result.end(), '.', ',');
+  return result;
 }
 
 inline bool target_valid(JsonVariantConst value) {
@@ -111,7 +191,7 @@ inline bool parse_action(JsonVariantConst action, Action &result, std::string &e
 inline bool parse_item(JsonVariantConst source, Item &item, std::string &error,
                        std::vector<std::string> &warnings) {
   auto reject = [&error](const char *message) { error = message; return false; };
-  if (!keys(source, {"label", "color", "icon", "action"}) || !nonempty_string(source["label"]))
+  if (!keys(source, {"label", "color", "icon", "action", "value"}) || !nonempty_string(source["label"]))
     return reject("Invalid Item");
   if (!source["icon"].isUnbound() && !nonempty_string(source["icon"])) return reject("Invalid Item icon");
   if (!source["color"].is<const char *>()) return reject("Invalid Item color");
@@ -127,6 +207,8 @@ inline bool parse_item(JsonVariantConst source, Item &item, std::string &error,
   }
   Item candidate;
   if (!parse_action(source["action"], candidate, error)) return false;
+  if (!source["value"].isUnbound() && !parse_value(source["value"], candidate.value))
+    return reject("Invalid Item value");
   if (!source["icon"].isUnbound()) {
     std::string name = source["icon"].as<std::string>();
     candidate.icon = resolve_icon(name.c_str()).name;
@@ -189,6 +271,7 @@ class Core {
     // An interrupted key press must not dispatch after a reconnect.
     if (!connected) {
       for (auto &button : buttons_) button.actions = {};
+      states_.assign(subscriptions_.size(), "");
     }
     ++request_;  // Invalidates replies from an earlier connection.
     // Keep the last valid Manifest in RAM; an invalid replacement must not
@@ -203,6 +286,25 @@ class Core {
     Manifest candidate;
     std::vector<std::string> warnings;
     if (!parse_manifest(root, candidate, error, warnings)) return false;
+    std::vector<Reference> required;
+    for (const auto &page : candidate.pages)
+      for (const auto &item : page.items)
+        for (const auto &ref : item.value.refs)
+          if (std::find(required.begin(), required.end(), ref) == required.end()) required.push_back(ref);
+    if (!subscriptions_initialized_) {
+      subscriptions_ = std::move(required);
+      states_.resize(subscriptions_.size());
+      subscriptions_initialized_ = true;
+      if (!subscriptions_.empty()) connection_action_ = ConnectionAction::RECONNECT;
+    } else {
+      for (const auto &ref : required) {
+        if (std::find(subscriptions_.begin(), subscriptions_.end(), ref) == subscriptions_.end()) {
+          connection_action_ = ConnectionAction::RESTART;
+          error = "Manifest needs new subscriptions; restarting";
+          return false;
+        }
+      }
+    }
     manifest_ = std::move(candidate);
     warnings_ = std::move(warnings);
     page_ = 0;
@@ -233,6 +335,45 @@ class Core {
     return true;
   }
   const std::vector<std::string> &warnings() const { return warnings_; }
+  const std::vector<Reference> &subscriptions() const { return subscriptions_; }
+  ConnectionAction take_connection_action() {
+    auto action = connection_action_;
+    connection_action_ = ConnectionAction::NONE;
+    return action;
+  }
+  void set_state(const Reference &ref, const std::string &state) {
+    if (!connected_) return;
+    auto found = std::find(subscriptions_.begin(), subscriptions_.end(), ref);
+    if (found != subscriptions_.end()) states_[found - subscriptions_.begin()] = state;
+  }
+  std::string value(size_t slot = 0) const {
+    if (!tappable() || slot >= (pie() ? 4u : 1u)) return "";
+    const auto &value = item(slot).value;
+    std::vector<std::string> replacements;
+    for (const auto &ref : value.refs) {
+      auto found = std::find(subscriptions_.begin(), subscriptions_.end(), ref);
+      replacements.push_back(format_reference(ref, found == subscriptions_.end() ? "" : states_[found - subscriptions_.begin()]));
+    }
+    // Match complete tokens in the original format. State text is never parsed
+    // as another placeholder, and {1} cannot accidentally replace part of {10}.
+    std::string result;
+    for (size_t i = 0; i < value.format.size();) {
+      bool replaced = false;
+      if (value.format[i] == '{') {
+        for (size_t n = 0; n < replacements.size(); ++n) {
+          std::string token = "{" + std::to_string(n) + "}";
+          if (value.format.compare(i, token.size(), token) == 0) {
+            result += replacements[n];
+            i += token.size();
+            replaced = true;
+            break;
+          }
+        }
+      }
+      if (!replaced) result += value.format[i++];
+    }
+    return result;
+  }
   void set_time(int hour, int minute, bool valid = true) {
     if (!valid || hour < 0 || hour > 23 || minute < 0 || minute > 59) clock_ = "--:--";
     else {
@@ -317,6 +458,12 @@ class Core {
  private:
   bool connected_{false};
   bool has_manifest_{false};
+  bool subscriptions_initialized_{false};
+  // Fixed after the first valid Manifest: ESPHome retains pointers into these
+  // strings, and HA cannot unsubscribe until the next boot.
+  std::vector<Reference> subscriptions_;
+  std::vector<std::string> states_;
+  ConnectionAction connection_action_{ConnectionAction::NONE};
   uint32_t request_{0};
   Manifest manifest_;
   size_t page_{0};

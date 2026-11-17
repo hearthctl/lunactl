@@ -15,6 +15,7 @@ class UI {
     single_ = box(root_, 93, 93, 280, 280, 0, 140);
     single_icon_ = label(single_, icons, 0, 45, 280);
     single_label_ = label(single_, text, 20, 120, 240);
+    single_value_ = label(single_, text, 20, 174, 240);
     for (int slot = 0; slot < 4; ++slot) {
       int x = slot == 1 || slot == 2 ? 236 : 0;
       int y = slot >= 2 ? 236 : 0;
@@ -24,6 +25,7 @@ class UI {
       int cy = y == 0 ? 134 : 98;
       quarter_icons_[slot] = label(quarters_[slot], icons, cx - 80, cy - 54, 160);
       quarter_labels_[slot] = label(quarters_[slot], text, cx - 80, cy + 4, 160);
+      quarter_values_[slot] = label(quarters_[slot], text, cx - 80, cy + 38, 160);
     }
     hole_ = box(root_, 177, 177, 112, 112, 0x000000, 56);
     clock_ = label(hole_, text, 0, 38, 112);
@@ -38,10 +40,12 @@ class UI {
     visible(hole_, core.pie());
     if (!core.pie()) {
       paint(single_, single_label_, single_icon_, core.item());
+      lv_label_set_text(single_value_, core.value().c_str());
     }
     for (size_t slot = 0; slot < 4; ++slot) {
       visible(quarters_[slot], core.pie());
       if (!core.pie()) continue;
+      lv_label_set_text(quarter_values_[slot], core.value(slot).c_str());
       if (core.slot_tappable(slot)) paint(quarters_[slot], quarter_labels_[slot], quarter_icons_[slot], core.item(slot));
       else {
         lv_obj_set_style_bg_color(quarters_[slot], lv_color_hex(0x202020), 0);
@@ -104,7 +108,9 @@ class UI {
     lv_label_set_text(icon, resolve_icon(item.icon.c_str()).glyph);
   }
   lv_obj_t *root_{nullptr}, *single_{nullptr}, *single_label_{nullptr}, *single_icon_{nullptr};
+  lv_obj_t *single_value_{nullptr};
   lv_obj_t *quarters_[4]{}, *quarter_labels_[4]{}, *quarter_icons_[4]{};
+  lv_obj_t *quarter_values_[4]{};
   lv_obj_t *hole_{nullptr}, *clock_{nullptr}, *dots_{nullptr}, *dots[6]{};
 };
 }  // namespace lunactl

@@ -1,0 +1,262 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Wert",
+              "color": "#123456",
+              "action": {
+                "action": "script.example"
+              },
+              "value": {
+                "format": "{10}|{1}|{0}|{1}|{2}|{3}|{4}|{11}|{01}|{x}|{}",
+                "refs": [
+                  {
+                    "entity": "sensor.value_0"
+                  },
+                  {
+                    "entity": "sensor.value_1",
+                    "map": {
+                      "on": "{0} Grüße",
+                      "1": "Eins",
+                      "unknown": "?"
+                    }
+                  },
+                  {
+                    "entity": "sensor.value_2",
+                    "decimals": 0
+                  },
+                  {
+                    "entity": "sensor.value_3",
+                    "decimals": 6
+                  },
+                  {
+                    "entity": "sensor.value_4",
+                    "decimal_comma": true
+                  },
+                  {
+                    "entity": "sensor.value_5"
+                  },
+                  {
+                    "entity": "sensor.value_6"
+                  },
+                  {
+                    "entity": "sensor.value_7"
+                  },
+                  {
+                    "entity": "sensor.value_8"
+                  },
+                  {
+                    "entity": "sensor.value_9"
+                  },
+                  {
+                    "entity": "sensor.value_10"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "state",
+      "entity": "sensor.value_10",
+      "state": "last"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.value_0",
+      "state": "12.340"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.value_1",
+      "state": "on"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.value_2",
+      "state": "2.7"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.value_3",
+      "state": "1.2345678"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.value_4",
+      "state": "12.340"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.value_1",
+      "state": "1.0"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.value_2",
+      "state": "-0.5"
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "--|--|--|--|--|--|--|{11}|{01}|{x}|{}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "last|--|--|--|--|--|--|{11}|{01}|{x}|{}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "last|--|12.340|--|--|--|--|{11}|{01}|{x}|{}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "last|{0} Grüße|12.340|{0} Grüße|--|--|--|{11}|{01}|{x}|{}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "last|{0} Grüße|12.340|{0} Grüße|3|--|--|{11}|{01}|{x}|{}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "last|{0} Grüße|12.340|{0} Grüße|3|1.234568|--|{11}|{01}|{x}|{}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "last|{0} Grüße|12.340|{0} Grüße|3|1.234568|12,340|{11}|{01}|{x}|{}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "last|1.0|12.340|1.0|3|1.234568|12,340|{11}|{01}|{x}|{}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "last|1.0|12.340|1.0|0|1.234568|12,340|{11}|{01}|{x}|{}"
+        }
+      }
+    ]
+  }
+}

@@ -43,6 +43,7 @@ wifi:
   password: !secret wifi_password
 
 api:
+  homeassistant_states: true
   encryption:
     key: !secret api_encryption_key
   on_client_connected:
@@ -140,6 +141,29 @@ button:
                 request: !lambda return id(manifest_core).begin_fetch();
 
 script:
+  - id: sync_subscriptions
+    mode: single
+    then:
+      # Leave the API response callback before closing its socket.
+      - delay: 1ms
+      - lambda: |-
+          auto &core = id(manifest_core);
+          auto action = core.take_connection_action();
+          if (action == lunactl::ConnectionAction::RESTART) {
+            App.safe_reboot();
+          } else if (action == lunactl::ConnectionAction::RECONNECT) {
+            for (const auto &ref : core.subscriptions()) {
+              api::global_api_server->subscribe_home_assistant_state(
+                  ref.entity.c_str(), ref.attribute.empty() ? nullptr : ref.attribute.c_str(),
+                  [ref](StringRef state) {
+                    id(manifest_core).set_state(ref, std::string(state.c_str(), state.size()));
+                    id(render_manifest).execute();
+                  });
+            }
+            // HA learns the registered subscriptions on its next connection.
+            // Closing abruptly avoids HA's graceful-disconnect cooldown (#2).
+            for (const auto &client : api::global_api_server->active_clients()) client->on_fatal_error();
+          }
   - id: wake_display
     then:
       - lambda: |-
@@ -201,6 +225,7 @@ script:
                 for (const auto &warning : id(manifest_core).warnings())
                   ESP_LOGW("lunactl", "%s", warning.c_str());
             - script.execute: render_manifest
+            - script.execute: sync_subscriptions
           on_error:
             - lambda: |-
                 if (id(manifest_core).current(request))

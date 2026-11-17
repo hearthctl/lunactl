@@ -1,0 +1,539 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Wert",
+              "color": "#123456",
+              "action": {
+                "action": "script.example"
+              },
+              "value": {
+                "format": "{0} °C · {1} / {0} {9}",
+                "refs": [
+                  {
+                    "entity": "sensor.temperature",
+                    "decimals": 1,
+                    "decimal_comma": true
+                  },
+                  {
+                    "entity": "climate.room",
+                    "attribute": "hvac_action",
+                    "map": {
+                      "heating": "Heizen",
+                      "idle": "Aus",
+                      "unavailable": "Nicht verfügbar"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "sync"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.temperature",
+      "state": "21.26"
+    },
+    {
+      "type": "state",
+      "entity": "climate.room",
+      "state": "heating",
+      "attribute": "hvac_action"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.temperature",
+      "state": "-3.25"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.temperature",
+      "state": "-0.01"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.temperature",
+      "state": "unknown"
+    },
+    {
+      "type": "state",
+      "entity": "climate.room",
+      "state": "unavailable",
+      "attribute": "hvac_action"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.temperature",
+      "state": "unavailable"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.temperature",
+      "state": "not a number"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.temperature",
+      "state": "nan"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.temperature",
+      "state": "inf"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.temperature",
+      "state": "1e999"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.temperature",
+      "state": "12x"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.temperature",
+      "state": "2e1"
+    },
+    {
+      "type": "state",
+      "entity": "climate.room",
+      "state": "cooling",
+      "attribute": "hvac_action"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.unrelated",
+      "state": "99"
+    },
+    {
+      "type": "disconnect"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.temperature",
+      "state": "99"
+    },
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Wert",
+              "color": "#123456",
+              "action": {
+                "action": "script.example"
+              },
+              "value": {
+                "format": "{0} °C · {1} / {0} {9}",
+                "refs": [
+                  {
+                    "entity": "sensor.temperature",
+                    "decimals": 1,
+                    "decimal_comma": true
+                  },
+                  {
+                    "entity": "climate.room",
+                    "attribute": "hvac_action",
+                    "map": {
+                      "heating": "Heizen",
+                      "idle": "Aus",
+                      "unavailable": "Nicht verfügbar"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "sync"
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · -- / -- {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · -- / -- {9}"
+        },
+        "connection_action": "reconnect",
+        "subscriptions": [
+          {
+            "entity": "sensor.temperature"
+          },
+          {
+            "entity": "climate.room",
+            "attribute": "hvac_action"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "21,3 °C · -- / 21,3 {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "21,3 °C · Heizen / 21,3 {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-3,2 °C · Heizen / -3,2 {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "0,0 °C · Heizen / 0,0 {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · Heizen / -- {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · Nicht verfügbar / -- {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · Nicht verfügbar / -- {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · Nicht verfügbar / -- {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · Nicht verfügbar / -- {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · Nicht verfügbar / -- {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · Nicht verfügbar / -- {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · Nicht verfügbar / -- {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "20,0 °C · Nicht verfügbar / 20,0 {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "20,0 °C · cooling / 20,0 {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "20,0 °C · cooling / 20,0 {9}"
+        }
+      },
+      {
+        "status": "Keine Verbindung",
+        "tappable": false
+      },
+      {
+        "status": "Keine Verbindung",
+        "tappable": false
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · -- / -- {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · -- / -- {9}"
+        },
+        "request": 5
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · -- / -- {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗",
+          "value": "-- °C · -- / -- {9}"
+        },
+        "connection_action": "none",
+        "subscriptions": [
+          {
+            "entity": "sensor.temperature"
+          },
+          {
+            "entity": "climate.room",
+            "attribute": "hvac_action"
+          }
+        ]
+      }
+    ]
+  }
+}
