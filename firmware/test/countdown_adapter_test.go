@@ -81,16 +81,21 @@ int main() {
  server.clients.emplace_back(new Client);
  manifest_core.set_connected(true);
  std::string error;
- const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"Papa rufen","color":"#BB1260","action":{"action":"script.example"},"value":{"format":"{0}","refs":[{"entity":"timer.example","attribute":"duration"}]},"countdown":"timer.example"}},{"type":"pie","quarters":[null,null,null,null]}]})";
+ const char *manifest = R"({"schema":1,"display":{"brightness":"sensor.brightness"},"pages":[{"type":"single","item":{"label":"Papa rufen","color":"#BB1260","action":{"action":"script.example"},"value":{"format":"{0}","refs":[{"entity":"timer.example","attribute":"duration"}]},"countdown":"timer.example"}},{"type":"pie","quarters":[null,null,null,null]}]})";
  if (!manifest_core.accept_json(manifest_core.begin_fetch(), manifest, error)) return 1;
  render_manifest.execute();
  sync();
- if (server.subscriptions.size() != 3 || server.clients[0]->drops != 1 || App.reboots) return 2;
+ if (server.subscriptions.size() != 4 || server.clients[0]->drops != 1 || App.reboots) return 2;
  auto &duration = server.subscriptions[0];
  auto &state = server.subscriptions[1];
  auto &finish = server.subscriptions[2];
  if (std::string(duration.entity) != "timer.example" || std::string(duration.attribute) != "duration" ||
      state.attribute != nullptr || std::string(finish.attribute) != "finishes_at") return 3;
+ // Countdown subscriptions must coexist with the display's brightness reference.
+ auto &brightness = server.subscriptions[3];
+ if (std::string(brightness.entity) != "sensor.brightness" || brightness.attribute != nullptr) return 19;
+ brightness.callback({"40"});
+ if (manifest_core.brightness() != 40) return 20;
  state.callback({"active"});
  finish.callback({"2026-11-17T11:01:00+00:00"});
  duration.callback({"0:01:00"});
@@ -132,7 +137,7 @@ int main() {
  tick();
  if (!(ring->flags & LV_OBJ_FLAG_HIDDEN) || has_text(screen, "1:00")) return 17;
  sync();
- if (server.subscriptions.size() != 3 || server.clients[0]->drops != 1 || App.reboots) return 18;
+ if (server.subscriptions.size() != 4 || server.clients[0]->drops != 1 || App.reboots) return 18;
 }
 `, map[string]string{"lvgl.h": countdownLVGLStub})
 }
