@@ -1,17 +1,14 @@
 name: CI
-on:
-  pull_request:
-  push:
-    branches: [main]
+on: pull_request
 permissions:
   contents: read
 jobs:
-  check:
+  verify:
     # GitHub-hosted: provides the C++ compiler, curl, sha256sum and Podman the checks need.
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: hearthctl/.github/checkout@main
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
@@ -21,6 +18,4 @@ jobs:
         with:
           path: ~/.platformio
           key: platformio-${{ hashFiles('Makefile') }}
-      # `check` runs every seam plus the firmware build. Until it exists on
-      # main, fall back to the firmware build alone.
-      - run: make "$(grep -q '^check:' Makefile && echo check || echo check-firmware)"
+      - uses: hearthctl/.github/verify@main
