@@ -43,7 +43,7 @@ class LunactlPreview extends LitElement {
   }
   disconnectedCallback() { super.disconnectedCallback(); clearInterval(this._tick); }
   willUpdate(changed) {
-    if (changed.has("device") || changed.has("page")) {
+    if (changed.has("device") || changed.has("page") || changed.has("source")) {
       if (Number.isInteger(this.page)) this._page = this.page;
       else if (changed.has("device")) this._page = 0;
     }
