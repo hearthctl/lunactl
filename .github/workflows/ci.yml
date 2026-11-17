@@ -26,9 +26,9 @@ jobs:
         with:
           go-version-file: go.mod
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
-      # The ESP32 toolchain is a large download that only changes with the ESPHome version.
+      # The ESP-IDF framework and toolchain are a large download that only changes with the ESPHome version.
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: ~/.platformio
-          key: platformio-${{ hashFiles('Makefile') }}
+          path: ~/.cache/esphome
+          key: esp-idf-${{ hashFiles('Makefile') }}
       - uses: hearthctl/.github/verify@main
