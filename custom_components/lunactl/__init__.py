@@ -9,6 +9,7 @@ from homeassistant.core import SupportsResponse, callback
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import device_registry as dr
 
+from .designer import async_register_designer, async_remove_designer
 from .manifest import ManifestError
 from .store import DOMAIN, ManifestStore
 
@@ -17,6 +18,7 @@ async def async_setup_entry(hass, entry):
     store = ManifestStore(hass)
     await store.async_load()
     hass.data[DOMAIN] = store
+    await async_register_designer(hass)
 
     async def manifest(call):
         return store.fetch(call.data["mac"])
@@ -70,6 +72,7 @@ async def async_setup_entry(hass, entry):
 
 
 async def async_unload_entry(hass, entry):
+    async_remove_designer(hass)
     hass.data.pop(DOMAIN).close()
     for service in ("manifest", "run"):
         hass.services.async_remove(DOMAIN, service)

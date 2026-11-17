@@ -1,0 +1,8 @@
+[
+  {"name":"syntax", "source":"{", "error":"Ungültiges JSON. Prüfe Anführungszeichen, Kommas und Klammern."},
+  {"name":"array", "source":"[]", "error":"Das Manifest muss ein JSON-Objekt sein."},
+  {"name":"null", "source":"null", "error":"Das Manifest muss ein JSON-Objekt sein."},
+  {"name":"number", "source":"1", "error":"Das Manifest muss ein JSON-Objekt sein."},
+  {"name":"string", "source":"\"Manifest\"", "error":"Das Manifest muss ein JSON-Objekt sein."},
+  {"name":"object sent for schema validation", "source":"{}"}
+]

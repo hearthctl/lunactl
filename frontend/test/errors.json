@@ -1,0 +1,13 @@
+[
+  {"name":"stale revision", "input":{"code":"stale_revision"}, "output":"Manifest wurde anderswo geändert"},
+  {"name":"unknown firmware", "input":{"code":"unknown_firmware"}, "output":"Firmware-Version unbekannt. Speichern ist erst mit lesbarer Firmware-Version möglich."},
+  {"name":"missing required field", "input":{"code":"invalid_manifest", "message":"'action' is a required property"}, "output":"Das Pflichtfeld „action“ fehlt."},
+  {"name":"unknown icon", "input":{"code":"invalid_manifest", "message":"'mdi:not-in-lunactl' is not one of ['mdi:lightbulb']"}, "output":"Ein Wert ist nicht erlaubt. Prüfe insbesondere die Symbole in der Symbolliste."},
+  {"name":"size", "input":{"code":"invalid_manifest", "message":"Manifest exceeds 32 KiB"}, "output":"Das Manifest darf höchstens 32 KiB groß sein."},
+  {"name":"unexpected fields", "input":{"code":"invalid_manifest", "message":"Additional properties are not allowed"}, "output":"Unbekannte Felder sind nicht erlaubt."},
+  {"name":"type", "input":{"code":"invalid_manifest", "message":"1 is not of type 'string'"}, "output":"Ein Feld hat den falschen Datentyp."},
+  {"name":"pattern", "input":{"code":"invalid_manifest", "message":"'bad' does not match '#[A-Fa-f0-9]{6}'"}, "output":"Ein Feld hat ein ungültiges Format."},
+  {"name":"range", "input":{"code":"invalid_manifest", "message":"0 is less than the minimum of 1"}, "output":"Ein Wert oder die Anzahl der Einträge liegt außerhalb des erlaubten Bereichs."},
+  {"name":"fallback", "input":{"code":"invalid_manifest", "message":"Future English validator error"}, "output":"Das Manifest entspricht nicht dem Schema dieses Geräts."},
+  {"name":"connection", "input":{}, "output":"Die Verbindung zu Home Assistant ist fehlgeschlagen. Erneut versuchen."}
+]
