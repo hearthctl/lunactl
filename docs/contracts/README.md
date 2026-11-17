@@ -16,10 +16,24 @@ to device flash. Every HA API connection fetches it, and the device's
 **Manifest neu laden** button fetches it again. Log viewers do not trigger a
 fetch or make the device appear connected to HA.
 
-The [JSON Schema](../../schema/manifest.schema.json) describes this tracer:
-`schema: 1`, exactly one page with `type: single`, and its `item` with `label`,
-`color` (`#RRGGBB`) and `action`. An action has an HA `action` name and optional
-`target` and `data` objects. Unsupported fields and Page types are rejected.
+The [JSON Schema](../../schema/manifest.schema.json) accepts `schema: 1` and
+one to six pages. The first page is home. Swipe left/right to move between pages,
+or tap a page dot; swiping past either end stays on that page. A valid replacement
+Manifest starts at home.
+
+A `single` page has an `item`. A `pie` page has `quarters`: exactly four entries,
+clockwise from top-left (top-left, top-right, bottom-right, bottom-left). Each is
+an Item or `null` for a dark, inert quarter. Without `center`, the small hole
+shows HA's local time (`--:--` before time sync). The clock hole and dividers
+are inert. `center` belongs to issue #7 and is currently rejected.
+
+Items require `label`, `color` (`#RRGGBB`) and `action`, with an optional `icon`.
+An action has an HA `action` name and optional `target` and `data` objects.
+The 44 compiled-in MDI names match [the icon mockup](../mockups/icons.png).
+Unknown names render `mdi:help-circle` and log a warning; an omitted icon uses
+the same fallback without a warning. Unsupported fields and Page types are
+rejected. Live values and countdowns belong to subsequent issues.
+
 The optional `buttons` object binds `a_short`, `a_long`, `b_short` and `b_long`
 directly to actions in that same format (for example,
 `"buttons": {"b_long": {"action": "script.example"}}`). Omit a gesture to leave
@@ -35,9 +49,7 @@ short and long. Each press uses the bindings present when it began; disconnect
 cancels pending actions. Keys cannot dispatch without HA and a valid Manifest.
 New Manifests replace all bindings, so omitted bindings clear previous ones.
 
-Additional pages, icons, live values and countdowns belong to the following
-issues. An invalid replacement is logged and leaves the current
-valid Manifest active. Without HA the device shows **Keine Verbindung**;
+An invalid replacement is logged and leaves the current valid Manifest active. Without HA the device shows **Keine Verbindung**;
 connected without a valid Manifest it shows **Kein Manifest**. Neither state
 can run an Item's action. Reconnecting refetches; the previous valid Manifest
 stays in RAM until replaced. Rebooting always starts without a Manifest.

@@ -1,0 +1,2420 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Hell",
+                "icon": "mdi:white-balance-sunny",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell",
+                  "target": {
+                    "entity_id": "script.hell"
+                  },
+                  "data": {
+                    "slot": 0,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Lesen",
+                "icon": "mdi:book-open-variant",
+                "color": "#107C78",
+                "action": {
+                  "action": "script.lesen",
+                  "target": {
+                    "entity_id": "script.lesen"
+                  },
+                  "data": {
+                    "slot": 1,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Schlafen gehen",
+                "icon": "mdi:weather-night",
+                "color": "#3B2DA0",
+                "action": {
+                  "action": "script.schlafen",
+                  "target": {
+                    "entity_id": "script.schlafen"
+                  },
+                  "data": {
+                    "slot": 2,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Gemütlich",
+                "icon": "mdi:sofa",
+                "color": "#BB390A",
+                "action": {
+                  "action": "script.gemuetlich",
+                  "target": {
+                    "entity_id": "script.gemuetlich"
+                  },
+                  "data": {
+                    "slot": 3,
+                    "text": "Grüße"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Page 1",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell",
+                "target": {
+                  "entity_id": "script.hell"
+                },
+                "data": {
+                  "slot": 0,
+                  "text": "Grüße"
+                }
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Hell",
+                "icon": "mdi:white-balance-sunny",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell",
+                  "target": {
+                    "entity_id": "script.hell"
+                  },
+                  "data": {
+                    "slot": 0,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Lesen",
+                "icon": "mdi:book-open-variant",
+                "color": "#107C78",
+                "action": {
+                  "action": "script.lesen",
+                  "target": {
+                    "entity_id": "script.lesen"
+                  },
+                  "data": {
+                    "slot": 1,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Schlafen gehen",
+                "icon": "mdi:weather-night",
+                "color": "#3B2DA0",
+                "action": {
+                  "action": "script.schlafen",
+                  "target": {
+                    "entity_id": "script.schlafen"
+                  },
+                  "data": {
+                    "slot": 2,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Gemütlich",
+                "icon": "mdi:sofa",
+                "color": "#BB390A",
+                "action": {
+                  "action": "script.gemuetlich",
+                  "target": {
+                    "entity_id": "script.gemuetlich"
+                  },
+                  "data": {
+                    "slot": 3,
+                    "text": "Grüße"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Page 3",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell",
+                "target": {
+                  "entity_id": "script.hell"
+                },
+                "data": {
+                  "slot": 0,
+                  "text": "Grüße"
+                }
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Hell",
+                "icon": "mdi:white-balance-sunny",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell",
+                  "target": {
+                    "entity_id": "script.hell"
+                  },
+                  "data": {
+                    "slot": 0,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Lesen",
+                "icon": "mdi:book-open-variant",
+                "color": "#107C78",
+                "action": {
+                  "action": "script.lesen",
+                  "target": {
+                    "entity_id": "script.lesen"
+                  },
+                  "data": {
+                    "slot": 1,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Schlafen gehen",
+                "icon": "mdi:weather-night",
+                "color": "#3B2DA0",
+                "action": {
+                  "action": "script.schlafen",
+                  "target": {
+                    "entity_id": "script.schlafen"
+                  },
+                  "data": {
+                    "slot": 2,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Gemütlich",
+                "icon": "mdi:sofa",
+                "color": "#BB390A",
+                "action": {
+                  "action": "script.gemuetlich",
+                  "target": {
+                    "entity_id": "script.gemuetlich"
+                  },
+                  "data": {
+                    "slot": 3,
+                    "text": "Grüße"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Page 5",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell",
+                "target": {
+                  "entity_id": "script.hell"
+                },
+                "data": {
+                  "slot": 0,
+                  "text": "Grüße"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "press",
+      "x": 336,
+      "y": 130
+    },
+    {
+      "type": "release",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "press",
+      "x": 336,
+      "y": 130
+    },
+    {
+      "type": "release",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "press",
+      "x": 336,
+      "y": 130
+    },
+    {
+      "type": "release",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "press",
+      "x": 336,
+      "y": 130
+    },
+    {
+      "type": "release",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "press",
+      "x": 336,
+      "y": 130
+    },
+    {
+      "type": "release",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "press",
+      "x": 336,
+      "y": 130
+    },
+    {
+      "type": "release",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "tap",
+      "x": 188,
+      "y": 451
+    },
+    {
+      "type": "tap",
+      "x": 260,
+      "y": 451
+    },
+    {
+      "type": "press",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Hell",
+                "icon": "mdi:white-balance-sunny",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell",
+                  "target": {
+                    "entity_id": "script.hell"
+                  },
+                  "data": {
+                    "slot": 0,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Lesen",
+                "icon": "mdi:book-open-variant",
+                "color": "#107C78",
+                "action": {
+                  "action": "script.lesen",
+                  "target": {
+                    "entity_id": "script.lesen"
+                  },
+                  "data": {
+                    "slot": 1,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Schlafen gehen",
+                "icon": "mdi:weather-night",
+                "color": "#3B2DA0",
+                "action": {
+                  "action": "script.schlafen",
+                  "target": {
+                    "entity_id": "script.schlafen"
+                  },
+                  "data": {
+                    "slot": 2,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Gemütlich",
+                "icon": "mdi:sofa",
+                "color": "#BB390A",
+                "action": {
+                  "action": "script.gemuetlich",
+                  "target": {
+                    "entity_id": "script.gemuetlich"
+                  },
+                  "data": {
+                    "slot": 3,
+                    "text": "Grüße"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Page 1",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell",
+                "target": {
+                  "entity_id": "script.hell"
+                },
+                "data": {
+                  "slot": 0,
+                  "text": "Grüße"
+                }
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Hell",
+                "icon": "mdi:white-balance-sunny",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell",
+                  "target": {
+                    "entity_id": "script.hell"
+                  },
+                  "data": {
+                    "slot": 0,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Lesen",
+                "icon": "mdi:book-open-variant",
+                "color": "#107C78",
+                "action": {
+                  "action": "script.lesen",
+                  "target": {
+                    "entity_id": "script.lesen"
+                  },
+                  "data": {
+                    "slot": 1,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Schlafen gehen",
+                "icon": "mdi:weather-night",
+                "color": "#3B2DA0",
+                "action": {
+                  "action": "script.schlafen",
+                  "target": {
+                    "entity_id": "script.schlafen"
+                  },
+                  "data": {
+                    "slot": 2,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Gemütlich",
+                "icon": "mdi:sofa",
+                "color": "#BB390A",
+                "action": {
+                  "action": "script.gemuetlich",
+                  "target": {
+                    "entity_id": "script.gemuetlich"
+                  },
+                  "data": {
+                    "slot": 3,
+                    "text": "Grüße"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Page 3",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell",
+                "target": {
+                  "entity_id": "script.hell"
+                },
+                "data": {
+                  "slot": 0,
+                  "text": "Grüße"
+                }
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Hell",
+                "icon": "mdi:white-balance-sunny",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell",
+                  "target": {
+                    "entity_id": "script.hell"
+                  },
+                  "data": {
+                    "slot": 0,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Lesen",
+                "icon": "mdi:book-open-variant",
+                "color": "#107C78",
+                "action": {
+                  "action": "script.lesen",
+                  "target": {
+                    "entity_id": "script.lesen"
+                  },
+                  "data": {
+                    "slot": 1,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Schlafen gehen",
+                "icon": "mdi:weather-night",
+                "color": "#3B2DA0",
+                "action": {
+                  "action": "script.schlafen",
+                  "target": {
+                    "entity_id": "script.schlafen"
+                  },
+                  "data": {
+                    "slot": 2,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Gemütlich",
+                "icon": "mdi:sofa",
+                "color": "#BB390A",
+                "action": {
+                  "action": "script.gemuetlich",
+                  "target": {
+                    "entity_id": "script.gemuetlich"
+                  },
+                  "data": {
+                    "slot": 3,
+                    "text": "Grüße"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Page 5",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell",
+                "target": {
+                  "entity_id": "script.hell"
+                },
+                "data": {
+                  "slot": 0,
+                  "text": "Grüße"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "release",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "page",
+      "index": 99
+    },
+    {
+      "type": "press",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "release",
+      "x": 336,
+      "y": 130
+    },
+    {
+      "type": "press",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "release",
+      "x": 155,
+      "y": 130
+    },
+    {
+      "type": "press",
+      "x": 230,
+      "y": 150
+    },
+    {
+      "type": "release",
+      "x": 240,
+      "y": 150
+    },
+    {
+      "type": "press",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "release",
+      "x": 130,
+      "y": 200
+    },
+    {
+      "type": "page",
+      "index": 1
+    },
+    {
+      "type": "tap",
+      "x": 233,
+      "y": 233
+    },
+    {
+      "type": "tap",
+      "x": 80,
+      "y": 233
+    },
+    {
+      "type": "press",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "release",
+      "x": 336,
+      "y": 130
+    },
+    {
+      "type": "press",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "page",
+      "index": 1
+    },
+    {
+      "type": "release",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "disconnect"
+    },
+    {
+      "type": "tap",
+      "x": 233,
+      "y": 233
+    },
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Hell",
+                "icon": "mdi:white-balance-sunny",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell",
+                  "target": {
+                    "entity_id": "script.hell"
+                  },
+                  "data": {
+                    "slot": 0,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Lesen",
+                "icon": "mdi:book-open-variant",
+                "color": "#107C78",
+                "action": {
+                  "action": "script.lesen",
+                  "target": {
+                    "entity_id": "script.lesen"
+                  },
+                  "data": {
+                    "slot": 1,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Schlafen gehen",
+                "icon": "mdi:weather-night",
+                "color": "#3B2DA0",
+                "action": {
+                  "action": "script.schlafen",
+                  "target": {
+                    "entity_id": "script.schlafen"
+                  },
+                  "data": {
+                    "slot": 2,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Gemütlich",
+                "icon": "mdi:sofa",
+                "color": "#BB390A",
+                "action": {
+                  "action": "script.gemuetlich",
+                  "target": {
+                    "entity_id": "script.gemuetlich"
+                  },
+                  "data": {
+                    "slot": 3,
+                    "text": "Grüße"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Page 1",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell",
+                "target": {
+                  "entity_id": "script.hell"
+                },
+                "data": {
+                  "slot": 0,
+                  "text": "Grüße"
+                }
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Hell",
+                "icon": "mdi:white-balance-sunny",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell",
+                  "target": {
+                    "entity_id": "script.hell"
+                  },
+                  "data": {
+                    "slot": 0,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Lesen",
+                "icon": "mdi:book-open-variant",
+                "color": "#107C78",
+                "action": {
+                  "action": "script.lesen",
+                  "target": {
+                    "entity_id": "script.lesen"
+                  },
+                  "data": {
+                    "slot": 1,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Schlafen gehen",
+                "icon": "mdi:weather-night",
+                "color": "#3B2DA0",
+                "action": {
+                  "action": "script.schlafen",
+                  "target": {
+                    "entity_id": "script.schlafen"
+                  },
+                  "data": {
+                    "slot": 2,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Gemütlich",
+                "icon": "mdi:sofa",
+                "color": "#BB390A",
+                "action": {
+                  "action": "script.gemuetlich",
+                  "target": {
+                    "entity_id": "script.gemuetlich"
+                  },
+                  "data": {
+                    "slot": 3,
+                    "text": "Grüße"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Page 3",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell",
+                "target": {
+                  "entity_id": "script.hell"
+                },
+                "data": {
+                  "slot": 0,
+                  "text": "Grüße"
+                }
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Hell",
+                "icon": "mdi:white-balance-sunny",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell",
+                  "target": {
+                    "entity_id": "script.hell"
+                  },
+                  "data": {
+                    "slot": 0,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Lesen",
+                "icon": "mdi:book-open-variant",
+                "color": "#107C78",
+                "action": {
+                  "action": "script.lesen",
+                  "target": {
+                    "entity_id": "script.lesen"
+                  },
+                  "data": {
+                    "slot": 1,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Schlafen gehen",
+                "icon": "mdi:weather-night",
+                "color": "#3B2DA0",
+                "action": {
+                  "action": "script.schlafen",
+                  "target": {
+                    "entity_id": "script.schlafen"
+                  },
+                  "data": {
+                    "slot": 2,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Gemütlich",
+                "icon": "mdi:sofa",
+                "color": "#BB390A",
+                "action": {
+                  "action": "script.gemuetlich",
+                  "target": {
+                    "entity_id": "script.gemuetlich"
+                  },
+                  "data": {
+                    "slot": 3,
+                    "text": "Grüße"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Page 5",
+              "icon": "mdi:white-balance-sunny",
+              "color": "#F7C844",
+              "action": {
+                "action": "script.hell",
+                "target": {
+                  "entity_id": "script.hell"
+                },
+                "data": {
+                  "slot": 0,
+                  "text": "Grüße"
+                }
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Hell",
+                "icon": "mdi:white-balance-sunny",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell",
+                  "target": {
+                    "entity_id": "script.hell"
+                  },
+                  "data": {
+                    "slot": 0,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Lesen",
+                "icon": "mdi:book-open-variant",
+                "color": "#107C78",
+                "action": {
+                  "action": "script.lesen",
+                  "target": {
+                    "entity_id": "script.lesen"
+                  },
+                  "data": {
+                    "slot": 1,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Schlafen gehen",
+                "icon": "mdi:weather-night",
+                "color": "#3B2DA0",
+                "action": {
+                  "action": "script.schlafen",
+                  "target": {
+                    "entity_id": "script.schlafen"
+                  },
+                  "data": {
+                    "slot": 2,
+                    "text": "Grüße"
+                  }
+                }
+              },
+              {
+                "label": "Gemütlich",
+                "icon": "mdi:sofa",
+                "color": "#BB390A",
+                "action": {
+                  "action": "script.gemuetlich",
+                  "target": {
+                    "entity_id": "script.gemuetlich"
+                  },
+                  "data": {
+                    "slot": 3,
+                    "text": "Grüße"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 2,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          true,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 2,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          true,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 3,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          false,
+          true,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 3",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 3,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          false,
+          true,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 3",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 4,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          false,
+          false,
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 4,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          false,
+          false,
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 5,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 5",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 5,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 5",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 5,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 5",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 4,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          false,
+          false,
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 4,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          false,
+          false,
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        },
+        "call": {
+          "service": "script.lunactl_run",
+          "action": "script.hell",
+          "data": "{\"target\":{\"entity_id\":\"script.hell\"},\"data\":{\"slot\":0,\"text\":\"Grüße\"}}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          },
+          {
+            "tappable": true,
+            "label": "Lesen",
+            "color": "#107C78",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "Schlafen gehen",
+            "color": "#3B2DA0",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "Gemütlich",
+            "color": "#BB390A",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "Keine Verbindung",
+        "tappable": false
+      },
+      {
+        "status": "Keine Verbindung",
+        "tappable": false
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        },
+        "request": 5
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        },
+        "error": "Expected one to six pages"
+      }
+    ]
+  }
+}

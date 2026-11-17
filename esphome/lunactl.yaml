@@ -1,7 +1,7 @@
 esphome:
   name: lunactl
   # Copy the header, and include its type before ESPHome's static globals.
-  includes: [<core.h>, lunactl/core.h, <battery.h>, lunactl/battery.h]
+  includes: [<core.h>, lunactl/core.h, lunactl/icons.h, <ui.h>, lunactl/ui.h, <battery.h>, lunactl/battery.h]
   # Runs after the I2C bus (1000) and before the M5IOE1 setup (IO, 900).
   # Mirrors M5GFX's StopWatch power-on. Verified on device: on a battery cold
   # boot the M5IOE1 NACKs for ~50 ms (M5GFX allows up to 500 ms), and the
@@ -71,6 +71,13 @@ globals:
     type: unsigned int
     restore_value: false
     initial_value: "0"
+  - id: page_ui
+    type: lunactl::UI
+    restore_value: false
+  - id: tapped_slot
+    type: int
+    restore_value: false
+    initial_value: "-1"
   - id: manifest_core
     type: lunactl::Core
     restore_value: false
@@ -112,6 +119,13 @@ interval:
           id: handle_key
           key: 1
           pressed: !lambda return id(key_b).state;
+
+  - interval: 1s
+    then:
+      - lambda: |-
+          auto now = id(ha_time).now();
+          id(manifest_core).set_time(now.hour, now.minute, now.is_valid());
+          id(page_ui).update_clock(id(manifest_core));
 
 button:
   - platform: template
@@ -184,6 +198,8 @@ script:
                 std::string error;
                 if (!id(manifest_core).accept(request, response["response"], error))
                   ESP_LOGW("lunactl", "Manifest rejected: %s", error.c_str());
+                for (const auto &warning : id(manifest_core).warnings())
+                  ESP_LOGW("lunactl", "%s", warning.c_str());
             - script.execute: render_manifest
           on_error:
             - lambda: |-
@@ -194,15 +210,20 @@ script:
       - lambda: |-
           auto &core = id(manifest_core);
           lv_label_set_text(id(manifest_status), core.status());
-          if (core.tappable()) {
-            lv_obj_remove_flag(id(single_item), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(manifest_status), LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text(id(item_label), core.item().label.c_str());
-            lv_obj_set_style_bg_color(id(single_item), lv_color_hex(core.item().rgb), LV_PART_MAIN);
-          } else {
-            lv_obj_add_flag(id(single_item), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_remove_flag(id(manifest_status), LV_OBJ_FLAG_HIDDEN);
-          }
+          id(page_ui).init(lv_obj_get_parent(id(touch_surface)), id(font_item)->get_lv_font(), id(font_icon)->get_lv_font());
+          id(page_ui).render(core);
+          lv_obj_remove_flag(id(touch_surface), LV_OBJ_FLAG_SCROLLABLE);
+          lv_obj_move_foreground(id(battery_hint));
+          lv_obj_move_foreground(id(battery_level_text));
+          lv_obj_move_foreground(id(manifest_status));
+          lv_obj_move_foreground(id(touch_surface));
+          if (core.tappable()) lv_obj_add_flag(id(manifest_status), LV_OBJ_FLAG_HIDDEN);
+          else lv_obj_remove_flag(id(manifest_status), LV_OBJ_FLAG_HIDDEN);
+
+# HA supplies local time and timezone; no household credentials or entity needed.
+time:
+  - platform: homeassistant
+    id: ha_time
 
 # OTA uses the api encryption key.
 ota:
@@ -315,6 +336,56 @@ font:
     bpp: 4
     glyphsets: [GF_Latin_Core]
 
+  - id: font_icon
+    file: https://raw.githubusercontent.com/Templarian/MaterialDesign-Webfont/v7.4.47/fonts/materialdesignicons-webfont.ttf
+    size: 48
+    bpp: 4
+    glyphs:
+      - "\U000F0335" # mdi:lightbulb
+      - "\U000F0E4F" # mdi:lightbulb-off
+      - "\U000F0769" # mdi:ceiling-light
+      - "\U000F06B5" # mdi:lamp
+      - "\U000F095F" # mdi:desk-lamp
+      - "\U000F1051" # mdi:led-strip-variant
+      - "\U000F12BA" # mdi:string-lights
+      - "\U000F05A8" # mdi:white-balance-sunny
+      - "\U000F14F7" # mdi:book-open-variant
+      - "\U000F04B9" # mdi:sofa
+      - "\U000F0594" # mdi:weather-night
+      - "\U000F02E3" # mdi:bed
+      - "\U000F04B2" # mdi:sleep
+      - "\U000F00DF" # mdi:brightness-6
+      - "\U000F03D8" # mdi:palette
+      - "\U000F0717" # mdi:snowflake
+      - "\U000F0238" # mdi:fire
+      - "\U000F050F" # mdi:thermometer
+      - "\U000F001B" # mdi:air-conditioner
+      - "\U000F0210" # mdi:fan
+      - "\U000F058E" # mdi:water-percent
+      - "\U000F0425" # mdi:power
+      - "\U000F051B" # mdi:timer-outline
+      - "\U000F0417" # mdi:plus-circle
+      - "\U000F0666" # mdi:stop-circle
+      - "\U000F1821" # mdi:hand-wave
+      - "\U000F009E" # mdi:bell-ring
+      - "\U000F02DC" # mdi:home
+      - "\U000F081A" # mdi:door
+      - "\U000F05AE" # mdi:window-closed
+      - "\U000F00AC" # mdi:blinds
+      - "\U000F05E0" # mdi:check-circle
+      - "\U000F0159" # mdi:close-circle
+      - "\U000F05AA" # mdi:wifi-off
+      - "\U000F0083" # mdi:battery-alert
+      - "\U000F075A" # mdi:music
+      - "\U000F0502" # mdi:television
+      - "\U000F0297" # mdi:gamepad-variant
+      - "\U000F04CE" # mdi:star
+      - "\U000F02D1" # mdi:heart
+      - "\U000F0020" # mdi:alarm
+      - "\U000F00ED" # mdi:calendar
+      - "\U000F070D" # mdi:robot-vacuum
+      - "\U000F02D7" # mdi:help-circle
+
 lvgl:
   id: manifest_ui
   displays: [amoled]
@@ -327,35 +398,39 @@ lvgl:
         text: Keine Verbindung
         text_font: font_item
         text_color: 0xFFFFFF
+    # One input surface shares the core's geometry with host tests. A swipe,
+    # a dot, a divider, the clock hole or an empty quarter cannot run an Item.
     - button:
-        id: single_item
+        id: touch_surface
         align: center
-        width: 280
-        height: 280
-        radius: 140
-        hidden: true
-        bg_color: 0x000000
-        text_color: 0xFFFFFF
+        width: 466
+        height: 466
+        radius: 233
+        bg_opa: TRANSP
+        border_width: 0
         shadow_width: 0
-        widgets:
-          - label:
-              id: item_label
-              align: center
-              width: 240
-              text_align: center
-              long_mode: WRAP
-              text_font: font_item
-              text: ""
-        on_click:
+        pad_all: 0
+        pressed:
+          bg_opa: TRANSP
+        # ESPHome 2026.10.2 supplies widget-relative `lv_point_t point` to
+        # both triggers (components/lvgl/trigger.py:add_trigger).
+        on_press:
+          - lambda: |-
+              id(manifest_core).press(point.x, point.y);
+              id(page_ui).highlight(id(manifest_core), point.x, point.y);
+        on_release:
+          - lambda: |-
+              id(tapped_slot) = id(manifest_core).release(point.x, point.y);
+          - script.execute: render_manifest
           - if:
               condition:
-                lambda: return id(manifest_core).tappable();
+                lambda: return id(tapped_slot) >= 0;
               then:
                 - homeassistant.action:
                     action: script.lunactl_run
                     data:
-                      action: !lambda return id(manifest_core).item().action;
-                      data: !lambda return id(manifest_core).item().data;
+                      action: !lambda return id(manifest_core).item(id(tapped_slot)).action;
+                      data: !lambda return id(manifest_core).item(id(tapped_slot)).data;
                     on_error:
                       - lambda: 'ESP_LOGW("lunactl", "Item action failed: %s", error.c_str());'
     - label:

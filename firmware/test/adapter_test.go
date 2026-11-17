@@ -1,11 +1,14 @@
 package test
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -28,7 +31,7 @@ func TestProductionAdapter(t *testing.T) {
 		return match[1]
 	}
 	callback := extract(`(?s)capture_response: true\s+on_success:\s+- lambda: \|-\n(.*?)\n            - script.execute:`)
-	fields := extract(`(?s)on_click:.*?action: script.lunactl_run\s+data:\n(.*?)\n                    on_error:`)
+	fields := extract(`(?s)on_release:.*?action: script.lunactl_run\s+data:\n(.*?)\n                    on_error:`)
 	expressions := regexp.MustCompile(`(?m)^\s+(action|data): !lambda ([^\n]+)$`).FindAllStringSubmatch(fields, -1)
 	if len(expressions) != 2 {
 		t.Fatal("expected two string field bindings")
@@ -40,15 +43,19 @@ func TestProductionAdapter(t *testing.T) {
 	source := `#include "core.h"
 #include <iostream>
 #define id(name) name
-#define ESP_LOGW(...) ((void)0)
+#define ESP_LOGW(tag, format, message) warnings.emplace_back(message)
 int main() {
  lunactl::Core manifest_core;
+ int tapped_slot = 0;
+ std::vector<std::string> warnings;
  manifest_core.set_connected(true);
  uint32_t request = manifest_core.begin_fetch();
  JsonDocument envelope;
  deserializeJson(envelope, R"({"response":{"schema":1,"pages":[{"type":"single","item":{"label":"Adapter","color":"#123456","action":{"action":"script.adapter","target":{"entity_id":"script.expected"},"data":{"text":"quoted \\\" value"}}}}]}})");
  auto response = envelope.as<JsonObjectConst>();
+ {
  ` + callback + `
+ }
  if (!manifest_core.tappable()) return 1;
  JsonDocument out;
  ` + bindings.String() + `
@@ -57,6 +64,21 @@ int main() {
  JsonDocument payload;
  if (deserializeJson(payload, out["data"].as<std::string>())) return 4;
  if (payload["target"]["entity_id"] != "script.expected" || payload["data"]["text"] != response["response"]["pages"][0]["item"]["action"]["data"]["text"]) return 5;
+ if (!warnings.empty()) return 6;
+ deserializeJson(envelope, R"({"response":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,{"label":"Pie","icon":"mdi:future-icon","color":"#AABBCC","action":{"action":"script.pie","data":{"slot":2}}},null]}]}})");
+ response = envelope.as<JsonObjectConst>();
+ {
+ ` + callback + `
+ }
+ if (warnings.size() != 1 || warnings[0] != "Unknown icon: mdi:future-icon; using mdi:help-circle") return 7;
+ manifest_core.press(336, 336);
+ tapped_slot = manifest_core.release(336, 336);
+ if (tapped_slot != 2) return 8;
+ out.clear();
+ ` + bindings.String() + `
+ if (out["action"] != "script.pie" || deserializeJson(payload, out["data"].as<std::string>())) return 9;
+ if (payload["data"]["slot"] != 2 || payload["target"].size() != 0) return 10;
+
 }
 `
 	checkAdapter(t, source)
@@ -81,6 +103,72 @@ func checkAdapter(t *testing.T, source string) {
 	if out, err := exec.Command(binary).CombinedOutput(); err != nil {
 		t.Fatalf("adapter contract: %v\n%s", err, out)
 	}
+}
+
+// Compile and exercise the actual touch lambdas with the widget-relative point
+// argument supplied by ESPHome 2026.10.2. The firmware build checks that generated
+// signature too; golden core cases alone cannot check the YAML wiring.
+func TestProductionTouchAdapter(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join(testutil.Root(), "esphome/lunactl.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	match := regexp.MustCompile(`(?s)        on_press:\n          - lambda: \|-\n(.*?)\n        on_release:\n          - lambda: \|-\n(.*?)\n          - script.execute: render_manifest`).FindStringSubmatch(string(raw))
+	if match == nil {
+		t.Fatal("missing touch press/release callbacks")
+	}
+	source := `#include "core.h"
+#define id(name) name
+struct lv_point_t { int x, y; };
+int main() {
+ lunactl::Core manifest_core;
+ int tapped_slot = -1;
+ struct UI {
+   int slot = -1;
+   void highlight(const lunactl::Core &core, int x, int y) { slot = core.hit(x, y); }
+ } page_ui;
+ auto press = [&](lv_point_t point) { ` + match[1] + ` };
+ auto release = [&](lv_point_t point) { ` + match[2] + ` };
+ manifest_core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"pie","quarters":[{"label":"First","color":"#123456","action":{"action":"script.first"}},null,{"label":"Third","color":"#ABCDEF","action":{"action":"script.third"}},null]},{"type":"single","item":{"label":"Second page","color":"#654321","action":{"action":"script.second"}}}]})";
+ if (!manifest_core.accept_json(manifest_core.begin_fetch(), manifest, error)) return 1;
+ press({130, 130});
+ if (page_ui.slot != 0) return 2;
+ release({130, 130});
+ if (tapped_slot != 0 || manifest_core.item(tapped_slot).action != "script.first") return 3;
+ press({336, 336});
+ if (page_ui.slot != 2) return 4;
+ release({336, 336});
+ if (tapped_slot != 2 || manifest_core.item(tapped_slot).action != "script.third") return 5;
+ for (lv_point_t point : {lv_point_t{336, 130}, {130, 336}, {233, 233}, {233, 100}}) {
+   press(point);
+   release(point);
+   if (page_ui.slot != -1 || tapped_slot != -1) return 6;
+ }
+ press({336, 130});
+ release({130, 130});
+ if (tapped_slot != -1 || manifest_core.page_index() != 1) return 7;
+ press({233, 233});
+ release({233, 233});
+ if (tapped_slot != 0 || manifest_core.item(tapped_slot).action != "script.second") return 8;
+ // A dot selects home without running an Item.
+ lv_point_t dot{manifest_core.dots_left() + 15, 451};
+ press(dot);
+ release(dot);
+ if (tapped_slot != -1 || manifest_core.page_index() != 0) return 9;
+ // A touch spanning a replacement must not run the new Manifest's action.
+ press({130, 130});
+ if (!manifest_core.accept_json(manifest_core.begin_fetch(), manifest, error)) return 10;
+ release({130, 130});
+ if (tapped_slot != -1) return 11;
+ manifest_core.set_connected(false);
+ press({130, 130});
+ release({130, 130});
+ if (page_ui.slot != -1 || tapped_slot != -1) return 12;
+}
+`
+	checkAdapter(t, source)
 }
 
 // Exercise the production API conditions and actions with overlapping HA clients.
@@ -148,6 +236,47 @@ int main() {
 }
 `
 	checkAdapter(t, source)
+}
+
+// The icon names/glyphs in the golden are the catalog contract. A name can be
+// resolved correctly by the core while its glyph is accidentally left out of
+// the compiled font, producing a blank icon on the device.
+func TestIconFontCoversGoldenGlyphs(t *testing.T) {
+	raw, err := os.ReadFile("testdata/icons.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var golden struct {
+		Want struct {
+			Snapshots []struct {
+				Quarters []struct{ Icon, Glyph string }
+			}
+		}
+	}
+	if err := json.Unmarshal(raw, &golden); err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]string{}
+	for _, snapshot := range golden.Want.Snapshots {
+		for _, quarter := range snapshot.Quarters {
+			want[quarter.Icon] = quarter.Glyph
+		}
+	}
+	raw, err = os.ReadFile(filepath.Join(testutil.Root(), "esphome/lunactl.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string]string{}
+	for _, match := range regexp.MustCompile(`(?m)^\s+- "\\U([0-9A-Fa-f]{8})" # (mdi:[a-z0-9-]+)$`).FindAllStringSubmatch(string(raw), -1) {
+		codepoint, err := strconv.ParseInt(match[1], 16, 32)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got[match[2]] = string(rune(codepoint))
+	}
+	if len(want) != 44 || !reflect.DeepEqual(got, want) {
+		t.Fatalf("compiled icon font differs from the 44-icon golden: got %v, want %v", got, want)
+	}
 }
 
 // Exercise the actual polling, wake and action-field expressions with a dark

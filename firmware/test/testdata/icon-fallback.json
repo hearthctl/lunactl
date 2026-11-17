@@ -1,0 +1,219 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Hell",
+                "icon": "mdi:future-icon",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              null,
+              null,
+              null
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "tap",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Hell",
+                "icon": "mdi:future-icon",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {},
+              null,
+              null
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "tap",
+      "x": 130,
+      "y": 130
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:help-circle",
+            "glyph": "󰋗"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ],
+        "warnings": [
+          "Unknown icon: mdi:future-icon; using mdi:help-circle"
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:help-circle",
+            "glyph": "󰋗"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ],
+        "call": {
+          "service": "script.lunactl_run",
+          "action": "script.hell",
+          "data": "{\"target\":{},\"data\":{}}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:help-circle",
+            "glyph": "󰋗"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ],
+        "error": "Invalid Item"
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Hell",
+            "color": "#F7C844",
+            "icon": "mdi:help-circle",
+            "glyph": "󰋗"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ],
+        "call": {
+          "service": "script.lunactl_run",
+          "action": "script.hell",
+          "data": "{\"target\":{},\"data\":{}}"
+        }
+      }
+    ]
+  }
+}

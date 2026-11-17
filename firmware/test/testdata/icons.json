@@ -1,0 +1,958 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "mdi:lightbulb",
+                "icon": "mdi:lightbulb",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:lightbulb-off",
+                "icon": "mdi:lightbulb-off",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:ceiling-light",
+                "icon": "mdi:ceiling-light",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:lamp",
+                "icon": "mdi:lamp",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "mdi:desk-lamp",
+                "icon": "mdi:desk-lamp",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:led-strip-variant",
+                "icon": "mdi:led-strip-variant",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:string-lights",
+                "icon": "mdi:string-lights",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:white-balance-sunny",
+                "icon": "mdi:white-balance-sunny",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "mdi:book-open-variant",
+                "icon": "mdi:book-open-variant",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:sofa",
+                "icon": "mdi:sofa",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:weather-night",
+                "icon": "mdi:weather-night",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:bed",
+                "icon": "mdi:bed",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "mdi:sleep",
+                "icon": "mdi:sleep",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:brightness-6",
+                "icon": "mdi:brightness-6",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:palette",
+                "icon": "mdi:palette",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:snowflake",
+                "icon": "mdi:snowflake",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "mdi:fire",
+                "icon": "mdi:fire",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:thermometer",
+                "icon": "mdi:thermometer",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:air-conditioner",
+                "icon": "mdi:air-conditioner",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:fan",
+                "icon": "mdi:fan",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "mdi:water-percent",
+                "icon": "mdi:water-percent",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:power",
+                "icon": "mdi:power",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:timer-outline",
+                "icon": "mdi:timer-outline",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:plus-circle",
+                "icon": "mdi:plus-circle",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "mdi:stop-circle",
+                "icon": "mdi:stop-circle",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:hand-wave",
+                "icon": "mdi:hand-wave",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:bell-ring",
+                "icon": "mdi:bell-ring",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:home",
+                "icon": "mdi:home",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "mdi:door",
+                "icon": "mdi:door",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:window-closed",
+                "icon": "mdi:window-closed",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:blinds",
+                "icon": "mdi:blinds",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:check-circle",
+                "icon": "mdi:check-circle",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "mdi:close-circle",
+                "icon": "mdi:close-circle",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:wifi-off",
+                "icon": "mdi:wifi-off",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:battery-alert",
+                "icon": "mdi:battery-alert",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:music",
+                "icon": "mdi:music",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "mdi:television",
+                "icon": "mdi:television",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:gamepad-variant",
+                "icon": "mdi:gamepad-variant",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:star",
+                "icon": "mdi:star",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:heart",
+                "icon": "mdi:heart",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "mdi:alarm",
+                "icon": "mdi:alarm",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:calendar",
+                "icon": "mdi:calendar",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:robot-vacuum",
+                "icon": "mdi:robot-vacuum",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              },
+              {
+                "label": "mdi:help-circle",
+                "icon": "mdi:help-circle",
+                "color": "#F7C844",
+                "action": {
+                  "action": "script.hell"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "mdi:lightbulb",
+            "color": "#F7C844",
+            "icon": "mdi:lightbulb",
+            "glyph": "󰌵"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:lightbulb-off",
+            "color": "#F7C844",
+            "icon": "mdi:lightbulb-off",
+            "glyph": "󰹏"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:ceiling-light",
+            "color": "#F7C844",
+            "icon": "mdi:ceiling-light",
+            "glyph": "󰝩"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:lamp",
+            "color": "#F7C844",
+            "icon": "mdi:lamp",
+            "glyph": "󰚵"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "mdi:desk-lamp",
+            "color": "#F7C844",
+            "icon": "mdi:desk-lamp",
+            "glyph": "󰥟"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:led-strip-variant",
+            "color": "#F7C844",
+            "icon": "mdi:led-strip-variant",
+            "glyph": "󱁑"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:string-lights",
+            "color": "#F7C844",
+            "icon": "mdi:string-lights",
+            "glyph": "󱊺"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:white-balance-sunny",
+            "color": "#F7C844",
+            "icon": "mdi:white-balance-sunny",
+            "glyph": "󰖨"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "mdi:book-open-variant",
+            "color": "#F7C844",
+            "icon": "mdi:book-open-variant",
+            "glyph": "󱓷"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:sofa",
+            "color": "#F7C844",
+            "icon": "mdi:sofa",
+            "glyph": "󰒹"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:weather-night",
+            "color": "#F7C844",
+            "icon": "mdi:weather-night",
+            "glyph": "󰖔"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:bed",
+            "color": "#F7C844",
+            "icon": "mdi:bed",
+            "glyph": "󰋣"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "mdi:sleep",
+            "color": "#F7C844",
+            "icon": "mdi:sleep",
+            "glyph": "󰒲"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:brightness-6",
+            "color": "#F7C844",
+            "icon": "mdi:brightness-6",
+            "glyph": "󰃟"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:palette",
+            "color": "#F7C844",
+            "icon": "mdi:palette",
+            "glyph": "󰏘"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:snowflake",
+            "color": "#F7C844",
+            "icon": "mdi:snowflake",
+            "glyph": "󰜗"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "mdi:fire",
+            "color": "#F7C844",
+            "icon": "mdi:fire",
+            "glyph": "󰈸"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:thermometer",
+            "color": "#F7C844",
+            "icon": "mdi:thermometer",
+            "glyph": "󰔏"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:air-conditioner",
+            "color": "#F7C844",
+            "icon": "mdi:air-conditioner",
+            "glyph": "󰀛"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:fan",
+            "color": "#F7C844",
+            "icon": "mdi:fan",
+            "glyph": "󰈐"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "mdi:water-percent",
+            "color": "#F7C844",
+            "icon": "mdi:water-percent",
+            "glyph": "󰖎"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:power",
+            "color": "#F7C844",
+            "icon": "mdi:power",
+            "glyph": "󰐥"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:timer-outline",
+            "color": "#F7C844",
+            "icon": "mdi:timer-outline",
+            "glyph": "󰔛"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:plus-circle",
+            "color": "#F7C844",
+            "icon": "mdi:plus-circle",
+            "glyph": "󰐗"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "mdi:stop-circle",
+            "color": "#F7C844",
+            "icon": "mdi:stop-circle",
+            "glyph": "󰙦"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:hand-wave",
+            "color": "#F7C844",
+            "icon": "mdi:hand-wave",
+            "glyph": "󱠡"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:bell-ring",
+            "color": "#F7C844",
+            "icon": "mdi:bell-ring",
+            "glyph": "󰂞"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:home",
+            "color": "#F7C844",
+            "icon": "mdi:home",
+            "glyph": "󰋜"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "mdi:door",
+            "color": "#F7C844",
+            "icon": "mdi:door",
+            "glyph": "󰠚"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:window-closed",
+            "color": "#F7C844",
+            "icon": "mdi:window-closed",
+            "glyph": "󰖮"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:blinds",
+            "color": "#F7C844",
+            "icon": "mdi:blinds",
+            "glyph": "󰂬"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:check-circle",
+            "color": "#F7C844",
+            "icon": "mdi:check-circle",
+            "glyph": "󰗠"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "mdi:close-circle",
+            "color": "#F7C844",
+            "icon": "mdi:close-circle",
+            "glyph": "󰅙"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:wifi-off",
+            "color": "#F7C844",
+            "icon": "mdi:wifi-off",
+            "glyph": "󰖪"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:battery-alert",
+            "color": "#F7C844",
+            "icon": "mdi:battery-alert",
+            "glyph": "󰂃"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:music",
+            "color": "#F7C844",
+            "icon": "mdi:music",
+            "glyph": "󰝚"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "mdi:television",
+            "color": "#F7C844",
+            "icon": "mdi:television",
+            "glyph": "󰔂"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:gamepad-variant",
+            "color": "#F7C844",
+            "icon": "mdi:gamepad-variant",
+            "glyph": "󰊗"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:star",
+            "color": "#F7C844",
+            "icon": "mdi:star",
+            "glyph": "󰓎"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:heart",
+            "color": "#F7C844",
+            "icon": "mdi:heart",
+            "glyph": "󰋑"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "mdi:alarm",
+            "color": "#F7C844",
+            "icon": "mdi:alarm",
+            "glyph": "󰀠"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:calendar",
+            "color": "#F7C844",
+            "icon": "mdi:calendar",
+            "glyph": "󰃭"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:robot-vacuum",
+            "color": "#F7C844",
+            "icon": "mdi:robot-vacuum",
+            "glyph": "󰜍"
+          },
+          {
+            "tappable": true,
+            "label": "mdi:help-circle",
+            "color": "#F7C844",
+            "icon": "mdi:help-circle",
+            "glyph": "󰋗"
+          }
+        ]
+      }
+    ]
+  }
+}

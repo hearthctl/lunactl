@@ -664,20 +664,28 @@
         "tappable": true,
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
         },
         "battery": {
           "level": 19,
           "text": "Akku 19 %",
           "hint": "Zurück an die Halterung"
-        }
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "",
         "tappable": true,
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
         },
         "call": {
           "service": "script.lunactl_run",
@@ -688,7 +696,11 @@
           "level": 19,
           "text": "Akku 19 %",
           "hint": "Zurück an die Halterung"
-        }
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "Keine Verbindung",

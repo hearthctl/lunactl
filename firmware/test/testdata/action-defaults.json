@@ -44,8 +44,14 @@
         "tappable": true,
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
-        }
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "",
@@ -57,8 +63,14 @@
         },
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
-        }
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       }
     ]
   }

@@ -159,8 +159,14 @@
         "tappable": true,
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
-        }
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "Keine Verbindung",
@@ -180,43 +186,73 @@
         "tappable": true,
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
-        }
-      },
-      {
-        "status": "",
-        "tappable": true,
-        "item": {
-          "label": "Beispiel",
-          "color": "#B91360"
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
         },
-        "request": 5
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "",
         "tappable": true,
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
         },
-        "error": "Stale Manifest response"
+        "request": 5,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "",
         "tappable": true,
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
         },
-        "error": "Unknown or invalid schema version"
+        "error": "Stale Manifest response",
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "",
         "tappable": true,
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
-        }
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "error": "Unknown or invalid schema version",
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       }
     ]
   }

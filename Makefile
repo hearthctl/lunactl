@@ -11,7 +11,7 @@ $(ARDUINOJSON):
 	echo 'ab5fbb8268b846b5f4bc5a5fee11bb2c96f7b8b846f5bef6540afb6a9cc76a5b  $@.tmp' | sha256sum -c -
 	mv $@.tmp $@
 
-.build/manifest-host: firmware/host.cpp esphome/lunactl/core.h esphome/lunactl/battery.h $(ARDUINOJSON)
+.build/manifest-host: firmware/host.cpp esphome/lunactl/core.h esphome/lunactl/icons.h esphome/lunactl/battery.h $(ARDUINOJSON)
 	$(CXX) $(CXXFLAGS) -I.build/include firmware/host.cpp -o $@
 
 .PHONY: verify e2e check-core check-schema check-contracts

@@ -98,8 +98,14 @@
         "tappable": true,
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
-        }
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "",
@@ -107,8 +113,14 @@
         "request": 3,
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
-        }
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "",
@@ -116,16 +128,28 @@
         "error": "Unknown or invalid schema version",
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
-        }
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "",
         "tappable": true,
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
-        }
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "",
@@ -137,8 +161,14 @@
         },
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
-        }
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "",
@@ -146,16 +176,28 @@
         "request": 4,
         "item": {
           "label": "Beispiel",
-          "color": "#B91360"
-        }
+          "color": "#B91360",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       },
       {
         "status": "",
         "tappable": true,
         "item": {
           "label": "Grüße",
-          "color": "#00aBcD"
-        }
+          "color": "#00aBcD",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single"
       }
     ]
   }
