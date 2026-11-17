@@ -1,5 +1,5 @@
 ESPHOME := uvx esphome@2026.10.2
-.DEFAULT_GOAL := check-firmware
+.DEFAULT_GOAL := verify
 CHECK_DIR := esphome/.check
 CXXFLAGS := -std=c++17 -Wall -Wextra -Werror -O2
 ARDUINOJSON := .build/include/ArduinoJson.h
@@ -14,8 +14,9 @@ $(ARDUINOJSON):
 .build/manifest-host: firmware/host.cpp esphome/lunactl/core.h esphome/lunactl/icons.h esphome/lunactl/battery.h $(ARDUINOJSON)
 	$(CXX) $(CXXFLAGS) -I.build/include firmware/host.cpp -o $@
 
-.PHONY: check check-core check-schema check-contracts
-check: check-core check-schema check-contracts check-firmware
+.PHONY: verify e2e check-core check-schema check-contracts
+verify: check-core check-schema check-firmware
+e2e: check-contracts
 
 check-core: .build/manifest-host
 	go test -count=1 -v ./firmware/test
