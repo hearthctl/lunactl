@@ -22,7 +22,7 @@ to device flash. Every HA API connection fetches it, and the device's
 **Manifest neu laden** button fetches it again. Log viewers do not trigger a
 fetch or make the device appear connected to HA.
 
-The [JSON Schema](../../schema/manifest.schema.json) accepts `schema: 1` and
+The [JSON Schema](../../schema/manifest.v1.schema.json) accepts `schema: 1` and
 one to six pages. The first page is home. Swipe left/right to move between pages,
 or tap a page dot; swiping past either end stays on that page. A valid replacement
 Manifest starts at home.

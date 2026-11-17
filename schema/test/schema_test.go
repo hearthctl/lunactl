@@ -13,7 +13,7 @@ import (
 )
 
 func TestManifestSchemaAndCoreAgree(t *testing.T) {
-	raw, err := os.ReadFile("../manifest.schema.json")
+	raw, err := os.ReadFile("../manifest.v1.schema.json")
 	if err != nil {
 		t.Fatal(err)
 	}
