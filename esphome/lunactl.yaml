@@ -239,8 +239,6 @@ script:
                 std::string error;
                 if (!id(manifest_core).accept(request, response["response"], error))
                   ESP_LOGW("lunactl", "Manifest rejected: %s", error.c_str());
-                for (const auto &warning : id(manifest_core).warnings())
-                  ESP_LOGW("lunactl", "%s", warning.c_str());
             - script.execute: render_manifest
             - script.execute: sync_subscriptions
           on_error:

@@ -132,8 +132,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "--|--|--|--|--|--|--|{11}|{01}|{x}|{}"
         }
       },
@@ -147,8 +147,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "last|--|--|--|--|--|--|{11}|{01}|{x}|{}"
         }
       },
@@ -162,8 +162,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "last|--|12.340|--|--|--|--|{11}|{01}|{x}|{}"
         }
       },
@@ -177,8 +177,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "last|{0} Grüße|12.340|{0} Grüße|--|--|--|{11}|{01}|{x}|{}"
         }
       },
@@ -192,8 +192,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "last|{0} Grüße|12.340|{0} Grüße|3|--|--|{11}|{01}|{x}|{}"
         }
       },
@@ -207,8 +207,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "last|{0} Grüße|12.340|{0} Grüße|3|1.234568|--|{11}|{01}|{x}|{}"
         }
       },
@@ -222,8 +222,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "last|{0} Grüße|12.340|{0} Grüße|3|1.234568|12,340|{11}|{01}|{x}|{}"
         }
       },
@@ -237,8 +237,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "last|1.0|12.340|1.0|3|1.234568|12,340|{11}|{01}|{x}|{}"
         }
       },
@@ -252,8 +252,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "last|1.0|12.340|1.0|0|1.234568|12,340|{11}|{01}|{x}|{}"
         }
       }

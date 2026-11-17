@@ -45,16 +45,19 @@ and stale replies from old connections or overlapping reloads. Size cases
 exercise the 32 KiB boundary. Schema cases cover missing/unknown fields, types,
 version, page count, colour, actions and targets. Pie golden cases cover all four
 Slot actions, dark/inert empty quarters, clock formatting and invalid time, the
-clock hole/dividers, all 44 icon names and glyphs, unknown-icon warnings and
-fallback actions. Mixed-page cases cover six pages, dots, bounded swipes, home
-on replacement, and cancellation of a touch spanning a Manifest replacement.
+clock hole/dividers, all 44 icon names and glyphs, unknown-icon rejection and
+omitted icons in Single and Pie quarters. A schema sync test runs every enum
+name through the host and checks the compiled icon count. Mixed-page cases
+cover six pages, dots, bounded swipes, home on replacement, and cancellation
+of a touch spanning a Manifest replacement.
 The touch adapter test compiles the production YAML press/release lambdas and
 checks quarter taps, inert areas, swipes, page dots and replacement cancellation
 with ESPHome's widget-relative point argument. The firmware build verifies the
 generated callback signatures.
 Schema cases accept sparse/full/empty Pie pages, mixed pages and optional or
-unknown icons; they reject invalid quarter counts/Items/icons and a seventh page,
-with schema/core agreement. Contract cases fetch by MAC, feed the returned Manifest through the C++ host and execute its tap through
+known icons; they reject unknown icons, invalid quarter counts/Items/icons and
+a seventh page, with schema/core agreement. Contract cases fetch by MAC, feed
+the returned Manifest through the C++ host and execute its tap through
 `lunactl_run`, and check target/data forwarding and failures in real HA.
 
 Issue [#7](https://github.com/hearthctl/lunactl/issues/7) adds `pie-center`,

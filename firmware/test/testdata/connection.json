@@ -160,8 +160,8 @@
         "item": {
           "label": "Beispiel",
           "color": "#B91360",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "page": 0,
         "home": true,
@@ -187,8 +187,8 @@
         "item": {
           "label": "Beispiel",
           "color": "#B91360",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "page": 0,
         "home": true,
@@ -201,8 +201,8 @@
         "item": {
           "label": "Beispiel",
           "color": "#B91360",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "request": 5,
         "page": 0,
@@ -216,8 +216,8 @@
         "item": {
           "label": "Beispiel",
           "color": "#B91360",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "error": "Stale Manifest response",
         "page": 0,
@@ -231,8 +231,8 @@
         "item": {
           "label": "Beispiel",
           "color": "#B91360",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "error": "Unknown or invalid schema version",
         "page": 0,
@@ -246,8 +246,8 @@
         "item": {
           "label": "Beispiel",
           "color": "#B91360",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "page": 0,
         "home": true,

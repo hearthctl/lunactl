@@ -1,9 +1,9 @@
 #pragma once
-#include <cstring>
+#include <string>
 
 namespace lunactl {
 struct Icon { const char *name; const char *glyph; };
-// Material Design Icons v7.4.47; exactly the 44 names in docs/mockups/icons.png.
+// Material Design Icons v7.4.47; names follow schema/manifest.v1.schema.json.
 inline constexpr Icon ICONS[] = {
   {"mdi:lightbulb", "\U000F0335"},
   {"mdi:lightbulb-off", "\U000F0E4F"},
@@ -50,8 +50,12 @@ inline constexpr Icon ICONS[] = {
   {"mdi:robot-vacuum", "\U000F070D"},
   {"mdi:help-circle", "\U000F02D7"},
 };
-inline const Icon &resolve_icon(const char *name) {
-  for (const auto &icon : ICONS) if (std::strcmp(name, icon.name) == 0) return icon;
-  return ICONS[43];  // mdi:help-circle
+inline const Icon *resolve_icon(const std::string &name) {
+  for (const auto &icon : ICONS) if (name == icon.name) return &icon;
+  return nullptr;
+}
+inline const char *icon_glyph(const std::string &name) {
+  const auto *icon = resolve_icon(name);
+  return icon ? icon->glyph : "";
 }
 }  // namespace lunactl

@@ -70,7 +70,13 @@ int main() {
  {
  ` + callback + `
  }
- if (warnings.size() != 1 || warnings[0] != "Unknown icon: mdi:future-icon; using mdi:help-circle") return 7;
+ if (warnings.size() != 1 || warnings[0] != "Invalid Item icon" || manifest_core.pie() || manifest_core.item().label != "Adapter") return 7;
+ warnings.clear();
+ envelope["response"]["pages"][0]["quarters"][2]["icon"] = "mdi:sofa";
+ {
+ ` + callback + `
+ }
+ if (!warnings.empty() || !manifest_core.pie()) return 14;
  manifest_core.press(336, 336);
  tapped_slot = manifest_core.release(336, 336);
  if (tapped_slot != 2) return 8;

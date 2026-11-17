@@ -8,7 +8,7 @@ static void item_view(JsonObject out, const lunactl::Core &core, size_t slot = 0
   out["color"] = item.color;
   if (slot != lunactl::CENTER_SLOT) {
     out["icon"] = item.icon;
-    out["glyph"] = lunactl::resolve_icon(item.icon.c_str()).glyph;
+    out["glyph"] = lunactl::icon_glyph(item.icon);
   }
   if (item.value.present) out["value"] = core.value(slot);
   if ((!core.pie() || slot == lunactl::CENTER_SLOT) && !item.countdown.empty()) {
@@ -101,10 +101,6 @@ int main() {
         }
       }
       if (!error.empty()) snapshot["error"] = error;
-      if (type == "manifest" && !core.warnings().empty()) {
-        auto warnings = snapshot["warnings"].to<JsonArray>();
-        for (const auto &warning : core.warnings()) warnings.add(warning);
-      }
       if (type == "button" || type == "sleep") snapshot["display_on"] = core.display_on();
       if (display_seen) {
         snapshot["display_on"] = core.display_on();

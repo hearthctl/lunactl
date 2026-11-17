@@ -117,8 +117,8 @@
           {
             "label": "Klima",
             "color": "#123456",
-            "icon": "mdi:help-circle",
-            "glyph": "󰋗",
+            "icon": "",
+            "glyph": "",
             "value": "-- °C / --",
             "tappable": true
           },
@@ -152,8 +152,8 @@
           {
             "label": "Klima",
             "color": "#123456",
-            "icon": "mdi:help-circle",
-            "glyph": "󰋗",
+            "icon": "",
+            "glyph": "",
             "value": "20.2 °C / --",
             "tappable": true
           },
@@ -187,8 +187,8 @@
           {
             "label": "Klima",
             "color": "#123456",
-            "icon": "mdi:help-circle",
-            "glyph": "󰋗",
+            "icon": "",
+            "glyph": "",
             "value": "20.2 °C / Heizen",
             "tappable": true
           },
@@ -219,8 +219,8 @@
         "item": {
           "label": "Temperatur",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "20,2 °C"
         }
       },
@@ -237,8 +237,8 @@
         "item": {
           "label": "Temperatur",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "22,3 °C"
         }
       },
@@ -258,8 +258,8 @@
           {
             "label": "Klima",
             "color": "#123456",
-            "icon": "mdi:help-circle",
-            "glyph": "󰋗",
+            "icon": "",
+            "glyph": "",
             "value": "22.3 °C / Heizen",
             "tappable": true
           },

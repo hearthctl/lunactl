@@ -78,8 +78,8 @@
         "item": {
           "label": "Grüße",
           "color": "#00aBcD",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "page": 0,
         "home": true,
@@ -93,8 +93,8 @@
         "item": {
           "label": "Grüße",
           "color": "#00aBcD",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "page": 0,
         "home": true,
@@ -107,8 +107,8 @@
         "item": {
           "label": "Grüße",
           "color": "#00aBcD",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "call": {
           "service": "script.lunactl_run",
