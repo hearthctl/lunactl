@@ -1,6 +1,7 @@
 """Designer registration, real HTTP modules and the admin websocket boundary."""
 
 import json
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -78,3 +79,38 @@ async def test_device_list_uses_ha_names_and_project_identity(hass, setup, hass_
     assert result[0]["firmware_version"] == "1.0 (ESPHome 2026.10.2)"
     assert result[0]["schema_version"] == 1
     assert result[0]["online"] is False
+
+
+@pytest.mark.parametrize(
+    ("item_changes", "firmware", "error_code"),
+    [
+        ({"icon": "mdi:not-in-lunactl"}, "1.0 (ESPHome 2026.10.2)", "invalid_manifest"),
+        ({"color": "red"}, "1.0 (ESPHome 2026.10.2)", "invalid_manifest"),
+        ({"action": None}, "1.0 (ESPHome 2026.10.2)", "invalid_manifest"),
+        ({}, "unknown", "unknown_firmware"),
+    ],
+)
+async def test_designer_validation_errors_preserve_saved_manifest(
+    hass, setup, manifest, hass_ws_client, item_changes, firmware, error_code
+):
+    store, device, _ = setup
+    await store.async_save(device.id, manifest, 0)
+    pending_reload = store.pending[device.id]
+    dr.async_get(hass).async_update_device(device.id, sw_version=firmware)
+    candidate = deepcopy(manifest)
+    candidate["pages"][0]["item"].update(item_changes)
+    client = await hass_ws_client(hass)
+    await client.send_json(
+        {"id": 1, "type": "lunactl/manifest/get", "device_id": device.id,
+         "manifest": candidate}
+    )
+    result = await client.receive_json()
+    assert not result["success"]
+    assert result["error"]["code"] == error_code
+    assert result["error"]["message"]
+    assert store.read(device.id)["manifest"] == manifest
+    assert store.read(device.id)["revision"] == 1
+    assert (await store.storage.async_load())[device.id] == {
+        "manifest": manifest, "revision": 1,
+    }
+    assert store.pending[device.id] is pending_reload

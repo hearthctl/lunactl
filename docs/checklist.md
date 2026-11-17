@@ -26,7 +26,7 @@ Before starting:
   integration, restart HA and add lunactl under Devices & services. Open
   **lunactl** in the sidebar as an administrator, select this device by its HA
   name, choose **Manifest anlegen** if needed and paste the adapted room example
-  into **Manifest als JSON**. Prepare its test entities/actions. Keep a
+  into **Manifest (JSON)**. Prepare its test entities/actions. Keep a
   copy of that working Manifest for restoration after each variant.
 - Enable **Allow the device to perform Home Assistant actions** for lunactl.
 - Start logs with `uvx esphome@2026.10.2 logs esphome/lunactl.yaml --no-states`.
@@ -57,8 +57,9 @@ Before starting:
   its online state, firmware and schema version. A device with no Manifest
   offers **Manifest anlegen** and creates nothing until pressed; pressing it
   saves an empty Pie with four `null` quarters and `schema: 1`.
-- [ ] Edit in two admin tabs from the same revision. Save in one, then edit in
-  the other: **Manifest wurde anderswo geändert** stops autosaving there.
+- [ ] Start unsaved drafts in two admin tabs from the same revision. Let one
+  autosave while the other still has invalid JSON, then finish valid JSON there:
+  **Manifest wurde anderswo geändert** stops autosaving there.
   **JSON kopieren** retains that tab's local JSON; **Neu laden** drops the local
   draft and reads the stored Manifest. Subsequent edits autosave again.
 - [ ] While the device is offline, edit a valid Manifest: the state reads

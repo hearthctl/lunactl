@@ -54,7 +54,7 @@ The integration maps its Wi-Fi MAC internally through HA's device registry.
 
 Open **lunactl** in the HA sidebar as an administrator. Select the device by its
 HA name and choose **Manifest anlegen** if it has no Manifest. Paste the adapted
-`examples/child-room.json` into **Manifest als JSON**. Valid edits autosave about
+`examples/child-room.json` into **Manifest (JSON)**. Valid edits autosave about
 1 second after typing stops; validation errors leave the saved Manifest unchanged.
 The header shows connection, firmware and schema version. Saving requests a
 reload 10 seconds after the last save; new entity references show a restart
