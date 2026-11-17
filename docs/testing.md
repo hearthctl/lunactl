@@ -1,8 +1,9 @@
 # Tracer checks
 
 Requirements: Go as specified by `go.mod`, a C++17 compiler (`CXX`), curl,
-sha256sum, uv, and Podman. The host uses the same pinned ArduinoJson version as
-ESPHome; `make` downloads and checks its header in `.build/`.
+sha256sum and uv; `make e2e` also needs Podman. The host uses the same pinned
+ArduinoJson version as ESPHome; `make` downloads and checks its header in
+`.build/`.
 
 Run from the repository root:
 
