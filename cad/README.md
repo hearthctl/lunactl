@@ -24,12 +24,20 @@ zum Taster, damit er nicht gedrückt wird.
 
 ## Bauen
 
-Mit der gemeinsamen Werkbank (`b123d-print`, build123d):
+Die fertigen Dateien liegen im Repo unter `parts/wandhalter/generated/`: STEP in `cad/`, STL
+in `print/`, Zusammenbau und Mittelschnitt als Bild in `images/` und die Druckdatei
+`h2d/wandhalter.3mf`. Neu erzeugt werden sie aus dem Repo-Wurzelverzeichnis; `WORKBENCH` zeigt
+auf den Checkout der gemeinsamen Werkbank (`b123d-print`, build123d):
 
 ```sh
-b123d-print --root cad build wandhalter   # STEP, STL, Ansichten nach parts/wandhalter/out/
-b123d-print --root cad check wandhalter   # Überhänge, Kollisionen, Einsetzweg
-b123d-print --root cad set wandhalter PLUG_W=11.9 PLUG_T=6.3   # Maße ändern
+make cad WORKBENCH=...       # bauen, prüfen, STEP gegen requirements/ prüfen
+make cad-3mf WORKBENCH=...   # zusätzlich mit Bambu Studio slicen (BAMBU=... falls nicht unter /Applications)
+```
+
+Maße ändern, danach neu erzeugen:
+
+```sh
+b123d-print --root cad set wandhalter PLUG_W=11.9 PLUG_T=6.3
 ```
 
 Alle Maße stehen als Parameter in `parts/wandhalter/wandhalter.py`, die Gerätemaße und ihre
@@ -91,7 +99,7 @@ Für die Wandschrauben sind 4‑mm-Senkkopfschrauben angenommen (`SCREW_HOLE_D`,
 Bambu Lab H2D, 0,4‑mm-Düse, 0,20 mm Standard, ohne Stützen. Körper mit der Wandseite auf dem
 Bett, Steckeraufnahme mit der Rückseite auf dem Bett. Geslict mit PLA Basic als vorläufiger
 Wahl: Körper 11,9 g und 29 min, Steckeraufnahme 2,0 g und 12 min. Die
-Druckdatei mit beiden Platten liegt nach dem Slicen in `parts/wandhalter/out/h2d/wandhalter.3mf`.
+Druckdatei mit beiden Platten ist `parts/wandhalter/generated/h2d/wandhalter.3mf`.
 
 ## Zusammenbau
 

@@ -291,7 +291,7 @@
       "PENDING: retention after many docking cycles"
     ],
     "artifacts": {
-      "geometry": "../parts/wandhalter/out/cad/wandhalter_body.step"
+      "geometry": "../parts/wandhalter/generated/cad/wandhalter_body.step"
     },
     "requirements": [
       {

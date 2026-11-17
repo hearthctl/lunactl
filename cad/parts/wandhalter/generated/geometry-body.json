@@ -1,0 +1,282 @@
+{
+  "status": "pass",
+  "scope": "exported STEP geometry only",
+  "findings": [
+    {
+      "name": "valid_brep",
+      "status": "pass",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "positive_volume",
+      "status": "pass",
+      "actual": 17219.562863991017,
+      "expected": ">0 mm3"
+    },
+    {
+      "name": "solid_count",
+      "status": "pass",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "dimension_x_mm",
+      "status": "pass",
+      "actual": 54.50000020000002,
+      "expected": {
+        "nominal": 54.5,
+        "tolerance": 0.01
+      }
+    },
+    {
+      "name": "dimension_y_mm",
+      "status": "pass",
+      "actual": 70.36771553610603,
+      "expected": {
+        "nominal": 70.37,
+        "tolerance": 0.01
+      }
+    },
+    {
+      "name": "dimension_z_mm",
+      "status": "pass",
+      "actual": 19.500000200000002,
+      "expected": {
+        "nominal": 19.5,
+        "tolerance": 0.01
+      }
+    },
+    {
+      "name": "plug bay is open",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "bay roof is closed",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "plate slot for the plug shell",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "cable slot through the tip",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "right stop pad",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "left stop pad",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "lip closed at the bottom",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "right power button relief",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "left power button relief",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "rim closed outside the relief",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "speaker cut-out",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "right screw hole",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "left screw hole",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "right rim end stands",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "left rim end stands",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "nothing beside the device above the rim end, right",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "nothing beside the device above the rim end, left",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "rim, relief wall and bay walls; the rim thins to 1.0 mm at its ends (RIM_END)",
+      "status": "pass",
+      "actual": {
+        "min": 1.005,
+        "at": [
+          -26.17,
+          -2.34
+        ],
+        "how": "across the wall",
+        "taper": false,
+        "plane": "XY",
+        "section_at": 12.62
+      },
+      "expected": {
+        "min_mm": 0.95,
+        "plane": "XY",
+        "at_mm": 12.62
+      }
+    }
+  ],
+  "manufacturing": {
+    "material": {
+      "product": "Bambu PLA Basic",
+      "source": "provisional; workbench profile h2d-engineering/pla.json. Final material not chosen."
+    },
+    "orientation": {
+      "bed_face": "wall face, XY at Z=0",
+      "reason": "flat plate on the bed; rim and lip grow upwards and print without support"
+    },
+    "support": {
+      "policy": "forbidden"
+    },
+    "fits": [
+      "device rim to holder rim: 0.3 mm per side (RAD_CLEAR)",
+      "device rim to stop pads: contact, no clearance",
+      "power button to relief: 1.0 mm radially (RELIEF_CLEAR_R)",
+      "carrier to bay: 0.2 mm per side (CARRIER_CLEAR), 0.3 mm to the bridged roof (ROOF_GAP)"
+    ],
+    "loads": [
+      "docking and undocking by hand, USB-C mating force up to 20 N per the USB-C spec; not calculated",
+      "lifting the device out is resisted only by the USB-C socket's own retention; the rim holds sideways and against tipping forward"
+    ],
+    "physical_tests": [
+      "DONE 2026-11-17: printed in PLA; the device docks, sits flush with the glass and is held by the plug alone",
+      "PENDING: power button is not pressed while the device is docked or being docked",
+      "PENDING: retention after many docking cycles"
+    ],
+    "artifacts": {
+      "geometry": "../parts/wandhalter/generated/cad/wandhalter_body.step"
+    },
+    "requirements": [
+      {
+        "id": "BODY-X",
+        "stage": "geometry",
+        "check": "dimension_x_mm"
+      },
+      {
+        "id": "BODY-Y",
+        "stage": "geometry",
+        "check": "dimension_y_mm"
+      },
+      {
+        "id": "BODY-Z",
+        "stage": "geometry",
+        "check": "dimension_z_mm"
+      }
+    ]
+  },
+  "manufacturing_evaluated": false,
+  "limits": [
+    "Probes test small boxes with 98% solid / at most 2% material for empty; no general feature recognition.",
+    "Wall checks sample named cross-sections; no global minimum-wall guarantee.",
+    "Material, load capacity, physical fit, orientation and support require separate evidence."
+  ],
+  "model": "cad/parts/wandhalter/generated/cad/wandhalter_body.step",
+  "model_sha256": "848ccf0733e287b387cebb87df146a64a6dabd24270f3da37435dc7c2e0ff3a2",
+  "requirements_sha256": "b15a9a32802001804814c2683c7b5d37e97a2f2fcd995f3b571f75f23f66acd8",
+  "schema": 1
+}

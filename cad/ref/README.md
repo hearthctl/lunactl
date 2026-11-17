@@ -47,8 +47,8 @@ Gehäusefläche sitzt. Die STL enthält nur das Gehäuse.
 schrittweise 40 mm an. Aufruf (braucht `trimesh`, `scipy`, `rtree`):
 
 ```sh
-python check_device.py StopWatch.stl ../parts/wandhalter/out/print/wandhalter_body.stl \
-  ../parts/wandhalter/out/print/wandhalter_carrier.stl 4.0 0.2
+python check_device.py StopWatch.stl ../parts/wandhalter/generated/print/wandhalter_body.stl \
+  ../parts/wandhalter/generated/print/wandhalter_carrier.stl 4.0 0.2
 ```
 
 Die beiden letzten Werte sind `BACK_T` und `BACK_RECESS`.
