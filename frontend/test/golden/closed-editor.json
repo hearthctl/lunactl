@@ -1,0 +1,20 @@
+[
+  {
+    "step": "initial",
+    "status": "saved",
+    "state": "Gespeichert",
+    "error": "",
+    "revision": 2,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"pie\",\n      \"quarters\": [\n        null,\n        null,\n        null,\n        null\n      ]\n    }\n  ]\n}",
+    "calls": []
+  },
+  {
+    "step": "disconnected editor cancels debounce",
+    "status": "dirty",
+    "state": "Änderungen werden automatisch gespeichert …",
+    "error": "",
+    "revision": 2,
+    "source": "{\"schema\":1,\"pages\":[{\"type\":\"pie\",\"quarters\":[null,null,null,null]}]}",
+    "calls": []
+  }
+]

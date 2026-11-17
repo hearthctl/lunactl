@@ -1,6 +1,6 @@
 # Tracer checks
 
-Requirements: Go as specified by `go.mod`, a C++17 compiler (`CXX`), curl,
+Requirements: Go as specified by `go.mod`, Node 20 or newer, a C++17 compiler (`CXX`), curl,
 sha256sum and uv; `make e2e` also needs Podman. The host uses the same pinned
 ArduinoJson version as ESPHome; `make` downloads and checks its header in
 `.build/`.
@@ -10,13 +10,23 @@ Run from the repository root:
 ```sh
 make check-core       # seam 1: C++ host, Go tables and golden snapshots
 make check-schema     # seam 2: valid/invalid Manifests, schema/core agreement
+make check-frontend   # pinned Lit checksum, ES module syntax, Node golden tables
 make check-contracts  # seam 3: disposable HA, integration and host → action
 make check-firmware   # ESPHome config and ESP32-S3 compile with example secrets
 make check-integration # HA storage, lifecycle and websocket API
 make check-hassfest   # integration metadata and translations: needs Podman
-make verify           # core, schema, integration and firmware: needs no infrastructure
+make verify           # core, schema, frontend, integration and firmware: needs no infrastructure
 make e2e              # hassfest and contracts: need Podman
 ```
+
+The Designer needs no npm or build step. `check-frontend` runs `node --check`
+on every frontend and test module (including vendored Lit), then `node --test`
+on the DOM-free editing/device logic. Table-driven golden cases cover explicit
+creation, debounce, German validation/save states, stale revisions and reload,
+offline/restart feedback and in-flight edits. To intentionally update snapshots,
+run `UPDATE_GOLDEN=1 node --test frontend/test/*.test.mjs` and review the diff.
+HA tests check the admin-only panel, versioned static modules and unload/reload.
+These checks run in `make verify` and CI with Node only, without browser tests.
 
 The contract runner creates its own local HA and test user, installs the actual
 integration with isolated test registry fixtures, runs the Go and websocket tests,
@@ -174,7 +184,8 @@ prediction. A synthetic additive v2 exercises version drift without releasing
 an unneeded schema. Packaging tests compare every bundled schema byte-for-byte
 and tie firmware project major to the core's highest accepted schema. Hassfest
 validates metadata, action descriptions and English/German translations.
-All run through `make verify` with the firmware compile and Podman contracts.
+Unit tests and the firmware compile run through `make verify`; hassfest and
+Podman contracts run through `make e2e`.
 
 `HASSFEST` can override the hassfest command (for example, to supply emulation
 on ARM hosts; the official image is amd64). `PODMAN` selects the contract runtime.

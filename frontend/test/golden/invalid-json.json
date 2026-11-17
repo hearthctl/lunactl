@@ -1,0 +1,29 @@
+[
+  {
+    "step": "initial",
+    "status": "saved",
+    "state": "Gespeichert",
+    "error": "",
+    "revision": 2,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"pie\",\n      \"quarters\": [\n        null,\n        null,\n        null,\n        null\n      ]\n    }\n  ]\n}",
+    "calls": []
+  },
+  {
+    "step": "syntax error never saved",
+    "status": "invalid",
+    "state": "Ungültig – nicht gespeichert",
+    "error": "Ungültiges JSON. Prüfe Anführungszeichen, Kommas und Klammern.",
+    "revision": 2,
+    "source": "{\"schema\":1,",
+    "calls": []
+  },
+  {
+    "step": "nonobject never saved",
+    "status": "invalid",
+    "state": "Ungültig – nicht gespeichert",
+    "error": "Das Manifest muss ein JSON-Objekt sein.",
+    "revision": 2,
+    "source": "[]",
+    "calls": []
+  }
+]

@@ -1,0 +1,117 @@
+[
+  {"name":"explicit-create", "record":{"manifest":{},"revision":0,"required_firmware":null}, "steps":[
+    {"do":"tick","ms":20000,"check":"no automatic creation"},
+    {"do":"create","check":"starter draft"},
+    {"do":"tick","ms":999,"check":"not yet saved"},
+    {"do":"tick","ms":1,"check":"saved starter"}
+  ]},
+  {"name":"debounced-edits", "steps":[
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":10}}},
+    {"do":"tick","ms":999},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":20}}},
+    {"do":"tick","ms":999,"check":"last edit resets debounce"},
+    {"do":"tick","ms":1,"check":"only final edit saved"}
+  ]},
+  {"name":"invalid-json", "steps":[
+    {"do":"edit","value":"{\"schema\":1,"},
+    {"do":"tick","ms":10000,"check":"syntax error never saved"},
+    {"do":"edit","value":"[]"},
+    {"do":"tick","ms":10000,"check":"nonobject never saved"}
+  ]},
+  {"name":"schema-errors", "steps":[
+    {"do":"fail","kind":"validate","error":{"code":"invalid_manifest","message":"'mdi:unknown' is not one of ['mdi:lightbulb']"}},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}]}},
+    {"do":"tick","ms":1000,"check":"invalid schema never reaches save"},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}]}},
+    {"do":"tick","ms":1000,"check":"corrected draft saved"}
+  ]},
+  {"name":"firmware-unknown", "record":{"firmware_version":null,"schema_version":null}, "steps":[
+    {"do":"fail","kind":"validate","error":{"code":"unknown_firmware"}},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}]}},
+    {"do":"tick","ms":1000,"check":"refuses unknown firmware"}
+  ]},
+  {"name":"offline-and-restart", "record":{"online":false,"will_restart":true}, "steps":[
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}]}},
+    {"do":"tick","ms":1000,"check":"offline save"},
+    {"do":"refresh","value":{"online":true},"check":"restart notice"},
+    {"do":"tick","ms":10000,"check":"restart notice expires"}
+  ]},
+  {"name":"conflict-and-reload", "steps":[
+    {"do":"remote","value":{"revision":3,"manifest":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":30}}}},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":20}}},
+    {"do":"tick","ms":1000,"check":"stale save retains local JSON"},
+    {"do":"edit","value":"{ \"lokaler Entwurf\": true }"},
+    {"do":"refresh","value":{}},
+    {"do":"tick","ms":10000,"check":"autosave stays stopped while typing and polling"},
+    {"do":"fail","kind":"read","error":{}},
+    {"do":"reload","check":"failed reload preserves conflict and draft"},
+    {"do":"reload","check":"reload drops draft and takes current revision"},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":40}}},
+    {"do":"tick","ms":1000,"check":"autosave resumes with new base"}
+  ]},
+  {"name":"edit-during-validation", "steps":[
+    {"do":"hold","kind":"validate"},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":10}}},
+    {"do":"tick","ms":1000,"check":"validation in flight"},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":20}}},
+    {"do":"tick","ms":1000},
+    {"do":"release","check":"obsolete validation never saved"}
+  ]},
+  {"name":"edit-during-save", "steps":[
+    {"do":"hold","kind":"save"},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":10}}},
+    {"do":"tick","ms":1000,"check":"save in flight"},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":20}}},
+    {"do":"tick","ms":1000,"check":"second save waits"},
+    {"do":"release","check":"queued edit uses returned revision"}
+  ]},
+  {"name":"invalid-during-save", "steps":[
+    {"do":"hold","kind":"save"},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}]}},
+    {"do":"tick","ms":1000},
+    {"do":"edit","value":"{"},
+    {"do":"release","check":"save response keeps newer invalid text"},
+    {"do":"tick","ms":10000,"check":"invalid draft not saved"}
+  ]},
+  {"name":"conflict-during-save", "steps":[
+    {"do":"hold","kind":"save"},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":10}}},
+    {"do":"tick","ms":1000},
+    {"do":"remote","value":{"revision":3}},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":20}}},
+    {"do":"tick","ms":1000},
+    {"do":"release","check":"conflict cancels queued save"},
+    {"do":"tick","ms":20000,"check":"conflict does not retry"}
+  ]},
+  {"name":"status-poll-keeps-draft", "steps":[
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}]}},
+    {"do":"refresh","value":{"revision":9,"online":false,"firmware_version":"2.0 (ESPHome 2026.10.2)","schema_version":2},"check":"metadata updates without adopting remote base"}
+  ]},
+  {"name":"clean-poll-updates-manifest", "steps":[
+    {"do":"refresh","value":{"revision":3,"manifest":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":30}}},"check":"clean view follows external save"}
+  ]},
+  {"name":"late-poll-after-save", "steps":[
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":20}}},
+    {"do":"tick","ms":1000},
+    {"do":"refresh","value":{"revision":2,"manifest":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}]}},"check":"old poll cannot roll back saved revision or JSON"}
+  ]},
+  {"name":"closed-editor", "steps":[
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}]}},
+    {"do":"close"},
+    {"do":"tick","ms":10000,"check":"disconnected editor cancels debounce"}
+  ]},
+  {"name":"closed-during-validation", "steps":[
+    {"do":"hold","kind":"validate"},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}]}},
+    {"do":"tick","ms":1000},
+    {"do":"close"},
+    {"do":"release","check":"disconnected editor does not save validated draft"}
+  ]},
+  {"name":"connection-error", "steps":[
+    {"do":"fail","kind":"save","error":{}},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}]}},
+    {"do":"tick","ms":1000,"check":"failed save visible with source intact"},
+    {"do":"edit","value":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null]}],"display":{"timeout":10}}},
+    {"do":"tick","ms":1000,"check":"next edit retries without revision loss"}
+  ]}
+]

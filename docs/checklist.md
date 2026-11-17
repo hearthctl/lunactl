@@ -22,8 +22,11 @@ Before starting:
 
 - Flash this branch: `uvx esphome@2026.10.2 run esphome/lunactl.yaml`, using the
   household's local `esphome/secrets.yaml`.
-- Follow [household setup](household.md): install the HACS integration, save the
-  room example for this device and prepare its test entities/actions. Keep a
+- Follow [household setup](household.md): install lunactl as a HACS custom
+  integration, restart HA and add lunactl under Devices & services. Open
+  **lunactl** in the sidebar as an administrator, select this device by its HA
+  name, choose **Manifest anlegen** if needed and paste the adapted room example
+  into **Manifest als JSON**. Prepare its test entities/actions. Keep a
   copy of that working Manifest for restoration after each variant.
 - Enable **Allow the device to perform Home Assistant actions** for lunactl.
 - Start logs with `uvx esphome@2026.10.2 logs esphome/lunactl.yaml --no-states`.
@@ -31,9 +34,13 @@ Before starting:
   For gesture, icon and touch tests, replace actions with
   `{"action":"input_boolean.toggle","target":{"entity_id":"input_boolean.lunactl_example"}}`
   and create that helper. This avoids repeated notifications and appliance runs.
-- For every temporary variant below, save the changed Manifest via the internal API,
-  then wait for its delayed reload. Return to the saved room example
-  after each section. A new reference automatically restarts the device.
+- For every temporary variant below, edit or paste the JSON in the Designer.
+  Valid JSON is autosaved about 1 s after the last edit; wait for **Gespeichert**
+  and the integration's delayed reload, 10 s after the last save. Invalid JSON
+  or schema errors remain visible and leave the stored Manifest unchanged.
+  Return to the saved room example after each section. A new reference shows
+  **Neue Werte – Gerät startet in 10 s neu** and automatically restarts the device.
+  Do not edit contract scripts or press the reload button for these checks.
 - To keep the display awake during visual checks, temporarily set
   `display.timeout` to `120`; restore `10` for the display tests.
 - Variants are edits to the room JSON, not additional Page types: remove Klima's
@@ -45,6 +52,19 @@ Before starting:
 
 ## Fetch, actions, errors and reload (#3)
 
+- [ ] The Designer is visible in the sidebar for an admin and absent for a
+  non-admin. Its device list uses HA names; the selected device's header shows
+  its online state, firmware and schema version. A device with no Manifest
+  offers **Manifest anlegen** and creates nothing until pressed; pressing it
+  saves an empty Pie with four `null` quarters and `schema: 1`.
+- [ ] Edit in two admin tabs from the same revision. Save in one, then edit in
+  the other: **Manifest wurde anderswo geändert** stops autosaving there.
+  **JSON kopieren** retains that tab's local JSON; **Neu laden** drops the local
+  draft and reads the stored Manifest. Subsequent edits autosave again.
+- [ ] While the device is offline, edit a valid Manifest: the state reads
+  **Gespeichert – wird beim nächsten Verbinden übernommen**. On reconnect the
+  device fetches the saved Manifest.
+
 - [ ] With HA stopped/disconnected, boot shows **Keine Verbindung** and touch
   triggers no action. Opening a log viewer alone leaves that state unchanged.
 - [ ] Connect HA. The call to `lunactl.manifest` contains the StopWatch's
@@ -54,8 +74,10 @@ Before starting:
   Its `action` and JSON-text `data` match the Manifest. With the test helper
   action, the helper toggles exactly once. Check a target-bearing Licht action
   and a script action with omitted target/data (forwarded as empty objects).
-- [ ] Change label and colour in HA, save the Manifest, and press **Manifest
-  neu laden** in HA. The Item updates without reflashing.
+- [ ] Change label and colour in the Designer. About 1 s after the last edit
+  the state becomes **Gespeichert**; the Item updates about 10 s later without
+  reflashing or pressing **Manifest neu laden**. Continue editing within those
+  10 s: only one reload happens, 10 s after the final save.
 - [ ] Try saving an invalid colour or missing action. Saving fails, keeps the
   previous revision and Item, and its tap still runs the previous action.
   Firmware rejection of malformed or unsupported schemas is covered by the
@@ -92,9 +114,10 @@ Before starting:
 - [ ] On a plain Pie quarter or Single Item, cycle through all 44 names in
   [the icon list](manifest.md#compiled-in-icons), reloading between groups.
   Compare each glyph with [the icon mockup](mockups/icons.png); none is missing.
-- [ ] Set an icon to `mdi:not-in-lunactl`: `mdi:help-circle` appears and the log
-  warns, while the Item action still works. Omit `icon`: the same glyph appears
-  without that warning. Restore the original icon.
+- [ ] Set an icon to `mdi:not-in-lunactl` in the Designer: validation rejects it,
+  shows an error and leaves the saved Manifest and device unchanged. Omit
+  `icon`: the valid Manifest autosaves and reloads; no icon appears, while the
+  Item's label and action still work. Restore a known icon from the list.
 
 ## Live values and subscriptions (#5)
 
@@ -218,7 +241,7 @@ record failures/skips with evidence and follow-up issue links instead.
 | Device check #13 acceptance item | Checklist section |
 | --- | --- |
 | MAC fetch, Item tap, errors and reload (#3) | Fetch, actions, errors and reload |
-| Pie without center, pages/dots, icons and fallback (#4) | Pie without center, pages, icons and Single |
+| Pie without center, pages/dots and #34 icon rules (#4) | Pie without center, pages, icons and Single |
 | Live updates, boot reconnect/new-subscription restart, measured delay (#5) | Live values and subscriptions |
 | Countdown start, restart and cancel (#6) | Countdown on Single and Pie center |
 | Pie center and readable curved labels (#7) | Pie with center and curved labels |

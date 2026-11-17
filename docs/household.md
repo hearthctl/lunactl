@@ -52,13 +52,16 @@ After connecting the StopWatch through ESPHome (step 3), its project metadata
 identifies it as manufacturer `hearthctl`, model `lunactl`, with firmware `1.0`.
 The integration maps its Wi-Fi MAC internally through HA's device registry.
 
-There is no Designer UI in this increment. Use the admin websocket API in
-[the contract](contracts/README.md#internal-api) to list devices, read the current
-revision, then save `examples/child-room.json` with your household references.
-Each save must include the revision it was based on. Read again and reconcile
-if another client changed it. Validation failures leave the stored Manifest
-unchanged. Saving automatically requests **Manifest neu laden** 10 seconds
-after the last save; offline devices fetch on their next connection.
+Open **lunactl** in the HA sidebar as an administrator. Select the device by its
+HA name and choose **Manifest anlegen** if it has no Manifest. Paste the adapted
+`examples/child-room.json` into **Manifest als JSON**. Valid edits autosave about
+1 second after typing stops; validation errors leave the saved Manifest unchanged.
+The header shows connection, firmware and schema version. Saving requests a
+reload 10 seconds after the last save; new entity references show a restart
+notice. Offline saves apply on the next connection. A conflict stops autosaving:
+use **JSON kopieren** to keep the draft, then **Neu laden** to discard it and read
+the latest Manifest. The admin websocket API remains documented in
+[the contract](contracts/README.md#internal-api).
 
 In Developer Tools → Actions, call `lunactl.manifest` with the device's Wi-Fi
 MAC. Its response must be the Manifest mapping, without a wrapper or JSON text.

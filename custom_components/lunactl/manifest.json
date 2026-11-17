@@ -3,7 +3,7 @@
   "name": "lunactl",
   "codeowners": ["@hearthctl"],
   "config_flow": true,
-  "dependencies": ["websocket_api"],
+  "dependencies": ["panel_custom", "websocket_api"],
   "documentation": "https://github.com/hearthctl/lunactl/blob/main/docs/household.md",
   "integration_type": "service",
   "iot_class": "local_push",

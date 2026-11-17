@@ -16,7 +16,7 @@ $(ARDUINOJSON):
 
 .PHONY: verify e2e check-core check-schema check-contracts
 # verify needs no container runtime, so it runs in an agent pod; e2e holds what needs Podman.
-verify: check-core check-schema check-integration check-firmware
+verify: check-core check-schema check-frontend check-integration check-firmware
 e2e: check-hassfest check-contracts
 
 check-core: .build/manifest-host
@@ -24,6 +24,12 @@ check-core: .build/manifest-host
 
 check-schema: .build/manifest-host
 	go test -count=1 -v ./schema/test
+
+.PHONY: check-frontend
+check-frontend:
+	echo 'e44caa21b3f434eccbb580c00dba2d895aa81c65fc0bf84524ca4326fffaf3ae  custom_components/lunactl/frontend/vendor/lit-all.min.js' | sha256sum -c -
+	rg --files custom_components/lunactl/frontend frontend/test -g '*.js' -g '*.mjs' | xargs -n 1 node --check
+	node --test frontend/test/*.test.mjs
 
 check-contracts: .build/manifest-host .build/ha-venv/.lunactl-ready
 	./contracts/test/run.sh

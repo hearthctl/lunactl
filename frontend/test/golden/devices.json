@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Unbenanntes Gerät",
+    "connection": "Verbunden",
+    "firmware": "1.0 (ESPHome 2026.10.2)",
+    "schema": 1,
+    "requiredFirmware": "2.0"
+  },
+  {
+    "name": "Zimmer 2",
+    "connection": "Verbunden",
+    "firmware": "Unbekannt",
+    "schema": "Unbekannt",
+    "requiredFirmware": "1.0"
+  },
+  {
+    "name": "Zimmer 2",
+    "connection": "Keine Verbindung",
+    "firmware": "1.0 (ESPHome 2026.10.2)",
+    "schema": 1,
+    "requiredFirmware": null
+  },
+  {
+    "name": "Zimmer 10",
+    "connection": "Verbunden",
+    "firmware": "1.0 (ESPHome 2026.10.2)",
+    "schema": 1,
+    "requiredFirmware": null
+  }
+]

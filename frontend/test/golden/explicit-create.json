@@ -1,0 +1,85 @@
+[
+  {
+    "step": "initial",
+    "status": "empty",
+    "state": "Kein Manifest",
+    "error": "",
+    "revision": 0,
+    "source": "",
+    "calls": []
+  },
+  {
+    "step": "no automatic creation",
+    "status": "empty",
+    "state": "Kein Manifest",
+    "error": "",
+    "revision": 0,
+    "source": "",
+    "calls": []
+  },
+  {
+    "step": "starter draft",
+    "status": "dirty",
+    "state": "Änderungen werden automatisch gespeichert …",
+    "error": "",
+    "revision": 0,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"pie\",\n      \"quarters\": [\n        null,\n        null,\n        null,\n        null\n      ]\n    }\n  ]\n}",
+    "calls": []
+  },
+  {
+    "step": "not yet saved",
+    "status": "dirty",
+    "state": "Änderungen werden automatisch gespeichert …",
+    "error": "",
+    "revision": 0,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"pie\",\n      \"quarters\": [\n        null,\n        null,\n        null,\n        null\n      ]\n    }\n  ]\n}",
+    "calls": []
+  },
+  {
+    "step": "saved starter",
+    "status": "saved",
+    "state": "Gespeichert",
+    "error": "",
+    "revision": 1,
+    "source": "{\n  \"schema\": 1,\n  \"pages\": [\n    {\n      \"type\": \"pie\",\n      \"quarters\": [\n        null,\n        null,\n        null,\n        null\n      ]\n    }\n  ]\n}",
+    "calls": [
+      {
+        "type": "lunactl/manifest/get",
+        "device_id": "bedroom",
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                null,
+                null,
+                null,
+                null
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "lunactl/manifest/save",
+        "device_id": "bedroom",
+        "revision": 0,
+        "manifest": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                null,
+                null,
+                null,
+                null
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
