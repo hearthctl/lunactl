@@ -1,0 +1,42 @@
+{
+  "events": [
+    {"type": "connect"},
+    {"type": "fetch"},
+    {"type": "manifest","manifest": {"schema": 1,"pages": [{"type": "single","item": {"label": "Keys","color": "#123456","action": {"action": "script.item"}}}],"buttons": {"a_short": {"action": "script.a_short","target": {"entity_id": ["script.first","script.second"]},"data": {"text": "Gemütlich \"hi\"\\\n","payload": {"values": [1,2.5,null],"enabled": true}}},"a_long": {"action": "script.a_long"},"b_short": {"action": "script.b_short","data": {"text": "Papa kommt"}},"b_long": {"action": "script.b_long","target": {"area_id": "child_room"}}}}},
+    {"type": "button","key": "a","pressed": true,"now": 4294967000},
+    {"type": "button","key": "b","pressed": true,"now": 4294967100},
+    {"type": "button","key": "a","pressed": true,"now": 703},
+    {"type": "button","key": "a","pressed": true,"now": 704},
+    {"type": "button","key": "b","pressed": false,"now": 704},
+    {"type": "button","key": "a","pressed": false,"now": 800},
+    {"type": "button","key": "a","pressed": true,"now": 1000},
+    {"type": "disconnect"},
+    {"type": "sleep"},
+    {"type": "button","key": "b","pressed": true,"now": 1100},
+    {"type": "connect"},
+    {"type": "button","key": "a","pressed": false,"now": 1200},
+    {"type": "button","key": "b","pressed": false,"now": 1200},
+    {"type": "button","key": "a","pressed": true,"now": 1300},
+    {"type": "button","key": "a","pressed": false,"now": 1301}
+  ],
+  "want": {"snapshots": [
+    {"status": "Kein Manifest","tappable": false},
+    {"status": "Kein Manifest","tappable": false,"request": 2},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"}},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"},"display_on": true,"wake": true},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"},"display_on": true,"wake": true},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"},"display_on": true,"wake": false},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"},"display_on": true,"wake": false,"call": {"service": "script.lunactl_run","action": "script.a_long","data": "{\"target\":{},\"data\":{}}"}},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"},"display_on": true,"wake": false,"call": {"service": "script.lunactl_run","action": "script.b_short","data": "{\"target\":{},\"data\":{\"text\":\"Papa kommt\"}}"}},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"},"display_on": true,"wake": false},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"},"display_on": true,"wake": true},
+    {"status": "Keine Verbindung","tappable": false},
+    {"status": "Keine Verbindung","tappable": false,"display_on": false},
+    {"status": "Keine Verbindung","tappable": false,"display_on": true,"wake": true},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"}},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"},"display_on": true,"wake": false},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"},"display_on": true,"wake": false},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"},"display_on": true,"wake": true},
+    {"status": "","tappable": true,"item": {"label": "Keys","color": "#123456"},"display_on": true,"wake": false,"call": {"service": "script.lunactl_run","action": "script.a_short","data": "{\"target\":{\"entity_id\":[\"script.first\",\"script.second\"]},\"data\":{\"text\":\"Gemütlich \\\"hi\\\"\\\\\\n\",\"payload\":{\"values\":[1,2.5,null],\"enabled\":true}}}"}}
+  ]}
+}

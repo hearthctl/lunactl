@@ -34,6 +34,20 @@ version, page count, colour, actions and targets. Contract cases fetch by MAC,
 feed the returned Manifest through the C++ host and execute its tap through
 `lunactl_run`, and check target/data forwarding and failures in real HA.
 
+Issue [#8](https://github.com/hearthctl/lunactl/issues/8) adds a golden file per
+gesture (`button-a-short`, `button-a-long`, `button-b-short`, `button-b-long`),
+each with lit and dark display cases. They verify no action on press, short on
+release at 999 ms, long at 1000 ms while held, no repeat or short after long,
+and the full action payload. Further golden cases cover absent, empty and
+partial bindings, simultaneous keys, millis wraparound, offline cancellation
+and atomic reload/replacement. `sleep` is a host fixture for a dark display;
+automatic display timeout belongs to issue #9. The production adapter test
+compiles the actual YAML polling, wake and action lambdas with display stubs,
+checking key mapping, wake and dispatch. Schema/core agreement cases validate
+all four bindings with the shared action/target/data cases. Contract tests run
+each bound gesture from a dark display through the host and `lunactl_run` in
+disposable HA. Run `make check` for these checks and the firmware compile.
+
 Issue [#3](https://github.com/hearthctl/lunactl/issues/3) is verified by the three
 automated seams above and `make check-firmware`. On-device acceptance belongs to
 issue [#13](https://github.com/hearthctl/lunactl/issues/13): compilation and host
