@@ -160,7 +160,12 @@ struct Page {
   // Clockwise: top-left, top-right, bottom-right, bottom-left.
   std::array<Item, 4> items;
 };
+struct Display {
+  uint32_t timeout_ms{10000};
+  std::string brightness_entity;
+};
 struct Manifest {
+  Display display;
   std::vector<Page> pages;
   std::array<Action, 4> buttons;
 };
@@ -226,9 +231,25 @@ inline bool parse_manifest(JsonVariantConst root, Manifest &manifest, std::strin
                            std::vector<std::string> &warnings) {
   auto reject = [&error](const char *message) { error = message; return false; };
   if (measureJson(root) > MAX_MANIFEST_BYTES) return reject("Manifest exceeds 32 KiB");
-  if (!keys(root, {"schema", "pages", "buttons"})) return reject("Invalid Manifest fields");
+  if (!keys(root, {"schema", "pages", "buttons", "display"})) return reject("Invalid Manifest fields");
   if (!root["schema"].is<double>() || root["schema"].as<double>() != 1)
     return reject("Unknown or invalid schema version");
+  auto display = root["display"];
+  if (!display.isUnbound()) {
+    if (!keys(display, {"timeout", "brightness"})) return reject("Invalid display");
+    auto timeout = display["timeout"];
+    if (!timeout.isUnbound()) {
+      if (!timeout.is<double>()) return reject("Invalid display timeout");
+      double seconds = timeout.as<double>();
+      if (!std::isfinite(seconds) || seconds < 0.001 || seconds > 4294967.295)
+        return reject("Invalid display timeout");
+      manifest.display.timeout_ms = static_cast<uint32_t>(std::round(seconds * 1000));
+    }
+    if (!display["brightness"].isUnbound()) {
+      if (!action_name(display["brightness"])) return reject("Invalid display brightness entity");
+      manifest.display.brightness_entity = display["brightness"].as<std::string>();
+    }
+  }
   auto pages = root["pages"];
   if (!pages.is<JsonArrayConst>() || pages.size() < 1 || pages.size() > 6)
     return reject("Expected one to six pages");
@@ -291,6 +312,10 @@ class Core {
       for (const auto &item : page.items)
         for (const auto &ref : item.value.refs)
           if (std::find(required.begin(), required.end(), ref) == required.end()) required.push_back(ref);
+    if (!candidate.display.brightness_entity.empty()) {
+      Reference ref{candidate.display.brightness_entity, ""};
+      if (std::find(required.begin(), required.end(), ref) == required.end()) required.push_back(ref);
+    }
     if (!subscriptions_initialized_) {
       subscriptions_ = std::move(required);
       states_.resize(subscriptions_.size());
@@ -397,11 +422,19 @@ class Core {
   }
   int dots_width() const { return static_cast<int>(page_count()) * 18 + 12; }
   int dots_left() const { return (466 - dots_width()) / 2; }
-  void press(int x, int y) {
-    press_x_ = x; press_y_ = y; press_revision_ = revision_; pressed_ = tappable();
+  bool press(int x, int y) { return press(x, y, now_); }
+  bool press(int x, int y, uint32_t now) {
+    bool was_on = display_on_;
+    wake(now);
+    touch_down_ = true;
+    press_x_ = x; press_y_ = y; press_revision_ = revision_; pressed_ = was_on && tappable();
+    return pressed_;
   }
   // Returns an Item slot only for a tap. Navigation never runs an action.
-  int release(int x, int y) {
+  int release(int x, int y) { return release(x, y, now_); }
+  int release(int x, int y, uint32_t now) {
+    if (touch_down_) wake(now);
+    touch_down_ = false;
     if (!pressed_) return -1;
     pressed_ = false;
     if (!tappable() || press_revision_ != revision_) return -1;
@@ -419,6 +452,43 @@ class Core {
     }
     int slot = hit(x, y);
     return slot >= 0 && hit(press_x_, press_y_) == slot ? slot : -1;
+  }
+  uint32_t timeout_ms() const { return manifest_.display.timeout_ms; }
+  bool display_on() const { return display_on_; }
+  // Brightness entities supply percentages. Invalid or missing states use 70%.
+  double brightness() const {
+    Reference ref{manifest_.display.brightness_entity, ""};
+    auto found = std::find(subscriptions_.begin(), subscriptions_.end(), ref);
+    if (!connected_ || ref.entity.empty() || found == subscriptions_.end()) return 70;
+    const auto &state = states_[found - subscriptions_.begin()];
+    char *end = nullptr;
+    errno = 0;
+    double percent = std::strtod(state.c_str(), &end);
+    if (end == state.c_str() || end != state.c_str() + state.size() || errno == ERANGE ||
+        !std::isfinite(percent) || percent < 0 || percent > 100) return 70;
+    return percent;
+  }
+  uint8_t display_brightness() const {
+    return display_on_ ? static_cast<uint8_t>(std::round(brightness() * 255 / 100)) : 0;
+  }
+  void wake(uint32_t now) {
+    now_ = last_activity_ = now;
+    display_on_ = true;
+  }
+  void sleep() {
+    display_on_ = false;
+    page_ = 0;
+    pressed_ = false;
+    ++revision_;
+  }
+  // Unsigned subtraction keeps idle timing correct across millis() wraparound.
+  // Held touches/keys keep the display awake through their release.
+  bool tick(uint32_t now) {
+    now_ = now;
+    if (touch_down_ || buttons_[0].pressed || buttons_[1].pressed) last_activity_ = now;
+    if (!display_on_ || now - last_activity_ < timeout_ms()) return false;
+    sleep();
+    return true;
   }
   const char *status() const { return !connected_ ? "Keine Verbindung" : has_manifest_ ? "" : "Kein Manifest"; }
 
@@ -439,8 +509,10 @@ class Core {
         state.actions[0] = manifest_.buttons[index * 2];
         state.actions[1] = manifest_.buttons[index * 2 + 1];
       }
+      wake(now);
       event.wake = true;
     } else if (state.pressed) {
+      wake(now);
       if (!state.long_fired && now - state.since >= LONG_PRESS_MS) {
         state.long_fired = true;
         if (tappable()) event.action = state.actions[1];
@@ -472,6 +544,9 @@ class Core {
   uint32_t revision_{0}, press_revision_{0};
   int press_x_{0}, press_y_{0};
   bool pressed_{false};
+  bool touch_down_{false};
+  bool display_on_{true};
+  uint32_t now_{0}, last_activity_{0};
   struct ButtonState {
     bool pressed{false};
     bool long_fired{false};

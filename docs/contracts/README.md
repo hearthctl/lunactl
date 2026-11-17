@@ -34,6 +34,29 @@ Unknown names render `mdi:help-circle` and log a warning; an omitted icon uses
 the same fallback without a warning. Unsupported fields and Page types are
 rejected. Live values and countdowns belong to subsequent issues.
 
+The optional `display` object controls idle sleep and brightness:
+
+```json
+"display": {"timeout": 10, "brightness": "input_number.panel_brightness"}
+```
+
+`timeout` is idle seconds (default 10), from 0.001 to 4294967.295, rounded to
+milliseconds. Touches and key presses reset inactivity; holding either keeps
+the display awake until release. Sleep turns brightness off and returns to the
+first page. The first touch after sleep only wakes: its release cannot run an
+Item, swipe or select a page dot. The next touch works normally. Keys retain
+their gesture behavior when waking.
+
+`brightness` names an entity whose state is a percentage from 0 to 100, including
+fractions. Omission, missing/empty states, `unknown`, `unavailable`, nonnumeric,
+nonfinite and out-of-range values use 70%. The percentage is rounded to the
+CO5300's 0–255 range. Updates apply immediately while awake and take effect on
+wake while asleep. Disconnect clears the cached state and uses the fallback.
+Brightness shares the [live-value subscription lifecycle](../values.md),
+including deduplication, the initial reconnect and restart for a new entity.
+Omitting `display` or using `{}` selects both defaults. Invalid display fields
+reject the replacement and preserve the previous Manifest.
+
 The optional `buttons` object binds `a_short`, `a_long`, `b_short` and `b_long`
 directly to actions in that same format (for example,
 `"buttons": {"b_long": {"action": "script.example"}}`). Omit a gesture to leave

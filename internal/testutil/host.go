@@ -15,9 +15,9 @@ func Root() string {
 	return filepath.Clean(filepath.Join(filepath.Dir(file), "../.."))
 }
 
-func Host(t *testing.T, events any) map[string]any {
+func Host(t *testing.T, events any, display ...bool) map[string]any {
 	t.Helper()
-	input, err := json.Marshal(map[string]any{"events": events})
+	input, err := json.Marshal(map[string]any{"events": events, "display": len(display) > 0 && display[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
