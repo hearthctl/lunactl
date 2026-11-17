@@ -1,5 +1,5 @@
 ESPHOME := uvx esphome@2026.10.2
-.DEFAULT_GOAL := check-firmware
+.DEFAULT_GOAL := verify
 CHECK_DIR := esphome/.check
 CXXFLAGS := -std=c++17 -Wall -Wextra -Werror -O2
 ARDUINOJSON := .build/include/ArduinoJson.h

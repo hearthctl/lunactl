@@ -21,6 +21,8 @@ packages are used. `PODMAN` can select a different Podman command, and
 `HA_TEST_PORT` changes the default local port 18123. It deliberately fails if HA
 cannot start; unavailable infrastructure does not count as a passing check.
 
+Plain `make` runs `make verify`.
+
 `make verify` must pass before a pull request is opened. `make e2e` needs
 infrastructure and is run only by CI, where the one check named `verify` runs
 `make verify` and then `make e2e` on the pull request merged on top of the
