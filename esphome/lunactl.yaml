@@ -1,5 +1,10 @@
 esphome:
   name: lunactl
+  # Arc labels need the A8 transform for rotated glyphs (see the curved-text spike).
+  build_flags:
+    - -DLV_USE_ARCLABEL=1
+    - -DLV_DRAW_SW_SUPPORT_A8=1
+    - -DLV_USE_FLOAT=1
   # Copy the header, and include its type before ESPHome's static globals.
   includes: [<core.h>, lunactl/core.h, lunactl/icons.h, lunactl/countdown.h, <ui.h>, lunactl/ui.h, <battery.h>, lunactl/battery.h]
   # Runs after the I2C bus (1000) and before the M5IOE1 setup (IO, 900).
@@ -247,7 +252,7 @@ script:
       - lambda: |-
           auto &core = id(manifest_core);
           lv_label_set_text(id(manifest_status), core.status());
-          id(page_ui).init(lv_obj_get_parent(id(touch_surface)), id(font_item)->get_lv_font(), id(font_icon)->get_lv_font(), id(countdown_ring));
+          id(page_ui).init(lv_obj_get_parent(id(touch_surface)), id(font_item)->get_lv_font(), id(font_icon)->get_lv_font(), id(countdown_ring), id(font_battery)->get_lv_font(), id(font_countdown)->get_lv_font());
           id(page_ui).render(core);
           lv_obj_remove_flag(id(touch_surface), LV_OBJ_FLAG_SCROLLABLE);
           lv_obj_move_foreground(id(battery_hint));
@@ -375,6 +380,11 @@ font:
     bpp: 4
     glyphsets: [GF_Latin_Core]
 
+  - id: font_countdown
+    file: "gfonts://Nunito@800"
+    size: 48
+    bpp: 4
+    glyphs: "0123456789: s"
   - id: font_icon
     file: https://raw.githubusercontent.com/Templarian/MaterialDesign-Webfont/v7.4.47/fonts/materialdesignicons-webfont.ttf
     size: 48
@@ -432,7 +442,7 @@ lvgl:
   bg_color: 0x000000
   widgets:
     # Declaring the arc here enables LVGL's arc module. UI reparents and styles
-    # this same object with the Single Item; it stays inert and initially hidden.
+    # this same object with the Single or Pie center Item; it stays inert and initially hidden.
     - arc:
         id: countdown_ring
         hidden: true

@@ -28,7 +28,7 @@ func TestProductionCountdown(t *testing.T) {
 	tick := extract(`(?s)  - interval: 1s\n    then:\n      - lambda: \|-\n(.*?)\n\nbutton:`)
 	sync := extract(`(?s)- id: sync_subscriptions\n.*?- lambda: \|-\n(.*?)\n  - id: wake_display`)
 	if !strings.Contains(string(raw), "id: countdown_ring\n        hidden: true\n        adjustable: false") ||
-		!strings.Contains(string(raw), "id(font_icon)->get_lv_font(), id(countdown_ring)") {
+		!strings.Contains(string(raw), "id(font_icon)->get_lv_font(), id(countdown_ring), id(font_battery)->get_lv_font(), id(font_countdown)->get_lv_font())") {
 		t.Fatal("the production UI must use the declared inert arc (enables LV_USE_ARC)")
 	}
 	checkAdapter(t, `#include "ui.h"
@@ -152,11 +152,14 @@ struct lv_font_t {};
 struct lv_obj_t {
  lv_obj_t *parent{nullptr};
  std::vector<lv_obj_t *> children;
- std::string text;
+ std::string text, kind{"box"};
+ unsigned bg_color{0}, arc_color{0};
+ const lv_font_t *font{nullptr};
+ int start{0}, size{0}, direction{0}, radius{0}, arc_width{0};
  int flags{3}, value{0}, x{0}, y{0}, width{0}, height{0};
 };
 constexpr int LV_OBJ_FLAG_CLICKABLE=1, LV_OBJ_FLAG_SCROLLABLE=2, LV_OBJ_FLAG_HIDDEN=4;
-constexpr int LV_PART_MAIN=0, LV_PART_INDICATOR=1, LV_OPA_COVER=255;
+constexpr int LV_PART_MAIN=0, LV_PART_INDICATOR=1, LV_OPA_COVER=255, LV_OPA_TRANSP=0;
 constexpr int LV_TEXT_ALIGN_CENTER=0, LV_LABEL_LONG_WRAP=0;
 inline void lv_obj_set_parent(lv_obj_t *obj, lv_obj_t *parent) {
  if (obj->parent) {
@@ -171,7 +174,21 @@ inline lv_obj_t *lv_obj_create(lv_obj_t *parent) {
  lv_obj_set_parent(obj, parent);
  return obj;
 }
-inline lv_obj_t *lv_label_create(lv_obj_t *parent) { return lv_obj_create(parent); }
+inline lv_obj_t *lv_label_create(lv_obj_t *parent) { auto o=lv_obj_create(parent); o->kind="label"; return o; }
+inline lv_obj_t *lv_arc_create(lv_obj_t *parent) { auto o=lv_obj_create(parent); o->kind="arc"; return o; }
+inline lv_obj_t *lv_arclabel_create(lv_obj_t *parent) { auto o=lv_obj_create(parent); o->kind="arclabel"; return o; }
+constexpr int LV_ARCLABEL_DIR_CLOCKWISE=0, LV_ARCLABEL_DIR_COUNTER_CLOCKWISE=1;
+constexpr int LV_ARCLABEL_TEXT_ALIGN_CENTER=2, LV_ARCLABEL_OVERFLOW_ELLIPSIS=1;
+inline void lv_arclabel_set_text(lv_obj_t *o, const char *s) { o->text=s; }
+inline void lv_arclabel_set_angle_start(lv_obj_t *o, int v) { o->start=v; }
+inline void lv_arclabel_set_angle_size(lv_obj_t *o, int v) { o->size=v; }
+inline void lv_arclabel_set_radius(lv_obj_t *o, int v) { o->radius=v; }
+inline void lv_arclabel_set_dir(lv_obj_t *o, int v) { o->direction=v; }
+inline void lv_obj_set_style_bg_color(lv_obj_t *o, unsigned c, int) { o->bg_color=c; }
+inline void lv_obj_set_style_arc_color(lv_obj_t *o, unsigned c, int part) { if (part==LV_PART_MAIN) o->arc_color=c; }
+inline void lv_obj_set_style_arc_width(lv_obj_t *o, int v, int part) { if (part==LV_PART_MAIN) o->arc_width=v; }
+inline void lv_obj_set_style_text_font(lv_obj_t *o, const lv_font_t *f, int) { o->font=f; }
+inline void lv_arc_set_bg_angles(lv_obj_t *o, int start, int end) { o->start=start; o->size=end-start; }
 inline void lv_obj_remove_flag(lv_obj_t *o, int f) { o->flags &= ~f; }
 inline void lv_obj_add_flag(lv_obj_t *o, int f) { o->flags |= f; }
 inline void lv_obj_set_pos(lv_obj_t *o, int x, int y) { o->x=x; o->y=y; }
@@ -186,18 +203,16 @@ inline unsigned lv_color_mix(unsigned a, unsigned, int) { return a; }
 LV_NOOP(lv_obj_remove_style_all)
 LV_NOOP(lv_obj_set_style_clip_corner)
 LV_NOOP(lv_obj_set_style_bg_opa)
-LV_NOOP(lv_obj_set_style_bg_color)
 LV_NOOP(lv_obj_set_style_radius)
-LV_NOOP(lv_obj_set_style_text_font)
 LV_NOOP(lv_obj_set_style_text_color)
 LV_NOOP(lv_obj_set_style_text_align)
 LV_NOOP(lv_label_set_long_mode)
 LV_NOOP(lv_arc_set_rotation)
-LV_NOOP(lv_arc_set_bg_angles)
 LV_NOOP(lv_arc_set_range)
-LV_NOOP(lv_obj_set_style_arc_width)
 LV_NOOP(lv_obj_set_style_arc_opa)
 LV_NOOP(lv_obj_set_style_arc_rounded)
-LV_NOOP(lv_obj_set_style_arc_color)
+LV_NOOP(lv_arclabel_set_text_horizontal_align)
+LV_NOOP(lv_arclabel_set_text_vertical_align)
+LV_NOOP(lv_arclabel_set_overflow)
 #undef LV_NOOP
 `

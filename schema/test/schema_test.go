@@ -85,8 +85,41 @@ func TestManifestSchemaAndCoreAgree(t *testing.T) {
 		}
 	}
 	addButtons("buttons-all-gestures", true, all)
-	// Countdown references are accepted on Items in either Page type. Only
-	// Single renders them; both must register the timer's subscriptions.
+	// Reuse the Single Item validation cases for Pie's optional center Item.
+	for _, tc := range itemCases {
+		var manifest map[string]any
+		if err := json.Unmarshal(tc.Manifest, &manifest); err != nil || manifest == nil {
+			continue
+		}
+		pages, ok := manifest["pages"].([]any)
+		if !ok || len(pages) != 1 {
+			continue
+		}
+		page, ok := pages[0].(map[string]any)
+		if !ok || page["type"] != "single" || len(page) != 2 {
+			continue
+		}
+		item, ok := page["item"]
+		if !ok {
+			continue
+		}
+		manifest["pages"] = []any{map[string]any{"type": "pie", "quarters": []any{nil, nil, nil, nil}, "center": item}}
+		raw, err := json.Marshal(manifest)
+		if err != nil {
+			t.Fatal(err)
+		}
+		cases = append(cases, manifestCase{"center-" + tc.Name, tc.Valid, raw})
+	}
+	for i, center := range []any{nil, true, 42, "Item", []any{}, map[string]any{}} {
+		raw, err := json.Marshal(map[string]any{"schema": 1, "pages": []any{map[string]any{
+			"type": "pie", "quarters": []any{nil, nil, nil, nil}, "center": center,
+		}}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		cases = append(cases, manifestCase{fmt.Sprintf("center-invalid-type-%d", i), false, raw})
+	}
+	// Countdown references share the Item contract in both Page types.
 	for _, tc := range []struct {
 		name  string
 		valid bool
@@ -106,10 +139,15 @@ func TestManifestSchemaAndCoreAgree(t *testing.T) {
 		{"object", false, map[string]any{"entity": "timer.example"}},
 		{"array", false, []any{"timer.example"}},
 	} {
-		for _, pageType := range []string{"single", "pie"} {
+		for _, pageType := range []string{"single", "pie", "pie-center"} {
 			item := map[string]any{"label": "Restzeit", "color": "#123456", "action": map[string]any{"action": "script.example"}, "countdown": tc.value}
 			page := map[string]any{"type": pageType, "item": item}
-			if pageType == "pie" {
+			if pageType == "pie-center" {
+				page["type"] = "pie"
+				delete(page, "item")
+				page["quarters"] = []any{nil, nil, nil, nil}
+				page["center"] = item
+			} else if pageType == "pie" {
 				delete(page, "item")
 				page["quarters"] = []any{item, nil, nil, nil}
 			}
@@ -120,7 +158,7 @@ func TestManifestSchemaAndCoreAgree(t *testing.T) {
 			cases = append(cases, manifestCase{"countdown-" + pageType + "-" + tc.name, tc.valid, raw})
 		}
 	}
-	// Values use the same contract in Single and every Pie quarter.
+	// Values use the same contract in Single, Pie quarters and the center.
 	type valueCase struct {
 		name  string
 		valid bool
@@ -158,10 +196,15 @@ func TestManifestSchemaAndCoreAgree(t *testing.T) {
 		valueCases = append(valueCases, valueCase{fmt.Sprintf("reference-invalid-%v", ref), false, map[string]any{"format": "{0}", "refs": []any{ref}}})
 	}
 	for _, tc := range valueCases {
-		for _, pageType := range []string{"single", "pie"} {
+		for _, pageType := range []string{"single", "pie", "pie-center"} {
 			item := map[string]any{"label": "Wert", "color": "#123456", "action": map[string]any{"action": "script.example"}, "value": tc.value}
 			page := map[string]any{"type": pageType, "item": item}
-			if pageType == "pie" {
+			if pageType == "pie-center" {
+				page["type"] = "pie"
+				delete(page, "item")
+				page["quarters"] = []any{nil, nil, nil, nil}
+				page["center"] = item
+			} else if pageType == "pie" {
 				delete(page, "item")
 				page["quarters"] = []any{nil, nil, nil, item}
 			}

@@ -6,10 +6,12 @@ static void item_view(JsonObject out, const lunactl::Core &core, size_t slot = 0
   const auto &item = core.item(slot);
   out["label"] = item.label;
   out["color"] = item.color;
-  out["icon"] = item.icon;
-  out["glyph"] = lunactl::resolve_icon(item.icon.c_str()).glyph;
+  if (slot != lunactl::CENTER_SLOT) {
+    out["icon"] = item.icon;
+    out["glyph"] = lunactl::resolve_icon(item.icon.c_str()).glyph;
+  }
   if (item.value.present) out["value"] = core.value(slot);
-  if (!core.pie() && !item.countdown.empty()) {
+  if ((!core.pie() || slot == lunactl::CENTER_SLOT) && !item.countdown.empty()) {
     auto countdown = core.countdown();
     if (countdown.remaining == 0) out["countdown"] = nullptr;
     else {
@@ -122,13 +124,22 @@ int main() {
         snapshot["type"] = core.pie() ? "pie" : "single";
         if (core.pie()) {
           snapshot["clock"] = core.clock();
-          snapshot["hole_radius"] = 56;
+          snapshot["hole_radius"] = core.hole_radius();
+          if (core.center()) {
+            snapshot["clock_position"] = "top-gap";
+            item_view(snapshot["center"].to<JsonObject>(), core, lunactl::CENTER_SLOT);
+          }
           auto quarters = snapshot["quarters"].to<JsonArray>();
           for (size_t slot = 0; slot < 4; ++slot) {
             auto quarter = quarters.add<JsonObject>();
             quarter["tappable"] = core.slot_tappable(slot);
-            if (core.slot_tappable(slot)) item_view(quarter, core, slot);
-            else quarter["color"] = "#202020";
+            if (core.slot_tappable(slot)) {
+              if (core.center()) {
+                quarter["label"] = core.item(slot).label;
+                quarter["color"] = core.item(slot).color;
+                quarter["curved"] = true;
+              } else item_view(quarter, core, slot);
+            } else quarter["color"] = "#202020";
           }
         } else item_view(snapshot["item"].to<JsonObject>(), core);
         if (tapped >= 0) action = &core.item(tapped);

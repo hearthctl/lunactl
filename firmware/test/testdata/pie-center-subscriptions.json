@@ -1,0 +1,1176 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Single",
+              "color": "#654321",
+              "action": {
+                "action": "script.single"
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Kühlen",
+                "color": "#2049D8",
+                "action": {
+                  "action": "script.cool"
+                },
+                "icon": "mdi:snowflake",
+                "value": {
+                  "format": "{0}",
+                  "refs": [
+                    {
+                      "entity": "sensor.room"
+                    }
+                  ]
+                },
+                "countdown": "timer.run"
+              },
+              {
+                "label": "Heizen",
+                "color": "#B71C1C",
+                "action": {
+                  "action": "script.heat"
+                }
+              },
+              {
+                "label": "+30 min",
+                "color": "#374151",
+                "action": {
+                  "action": "script.extend"
+                }
+              },
+              {
+                "label": "Aus",
+                "color": "#4B5563",
+                "action": {
+                  "action": "script.stop"
+                }
+              }
+            ],
+            "center": {
+              "label": "Kühlen",
+              "color": "#111827",
+              "action": {
+                "action": "script.center",
+                "target": {
+                  "entity_id": [
+                    "script.center"
+                  ]
+                },
+                "data": {
+                  "text": "Grüße",
+                  "nested": {
+                    "enabled": true,
+                    "list": [
+                      1,
+                      null
+                    ]
+                  }
+                }
+              },
+              "value": {
+                "format": "{0} °C → 20 °C",
+                "refs": [
+                  {
+                    "entity": "sensor.room",
+                    "decimals": 1,
+                    "decimal_comma": true
+                  }
+                ]
+              },
+              "countdown": "timer.run"
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "center": {
+              "label": "Kühlen",
+              "color": "#111827",
+              "action": {
+                "action": "script.center",
+                "target": {
+                  "entity_id": [
+                    "script.center"
+                  ]
+                },
+                "data": {
+                  "text": "Grüße",
+                  "nested": {
+                    "enabled": true,
+                    "list": [
+                      1,
+                      null
+                    ]
+                  }
+                }
+              },
+              "value": {
+                "format": "{0} °C → 20 °C",
+                "refs": [
+                  {
+                    "entity": "sensor.room",
+                    "decimals": 1,
+                    "decimal_comma": true
+                  }
+                ]
+              },
+              "countdown": "timer.run"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "sync"
+    },
+    {
+      "type": "disconnect"
+    },
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Single",
+              "color": "#654321",
+              "action": {
+                "action": "script.single"
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Kühlen",
+                "color": "#2049D8",
+                "action": {
+                  "action": "script.cool"
+                },
+                "icon": "mdi:snowflake",
+                "value": {
+                  "format": "{0}",
+                  "refs": [
+                    {
+                      "entity": "sensor.room"
+                    }
+                  ]
+                },
+                "countdown": "timer.run"
+              },
+              {
+                "label": "Heizen",
+                "color": "#B71C1C",
+                "action": {
+                  "action": "script.heat"
+                }
+              },
+              {
+                "label": "+30 min",
+                "color": "#374151",
+                "action": {
+                  "action": "script.extend"
+                }
+              },
+              {
+                "label": "Aus",
+                "color": "#4B5563",
+                "action": {
+                  "action": "script.stop"
+                }
+              }
+            ],
+            "center": {
+              "label": "Kühlen",
+              "color": "#111827",
+              "action": {
+                "action": "script.center",
+                "target": {
+                  "entity_id": [
+                    "script.center"
+                  ]
+                },
+                "data": {
+                  "text": "Grüße",
+                  "nested": {
+                    "enabled": true,
+                    "list": [
+                      1,
+                      null
+                    ]
+                  }
+                }
+              },
+              "value": {
+                "format": "{0} °C → 20 °C",
+                "refs": [
+                  {
+                    "entity": "sensor.room",
+                    "decimals": 1,
+                    "decimal_comma": true
+                  }
+                ]
+              },
+              "countdown": "timer.run"
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "center": {
+              "label": "Kühlen",
+              "color": "#111827",
+              "action": {
+                "action": "script.center",
+                "target": {
+                  "entity_id": [
+                    "script.center"
+                  ]
+                },
+                "data": {
+                  "text": "Grüße",
+                  "nested": {
+                    "enabled": true,
+                    "list": [
+                      1,
+                      null
+                    ]
+                  }
+                }
+              },
+              "value": {
+                "format": "{0} °C → 20 °C",
+                "refs": [
+                  {
+                    "entity": "sensor.room",
+                    "decimals": 1,
+                    "decimal_comma": true
+                  }
+                ]
+              },
+              "countdown": "timer.run"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "sync"
+    },
+    {
+      "type": "state",
+      "entity": "sensor.room",
+      "state": "21"
+    },
+    {
+      "type": "page",
+      "index": 1
+    },
+    {
+      "type": "page",
+      "index": 2
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Single",
+              "color": "#654321",
+              "action": {
+                "action": "script.single"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "sync"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Single",
+              "color": "#654321",
+              "action": {
+                "action": "script.single"
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Kühlen",
+                "color": "#2049D8",
+                "action": {
+                  "action": "script.cool"
+                },
+                "icon": "mdi:snowflake",
+                "value": {
+                  "format": "{0}",
+                  "refs": [
+                    {
+                      "entity": "sensor.room"
+                    }
+                  ]
+                },
+                "countdown": "timer.run"
+              },
+              {
+                "label": "Heizen",
+                "color": "#B71C1C",
+                "action": {
+                  "action": "script.heat"
+                }
+              },
+              {
+                "label": "+30 min",
+                "color": "#374151",
+                "action": {
+                  "action": "script.extend"
+                }
+              },
+              {
+                "label": "Aus",
+                "color": "#4B5563",
+                "action": {
+                  "action": "script.stop"
+                }
+              }
+            ],
+            "center": {
+              "label": "Kühlen",
+              "color": "#111827",
+              "action": {
+                "action": "script.center",
+                "target": {
+                  "entity_id": [
+                    "script.center"
+                  ]
+                },
+                "data": {
+                  "text": "Grüße",
+                  "nested": {
+                    "enabled": true,
+                    "list": [
+                      1,
+                      null
+                    ]
+                  }
+                }
+              },
+              "value": {
+                "format": "{0} °C → 20 °C",
+                "refs": [
+                  {
+                    "entity": "sensor.room",
+                    "decimals": 1,
+                    "decimal_comma": true
+                  }
+                ]
+              },
+              "countdown": "timer.run"
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "center": {
+              "label": "Kühlen",
+              "color": "#111827",
+              "action": {
+                "action": "script.center",
+                "target": {
+                  "entity_id": [
+                    "script.center"
+                  ]
+                },
+                "data": {
+                  "text": "Grüße",
+                  "nested": {
+                    "enabled": true,
+                    "list": [
+                      1,
+                      null
+                    ]
+                  }
+                }
+              },
+              "value": {
+                "format": "{0} °C → 20 °C",
+                "refs": [
+                  {
+                    "entity": "sensor.room",
+                    "decimals": 1,
+                    "decimal_comma": true
+                  }
+                ]
+              },
+              "countdown": "timer.run"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "page",
+      "index": 2
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Single",
+              "color": "#654321",
+              "action": {
+                "action": "script.single"
+              }
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "Kühlen",
+                "color": "#2049D8",
+                "action": {
+                  "action": "script.cool"
+                },
+                "icon": "mdi:snowflake",
+                "value": {
+                  "format": "{0}",
+                  "refs": [
+                    {
+                      "entity": "sensor.room"
+                    }
+                  ]
+                },
+                "countdown": "timer.run"
+              },
+              {
+                "label": "Heizen",
+                "color": "#B71C1C",
+                "action": {
+                  "action": "script.heat"
+                }
+              },
+              {
+                "label": "+30 min",
+                "color": "#374151",
+                "action": {
+                  "action": "script.extend"
+                }
+              },
+              {
+                "label": "Aus",
+                "color": "#4B5563",
+                "action": {
+                  "action": "script.stop"
+                }
+              }
+            ],
+            "center": {
+              "label": "Kühlen",
+              "color": "#111827",
+              "action": {
+                "action": "script.center",
+                "target": {
+                  "entity_id": [
+                    "script.center"
+                  ]
+                },
+                "data": {
+                  "text": "Grüße",
+                  "nested": {
+                    "enabled": true,
+                    "list": [
+                      1,
+                      null
+                    ]
+                  }
+                }
+              },
+              "value": {
+                "format": "{0} °C → 20 °C",
+                "refs": [
+                  {
+                    "entity": "sensor.new",
+                    "decimals": 1,
+                    "decimal_comma": true
+                  }
+                ]
+              },
+              "countdown": "timer.run"
+            }
+          },
+          {
+            "type": "pie",
+            "quarters": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "center": {
+              "label": "Kühlen",
+              "color": "#111827",
+              "action": {
+                "action": "script.center",
+                "target": {
+                  "entity_id": [
+                    "script.center"
+                  ]
+                },
+                "data": {
+                  "text": "Grüße",
+                  "nested": {
+                    "enabled": true,
+                    "list": [
+                      1,
+                      null
+                    ]
+                  }
+                }
+              },
+              "value": {
+                "format": "{0} °C → 20 °C",
+                "refs": [
+                  {
+                    "entity": "sensor.room",
+                    "decimals": 1,
+                    "decimal_comma": true
+                  }
+                ]
+              },
+              "countdown": "timer.run"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "sync"
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "connection_action": "reconnect",
+        "subscriptions": [
+          {
+            "entity": "sensor.room"
+          },
+          {
+            "entity": "timer.run"
+          },
+          {
+            "entity": "timer.run",
+            "attribute": "finishes_at"
+          },
+          {
+            "entity": "timer.run",
+            "attribute": "duration"
+          }
+        ],
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "Keine Verbindung",
+        "tappable": false
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "request": 5,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "connection_action": "none",
+        "subscriptions": [
+          {
+            "entity": "sensor.room"
+          },
+          {
+            "entity": "timer.run"
+          },
+          {
+            "entity": "timer.run",
+            "attribute": "finishes_at"
+          },
+          {
+            "entity": "timer.run",
+            "attribute": "duration"
+          }
+        ],
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Kühlen",
+          "color": "#111827",
+          "value": "21,0 °C → 20 °C",
+          "countdown": null
+        },
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Kühlen",
+            "color": "#2049D8",
+            "curved": true
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": true,
+            "label": "+30 min",
+            "color": "#374151",
+            "curved": true
+          },
+          {
+            "tappable": true,
+            "label": "Aus",
+            "color": "#4B5563",
+            "curved": true
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 2,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          true
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Kühlen",
+          "color": "#111827",
+          "value": "21,0 °C → 20 °C",
+          "countdown": null
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "request": 6,
+        "page": 2,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          true
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Kühlen",
+          "color": "#111827",
+          "value": "21,0 °C → 20 °C",
+          "countdown": null
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "connection_action": "none",
+        "subscriptions": [
+          {
+            "entity": "sensor.room"
+          },
+          {
+            "entity": "timer.run"
+          },
+          {
+            "entity": "timer.run",
+            "attribute": "finishes_at"
+          },
+          {
+            "entity": "timer.run",
+            "attribute": "duration"
+          }
+        ],
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "request": 7,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 2,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          true
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Kühlen",
+          "color": "#111827",
+          "value": "21,0 °C → 20 °C",
+          "countdown": null
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "request": 8,
+        "page": 2,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          true
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Kühlen",
+          "color": "#111827",
+          "value": "21,0 °C → 20 °C",
+          "countdown": null
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "error": "Manifest needs new subscriptions; restarting",
+        "page": 2,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          true
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Kühlen",
+          "color": "#111827",
+          "value": "21,0 °C → 20 °C",
+          "countdown": null
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "connection_action": "restart",
+        "subscriptions": [
+          {
+            "entity": "sensor.room"
+          },
+          {
+            "entity": "timer.run"
+          },
+          {
+            "entity": "timer.run",
+            "attribute": "finishes_at"
+          },
+          {
+            "entity": "timer.run",
+            "attribute": "duration"
+          }
+        ],
+        "page": 2,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          true
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Kühlen",
+          "color": "#111827",
+          "value": "21,0 °C → 20 °C",
+          "countdown": null
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      }
+    ]
+  }
+}

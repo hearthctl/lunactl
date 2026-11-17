@@ -19,6 +19,11 @@
 namespace lunactl {
 
 constexpr size_t MAX_MANIFEST_BYTES = 32 * 1024;
+constexpr size_t CENTER_SLOT = 4;
+constexpr int CENTER_HOLE_RADIUS = 168;
+constexpr int CENTER_QUARTER_ANGLE = 74;
+// Clockwise from top-left, in LVGL's coordinates (0° right, 90° bottom).
+constexpr std::array<int, 4> QUARTER_ANGLES{{225, 315, 45, 135}};
 
 struct Action {
   std::string action;
@@ -160,7 +165,7 @@ inline bool target_valid(JsonVariantConst value) {
 struct Page {
   bool pie{false};
   // Clockwise: top-left, top-right, bottom-right, bottom-left.
-  std::array<Item, 4> items;
+  std::array<Item, 5> items;  // Optional Pie center is slot 4.
 };
 struct Display {
   uint32_t timeout_ms{10000};
@@ -266,10 +271,12 @@ inline bool parse_manifest(JsonVariantConst root, Manifest &manifest, std::strin
       if (!keys(source, {"type", "item"})) return reject("Invalid single page");
       if (!parse_item(source["item"], page.items[0], error, warnings)) return false;
     } else if (source["type"] == "pie") {
-      if (!keys(source, {"type", "quarters"})) return reject("Invalid pie page");
+      if (!keys(source, {"type", "quarters", "center"})) return reject("Invalid pie page");
       auto quarters = source["quarters"];
       if (!quarters.is<JsonArrayConst>() || quarters.size() != 4) return reject("Expected four quarters");
       page.pie = true;
+      if (!source["center"].isUnbound() &&
+          !parse_item(source["center"], page.items[CENTER_SLOT], error, warnings)) return false;
       for (size_t slot = 0; slot < 4; ++slot) {
         if (quarters[slot].isNull()) continue;
         if (!parse_item(quarters[slot], page.items[slot], error, warnings)) return false;
@@ -360,9 +367,12 @@ class Core {
   bool tappable() const { return connected_ && has_manifest_; }
   const Item &item(size_t slot = 0) const { return manifest_.pages[page_].items[slot]; }
   bool slot_tappable(size_t slot) const {
-    return tappable() && slot < (pie() ? 4u : 1u) && !item(slot).action.empty();
+    return tappable() && slot < (pie() ? 5u : 1u) && !item(slot).action.empty();
   }
   bool pie() const { return has_manifest_ && manifest_.pages[page_].pie; }
+  bool center() const { return pie() && !item(CENTER_SLOT).action.empty(); }
+  size_t main_slot() const { return center() ? CENTER_SLOT : 0; }
+  int hole_radius() const { return center() ? CENTER_HOLE_RADIUS : 56; }
   size_t page_count() const { return manifest_.pages.size(); }
   size_t page_index() const { return page_; }
   bool show_page(size_t index) {
@@ -384,7 +394,7 @@ class Core {
     if (found != subscriptions_.end()) states_[found - subscriptions_.begin()] = state;
   }
   std::string value(size_t slot = 0) const {
-    if (!tappable() || slot >= (pie() ? 4u : 1u)) return "";
+    if (!tappable() || slot >= (pie() ? 5u : 1u)) return "";
     const auto &value = item(slot).value;
     std::vector<std::string> replacements;
     for (const auto &ref : value.refs) {
@@ -422,15 +432,15 @@ class Core {
   const std::string &clock() const { return clock_; }
   void set_timestamp(int64_t now, bool valid = true) { timestamp_ = now; time_valid_ = valid; }
   Countdown countdown() const {
-    if (!tappable() || pie() || item().countdown.empty()) return {};
+    if (!tappable() || (pie() && !center()) || item(main_slot()).countdown.empty()) return {};
     auto state = [&](const char *attribute) -> std::string {
-      Reference ref{item().countdown, attribute};
+      Reference ref{item(main_slot()).countdown, attribute};
       auto found = std::find(subscriptions_.begin(), subscriptions_.end(), ref);
       return found == subscriptions_.end() ? "" : states_[found - subscriptions_.begin()];
     };
     return countdown_view(state(""), state("finishes_at"), state("duration"), timestamp_, time_valid_);
   }
-  // Shared display geometry: 466 px circle, 112 px clock hole, 6 px dividers.
+  // Shared display geometry for the host and LVGL UI.
   int hit(int x, int y) const {
     if (!tappable() || x < 0 || x >= 466 || y < 0 || y >= 466) return -1;
     int dx = x - 233, dy = y - 233;
@@ -438,7 +448,16 @@ class Core {
     if (page_count() > 1 && y >= 437 && y < 465 &&
         x >= dots_left() && x < dots_left() + dots_width()) return -1;
     if (!pie()) return dx * dx + dy * dy <= 140 * 140 ? 0 : -1;
-    if (dx * dx + dy * dy <= 56 * 56 || (dx >= -3 && dx < 3) || (dy >= -3 && dy < 3)) return -1;
+    if (center()) {
+      if (dx * dx + dy * dy <= 140 * 140) return CENTER_SLOT;
+      if (dx * dx + dy * dy <= CENTER_HOLE_RADIUS * CENTER_HOLE_RADIUS) return -1;
+      double angle = std::atan2(dy, dx) * 180 / 3.14159265358979323846;
+      if (angle < 0) angle += 360;
+      // The gaps between coloured arcs include the clock at the top.
+      double within_quarter = std::fmod(angle, 90.0);
+      if (within_quarter < (90 - CENTER_QUARTER_ANGLE) / 2.0 ||
+          within_quarter > (90 + CENTER_QUARTER_ANGLE) / 2.0) return -1;
+    } else if (dx * dx + dy * dy <= 56 * 56 || (dx >= -3 && dx < 3) || (dy >= -3 && dy < 3)) return -1;
     int slot = dy < 0 ? (dx < 0 ? 0 : 1) : (dx < 0 ? 3 : 2);
     return slot_tappable(slot) ? slot : -1;
   }

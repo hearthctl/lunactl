@@ -1,0 +1,910 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              null,
+              {
+                "label": "Heizen",
+                "color": "#B71C1C",
+                "action": {
+                  "action": "script.heat"
+                }
+              },
+              null,
+              null
+            ],
+            "center": {
+              "label": "Papa rufen",
+              "color": "#BB1260",
+              "action": {
+                "action": "script.papa"
+              }
+            }
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Single",
+              "color": "#654321",
+              "action": {
+                "action": "script.single"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "tap",
+      "x": 90,
+      "y": 90
+    },
+    {
+      "type": "tap",
+      "x": 376,
+      "y": 90
+    },
+    {
+      "type": "press",
+      "x": 233,
+      "y": 233
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              null,
+              {
+                "label": "Heizen",
+                "color": "#B71C1C",
+                "action": {
+                  "action": "script.heat"
+                }
+              },
+              null,
+              null
+            ],
+            "center": null
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Single",
+              "color": "#654321",
+              "action": {
+                "action": "script.single"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "release",
+      "x": 233,
+      "y": 233
+    },
+    {
+      "type": "press",
+      "x": 233,
+      "y": 233
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              null,
+              {
+                "label": "Heizen",
+                "color": "#B71C1C",
+                "action": {
+                  "action": "script.heat"
+                }
+              },
+              null,
+              null
+            ]
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Single",
+              "color": "#654321",
+              "action": {
+                "action": "script.single"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "release",
+      "x": 233,
+      "y": 233
+    },
+    {
+      "type": "tap"
+    },
+    {
+      "type": "tap",
+      "x": 130,
+      "y": 130
+    },
+    {
+      "type": "page",
+      "index": 1
+    },
+    {
+      "type": "press",
+      "x": 233,
+      "y": 233
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              null,
+              {
+                "label": "Heizen",
+                "color": "#B71C1C",
+                "action": {
+                  "action": "script.heat"
+                }
+              },
+              null,
+              null
+            ],
+            "center": {
+              "label": "Papa rufen",
+              "color": "#BB1260",
+              "action": {
+                "action": "script.papa"
+              }
+            }
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Single",
+              "color": "#654321",
+              "action": {
+                "action": "script.single"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "release",
+      "x": 233,
+      "y": 233
+    },
+    {
+      "type": "tap"
+    },
+    {
+      "type": "disconnect"
+    },
+    {
+      "type": "tap"
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ],
+        "call": {
+          "service": "script.lunactl_run",
+          "action": "script.heat",
+          "data": "{\"target\":{},\"data\":{}}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "request": 3,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "error": "Invalid Item",
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ],
+        "call": {
+          "service": "script.lunactl_run",
+          "action": "script.papa",
+          "data": "{\"target\":{},\"data\":{}}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "request": 4,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "icon": "mdi:help-circle",
+            "glyph": "󰋗"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "icon": "mdi:help-circle",
+            "glyph": "󰋗"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "icon": "mdi:help-circle",
+            "glyph": "󰋗"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "icon": "mdi:help-circle",
+            "glyph": "󰋗"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "request": 5,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "mdi:help-circle",
+          "glyph": "󰋗"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ],
+        "call": {
+          "service": "script.lunactl_run",
+          "action": "script.papa",
+          "data": "{\"target\":{},\"data\":{}}"
+        }
+      },
+      {
+        "status": "Keine Verbindung",
+        "tappable": false
+      },
+      {
+        "status": "Keine Verbindung",
+        "tappable": false
+      }
+    ]
+  }
+}
