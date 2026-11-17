@@ -1,0 +1,8 @@
+# b123d-print workspace for the lunactl wall mount. Run with the shared workbench CLI:
+#   b123d-print --root cad build wandhalter
+[workspace]
+parts_dir = "parts"
+
+[print]
+formats = ["step", "stl", "png"]
+max_bridge = 22   # mm; the plug bay roof bridges 20 mm between the two stem legs

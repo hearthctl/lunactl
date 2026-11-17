@@ -3,3 +3,5 @@ esphome/secrets.yaml
 esphome/.esphome/
 esphome/.check/
 .build/
+cad/parts/*/out/
+__pycache__/
