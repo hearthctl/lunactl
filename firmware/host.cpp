@@ -9,6 +9,15 @@ static void item_view(JsonObject out, const lunactl::Core &core, size_t slot = 0
   out["icon"] = item.icon;
   out["glyph"] = lunactl::resolve_icon(item.icon.c_str()).glyph;
   if (item.value.present) out["value"] = core.value(slot);
+  if (!core.pie() && !item.countdown.empty()) {
+    auto countdown = core.countdown();
+    if (countdown.remaining == 0) out["countdown"] = nullptr;
+    else {
+      out["countdown"]["remaining"] = countdown.remaining;
+      out["countdown"]["text"] = countdown.text;
+      out["countdown"]["ring"] = countdown.ring;
+    }
+  }
 }
 
 // One JSON line per scenario: {"events": [...]}; one snapshot per event.
@@ -43,6 +52,7 @@ int main() {
         else core.accept(token, event["manifest"], error);
       } else if (type == "time") {
         core.set_time(event["hour"] | -1, event["minute"] | -1, event["valid"] | true);
+        if (!event["timestamp"].isNull()) core.set_timestamp(event["timestamp"].as<int64_t>(), event["valid"] | true);
       } else if (type == "page") core.show_page(event["index"].as<size_t>());
       else if (type == "press") core.press(event["x"], event["y"], now);
       else if (type == "release") tapped = core.release(event["x"], event["y"], now);

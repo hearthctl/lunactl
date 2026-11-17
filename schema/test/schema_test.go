@@ -85,6 +85,41 @@ func TestManifestSchemaAndCoreAgree(t *testing.T) {
 		}
 	}
 	addButtons("buttons-all-gestures", true, all)
+	// Countdown references are accepted on Items in either Page type. Only
+	// Single renders them; both must register the timer's subscriptions.
+	for _, tc := range []struct {
+		name  string
+		valid bool
+		value any
+	}{
+		{"timer", true, "timer.example_2"},
+		{"null", false, nil},
+		{"empty", false, ""},
+		{"missing-domain", false, "example"},
+		{"wrong-domain", false, "sensor.example"},
+		{"missing-id", false, "timer."},
+		{"uppercase", false, "timer.Example"},
+		{"extra-dot", false, "timer.example.more"},
+		{"whitespace", false, "timer.example "},
+		{"number", false, 1},
+		{"bool", false, true},
+		{"object", false, map[string]any{"entity": "timer.example"}},
+		{"array", false, []any{"timer.example"}},
+	} {
+		for _, pageType := range []string{"single", "pie"} {
+			item := map[string]any{"label": "Restzeit", "color": "#123456", "action": map[string]any{"action": "script.example"}, "countdown": tc.value}
+			page := map[string]any{"type": pageType, "item": item}
+			if pageType == "pie" {
+				delete(page, "item")
+				page["quarters"] = []any{item, nil, nil, nil}
+			}
+			raw, err := json.Marshal(map[string]any{"schema": 1, "pages": []any{page}})
+			if err != nil {
+				t.Fatal(err)
+			}
+			cases = append(cases, manifestCase{"countdown-" + pageType + "-" + tc.name, tc.valid, raw})
+		}
+	}
 	// Values use the same contract in Single and every Pie quarter.
 	type valueCase struct {
 		name  string

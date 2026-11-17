@@ -93,6 +93,19 @@ registration, callback-driven rendering, socket closure and restart. All run in
 `make verify`, including the ESPHome compile. Reconnect timing on hardware remains
 part of issue #13.
 
+Issue [#6](https://github.com/hearthctl/lunactl/issues/6) adds `countdown-*`
+goldens for active, idle, paused, unknown, unavailable and missing timer states;
+local ticking, restart, cancel, expiry and unchanged Item actions; UTC offsets,
+fractional seconds, long durations and malformed attributes; subscription
+deduplication across hidden pages, disconnect/reconnect and Manifest replacement.
+Schema/core agreement cases check timer references on both Page types. The
+production adapter test compiles the actual subscription and one-second time
+lambdas with the Single UI, observing remaining text, ring progress, clearing,
+and the simultaneous label and live value. `make verify` runs all these checks
+and compiles the firmware with its declared LVGL arc. The [countdown
+contract](countdown.md) defines formatting and hidden states. On-device start,
+restart and cancel checks remain part of issue #13.
+
 Issue [#3](https://github.com/hearthctl/lunactl/issues/3) is verified by the three
 automated seams above and `make check-firmware`. On-device acceptance belongs to
 issue [#13](https://github.com/hearthctl/lunactl/issues/13): compilation and host
