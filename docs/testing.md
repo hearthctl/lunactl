@@ -37,6 +37,10 @@ Slot actions, dark/inert empty quarters, clock formatting and invalid time, the
 clock hole/dividers, all 44 icon names and glyphs, unknown-icon warnings and
 fallback actions. Mixed-page cases cover six pages, dots, bounded swipes, home
 on replacement, and cancellation of a touch spanning a Manifest replacement.
+The touch adapter test compiles the production YAML press/release lambdas and
+checks quarter taps, inert areas, swipes, page dots and replacement cancellation
+with ESPHome's widget-relative point argument. The firmware build verifies the
+generated callback signatures.
 Schema cases accept sparse/full/empty Pie pages, mixed pages and optional or
 unknown icons; they reject invalid quarter counts/Items/icons, a seventh page
 and the deferred `center` field, with schema/core agreement. Contract cases fetch

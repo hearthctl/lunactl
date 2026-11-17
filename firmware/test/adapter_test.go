@@ -105,6 +105,72 @@ func checkAdapter(t *testing.T, source string) {
 	}
 }
 
+// Compile and exercise the actual touch lambdas with the widget-relative point
+// argument supplied by ESPHome 2026.10.2. The firmware build checks that generated
+// signature too; golden core cases alone cannot check the YAML wiring.
+func TestProductionTouchAdapter(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join(testutil.Root(), "esphome/lunactl.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	match := regexp.MustCompile(`(?s)        on_press:\n          - lambda: \|-\n(.*?)\n        on_release:\n          - lambda: \|-\n(.*?)\n          - script.execute: render_manifest`).FindStringSubmatch(string(raw))
+	if match == nil {
+		t.Fatal("missing touch press/release callbacks")
+	}
+	source := `#include "core.h"
+#define id(name) name
+struct lv_point_t { int x, y; };
+int main() {
+ lunactl::Core manifest_core;
+ int tapped_slot = -1;
+ struct UI {
+   int slot = -1;
+   void highlight(const lunactl::Core &core, int x, int y) { slot = core.hit(x, y); }
+ } page_ui;
+ auto press = [&](lv_point_t point) { ` + match[1] + ` };
+ auto release = [&](lv_point_t point) { ` + match[2] + ` };
+ manifest_core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"pie","quarters":[{"label":"First","color":"#123456","action":{"action":"script.first"}},null,{"label":"Third","color":"#ABCDEF","action":{"action":"script.third"}},null]},{"type":"single","item":{"label":"Second page","color":"#654321","action":{"action":"script.second"}}}]})";
+ if (!manifest_core.accept_json(manifest_core.begin_fetch(), manifest, error)) return 1;
+ press({130, 130});
+ if (page_ui.slot != 0) return 2;
+ release({130, 130});
+ if (tapped_slot != 0 || manifest_core.item(tapped_slot).action != "script.first") return 3;
+ press({336, 336});
+ if (page_ui.slot != 2) return 4;
+ release({336, 336});
+ if (tapped_slot != 2 || manifest_core.item(tapped_slot).action != "script.third") return 5;
+ for (lv_point_t point : {lv_point_t{336, 130}, {130, 336}, {233, 233}, {233, 100}}) {
+   press(point);
+   release(point);
+   if (page_ui.slot != -1 || tapped_slot != -1) return 6;
+ }
+ press({336, 130});
+ release({130, 130});
+ if (tapped_slot != -1 || manifest_core.page_index() != 1) return 7;
+ press({233, 233});
+ release({233, 233});
+ if (tapped_slot != 0 || manifest_core.item(tapped_slot).action != "script.second") return 8;
+ // A dot selects home without running an Item.
+ lv_point_t dot{manifest_core.dots_left() + 15, 451};
+ press(dot);
+ release(dot);
+ if (tapped_slot != -1 || manifest_core.page_index() != 0) return 9;
+ // A touch spanning a replacement must not run the new Manifest's action.
+ press({130, 130});
+ if (!manifest_core.accept_json(manifest_core.begin_fetch(), manifest, error)) return 10;
+ release({130, 130});
+ if (tapped_slot != -1) return 11;
+ manifest_core.set_connected(false);
+ press({130, 130});
+ release({130, 130});
+ if (page_ui.slot != -1 || tapped_slot != -1) return 12;
+}
+`
+	checkAdapter(t, source)
+}
+
 // Exercise the production API conditions and actions with overlapping HA clients.
 func TestOverlappingHomeAssistantClients(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join(testutil.Root(), "esphome/lunactl.yaml"))
