@@ -91,7 +91,7 @@ func TestManifestToTap(t *testing.T) {
 	got := testutil.Host(t, []map[string]any{{"type": "connect"}, {"type": "fetch"}, {"type": "manifest", "manifest": manifest}, {"type": "tap"}})
 	last := got["snapshots"].([]any)[3].(map[string]any)
 	if last["tappable"] != true || last["item"].(map[string]any)["label"] != "Beispiel" || last["item"].(map[string]any)["color"] != "#B91360" {
-		t.Fatalf("reference Manifest rejected or rendered incorrectly: %v", got)
+		t.Fatalf("stored Manifest rejected or rendered incorrectly: manifest=%v host=%v", manifest, got)
 	}
 	invocation := last["call"].(map[string]any)
 	call(t, invocation["service"].(string), map[string]any{"action": invocation["action"], "data": invocation["data"]}, false)

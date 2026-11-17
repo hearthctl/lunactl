@@ -10,7 +10,11 @@ url="http://127.0.0.1:${port}"
 client_id="${url}/"
 read -ra podman_cmd <<< "${PODMAN:-podman}"
 container() { "${podman_cmd[@]}" "$@"; }
-cleanup() { container rm -f --time 30 "$name" >/dev/null; }
+cleanup() {
+  result=$?
+  if (( result != 0 )); then container logs "$name"; fi
+  container rm -f --time 30 "$name" >/dev/null
+}
 trap cleanup EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM

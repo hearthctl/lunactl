@@ -9,8 +9,9 @@ async def async_setup(hass, config):
     result = await hass.config_entries.flow.async_init(
         "lunactl", context={"source": "user"}, data={}
     )
-    if result["type"] == "create_entry":
-        await hass.config_entries.async_setup(result["result"].entry_id)
+    assert result["type"] == "create_entry"
+    # The flow has already added and set up its config entry.
+    assert "lunactl" in hass.data
     entry = config_entries.ConfigEntry(
         version=1,
         minor_version=1,
