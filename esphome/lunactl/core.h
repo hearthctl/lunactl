@@ -16,14 +16,26 @@ namespace lunactl {
 
 constexpr size_t MAX_MANIFEST_BYTES = 32 * 1024;
 
-struct Item {
+struct Action {
+  std::string action;
+  // lunactl_run's JSON-text field contains the complete target/data pair.
+  std::string data;
+};
+
+struct Item : Action {
   std::string icon{"mdi:help-circle"};
   std::string label;
   std::string color;
   uint32_t rgb{0};
-  std::string action;
-  // lunactl_run's JSON-text field contains the complete target/data pair.
-  std::string data;
+};
+
+enum class Key : uint8_t { A, B };
+constexpr uint32_t LONG_PRESS_MS = 1000;
+constexpr std::array<const char *, 4> BUTTON_NAMES{{"a_short", "a_long", "b_short", "b_long"}};
+
+struct ButtonEvent {
+  bool wake{false};
+  Action action;
 };
 
 inline bool keys(JsonVariantConst value, std::initializer_list<const char *> allowed) {
@@ -68,7 +80,33 @@ struct Page {
   // Clockwise: top-left, top-right, bottom-right, bottom-left.
   std::array<Item, 4> items;
 };
-using Manifest = std::vector<Page>;
+struct Manifest {
+  std::vector<Page> pages;
+  std::array<Action, 4> buttons;
+};
+
+inline bool parse_action(JsonVariantConst action, Action &result, std::string &error) {
+  if (!keys(action, {"action", "target", "data"}) || !action_name(action["action"])) {
+    error = "Invalid action";
+    return false;
+  }
+  if (!action["target"].isUnbound() && !target_valid(action["target"])) {
+    error = "Invalid action target";
+    return false;
+  }
+  if (!action["data"].isUnbound() && !action["data"].is<JsonObjectConst>()) {
+    error = "Invalid action data";
+    return false;
+  }
+  JsonDocument payload;
+  if (action["target"].isUnbound()) payload["target"].to<JsonObject>();
+  else payload["target"] = action["target"];
+  if (action["data"].isUnbound()) payload["data"].to<JsonObject>();
+  else payload["data"] = action["data"];
+  result.action = action["action"].as<std::string>();
+  serializeJson(payload, result.data);
+  return true;
+}
 
 inline bool parse_item(JsonVariantConst source, Item &item, std::string &error,
                        std::vector<std::string> &warnings) {
@@ -87,21 +125,8 @@ inline bool parse_item(JsonVariantConst source, Item &item, std::string &error,
     if (digit < 0) return reject("Expected #RRGGBB color");
     rgb = (rgb << 4) | digit;
   }
-  auto action = source["action"];
-  if (!keys(action, {"action", "target", "data"}) || !action_name(action["action"]))
-    return reject("Invalid Item action");
-  if (!action["target"].isNull() && !target_valid(action["target"])) return reject("Invalid action target");
-  if (!action["target"].isUnbound() && action["target"].isNull())
-    return reject("Invalid action target");
-  if (!action["data"].isUnbound() && !action["data"].is<JsonObjectConst>())
-    return reject("Invalid action data");
-
-  JsonDocument payload;
-  if (action["target"].isNull()) payload["target"].to<JsonObject>();
-  else payload["target"] = action["target"];
-  if (action["data"].isNull()) payload["data"].to<JsonObject>();
-  else payload["data"] = action["data"];
   Item candidate;
+  if (!parse_action(source["action"], candidate, error)) return false;
   if (!source["icon"].isUnbound()) {
     std::string name = source["icon"].as<std::string>();
     candidate.icon = resolve_icon(name.c_str()).name;
@@ -110,8 +135,6 @@ inline bool parse_item(JsonVariantConst source, Item &item, std::string &error,
   candidate.label = source["label"].as<std::string>();
   candidate.color = color;
   candidate.rgb = rgb;
-  candidate.action = action["action"].as<std::string>();
-  serializeJson(payload, candidate.data);
   item = std::move(candidate);
   error.clear();
   return true;
@@ -121,7 +144,7 @@ inline bool parse_manifest(JsonVariantConst root, Manifest &manifest, std::strin
                            std::vector<std::string> &warnings) {
   auto reject = [&error](const char *message) { error = message; return false; };
   if (measureJson(root) > MAX_MANIFEST_BYTES) return reject("Manifest exceeds 32 KiB");
-  if (!keys(root, {"schema", "pages"})) return reject("Invalid Manifest fields");
+  if (!keys(root, {"schema", "pages", "buttons"})) return reject("Invalid Manifest fields");
   if (!root["schema"].is<double>() || root["schema"].as<double>() != 1)
     return reject("Unknown or invalid schema version");
   auto pages = root["pages"];
@@ -142,7 +165,16 @@ inline bool parse_manifest(JsonVariantConst root, Manifest &manifest, std::strin
         if (!parse_item(quarters[slot], page.items[slot], error, warnings)) return false;
       }
     } else return reject("Unknown page type");
-    manifest.push_back(std::move(page));
+    manifest.pages.push_back(std::move(page));
+  }
+  auto buttons = root["buttons"];
+  if (!buttons.isUnbound()) {
+    if (!keys(buttons, {"a_short", "a_long", "b_short", "b_long"}))
+      return reject("Invalid buttons");
+    for (size_t i = 0; i < BUTTON_NAMES.size(); ++i) {
+      auto binding = buttons[BUTTON_NAMES[i]];
+      if (!binding.isUnbound() && !parse_action(binding, manifest.buttons[i], error)) return false;
+    }
   }
   error.clear();
   return true;
@@ -154,6 +186,10 @@ class Core {
     if (connected_ == connected) return;
     connected_ = connected;
     ++revision_;
+    // An interrupted key press must not dispatch after a reconnect.
+    if (!connected) {
+      for (auto &button : buttons_) button.actions = {};
+    }
     ++request_;  // Invalidates replies from an earlier connection.
     // Keep the last valid Manifest in RAM; an invalid replacement must not
     // destroy it, including after reconnect. Offline it is hidden and inert.
@@ -167,7 +203,7 @@ class Core {
     Manifest candidate;
     std::vector<std::string> warnings;
     if (!parse_manifest(root, candidate, error, warnings)) return false;
-    pages_ = std::move(candidate);
+    manifest_ = std::move(candidate);
     warnings_ = std::move(warnings);
     page_ = 0;
     ++revision_;
@@ -183,15 +219,15 @@ class Core {
     return accept(request, doc.as<JsonVariantConst>(), error);
   }
   bool tappable() const { return connected_ && has_manifest_; }
-  const Item &item(size_t slot = 0) const { return pages_[page_].items[slot]; }
+  const Item &item(size_t slot = 0) const { return manifest_.pages[page_].items[slot]; }
   bool slot_tappable(size_t slot) const {
     return tappable() && slot < (pie() ? 4u : 1u) && !item(slot).action.empty();
   }
-  bool pie() const { return has_manifest_ && pages_[page_].pie; }
-  size_t page_count() const { return pages_.size(); }
+  bool pie() const { return has_manifest_ && manifest_.pages[page_].pie; }
+  size_t page_count() const { return manifest_.pages.size(); }
   size_t page_index() const { return page_; }
   bool show_page(size_t index) {
-    if (!tappable() || index >= pages_.size()) return false;
+    if (!tappable() || index >= manifest_.pages.size()) return false;
     page_ = index;
     ++revision_;
     return true;
@@ -245,17 +281,57 @@ class Core {
   }
   const char *status() const { return !connected_ ? "Keine Verbindung" : has_manifest_ ? "" : "Kein Manifest"; }
 
+  // Call with debounced key levels on edges and/or while polling. Unsigned
+  // subtraction preserves the threshold across the millis() wraparound.
+  ButtonEvent button(Key key, bool pressed, uint32_t now) {
+    auto index = static_cast<size_t>(key);
+    if (index >= buttons_.size()) return {};
+    auto &state = buttons_[index];
+    ButtonEvent event;
+    if (!state.pressed && pressed) {
+      state.pressed = true;
+      state.long_fired = false;
+      state.since = now;
+      // Keep each press tied to the Manifest present at its start.
+      state.actions = {};
+      if (tappable()) {
+        state.actions[0] = manifest_.buttons[index * 2];
+        state.actions[1] = manifest_.buttons[index * 2 + 1];
+      }
+      event.wake = true;
+    } else if (state.pressed) {
+      if (!state.long_fired && now - state.since >= LONG_PRESS_MS) {
+        state.long_fired = true;
+        if (tappable()) event.action = state.actions[1];
+      } else if (!pressed && !state.long_fired && tappable()) {
+        event.action = state.actions[0];
+      }
+      if (!pressed) {
+        state.pressed = false;
+        state.actions = {};
+      }
+    }
+    return event;
+  }
+
  private:
   bool connected_{false};
   bool has_manifest_{false};
   uint32_t request_{0};
-  Manifest pages_;
+  Manifest manifest_;
   size_t page_{0};
   std::vector<std::string> warnings_;
   std::string clock_{"--:--"};
   uint32_t revision_{0}, press_revision_{0};
   int press_x_{0}, press_y_{0};
   bool pressed_{false};
+  struct ButtonState {
+    bool pressed{false};
+    bool long_fired{false};
+    uint32_t since{0};
+    std::array<Action, 2> actions;
+  };
+  std::array<ButtonState, 2> buttons_;
 };
 
 }  // namespace lunactl

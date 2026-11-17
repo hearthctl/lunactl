@@ -64,6 +64,24 @@
           }
         ]
       }
+    },
+    "buttons": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "a_short": {
+          "$ref": "#/$defs/action"
+        },
+        "a_long": {
+          "$ref": "#/$defs/action"
+        },
+        "b_short": {
+          "$ref": "#/$defs/action"
+        },
+        "b_long": {
+          "$ref": "#/$defs/action"
+        }
+      }
     }
   },
   "$defs": {

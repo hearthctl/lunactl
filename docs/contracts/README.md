@@ -32,13 +32,29 @@ An action has an HA `action` name and optional `target` and `data` objects.
 The 44 compiled-in MDI names match [the icon mockup](../mockups/icons.png).
 Unknown names render `mdi:help-circle` and log a warning; an omitted icon uses
 the same fallback without a warning. Unsupported fields and Page types are
-rejected. Live values, countdowns and key bindings belong to subsequent issues.
+rejected. Live values and countdowns belong to subsequent issues.
+
+The optional `buttons` object binds `a_short`, `a_long`, `b_short` and `b_long`
+directly to actions in that same format (for example,
+`"buttons": {"b_long": {"action": "script.example"}}`). Omit a gesture to leave
+it unbound; `{}` or an absent `buttons` leaves all gestures unbound. Unknown
+gesture names, `null` bindings and malformed actions are rejected.
+
+Taste A is the yellow key; Taste B is the blue key. A short press runs its
+action on release before 1 second. A long press runs once after 1 second while
+held, and release does not also run the short action. Every press immediately
+wakes the display, including unbound keys, and bound gestures still run when
+the display was dark. Unbound gestures only wake; there is no fallback between
+short and long. Each press uses the bindings present when it began; disconnect
+cancels pending actions. Keys cannot dispatch without HA and a valid Manifest.
+New Manifests replace all bindings, so omitted bindings clear previous ones.
+
 An invalid replacement is logged and leaves the current valid Manifest active. Without HA the device shows **Keine Verbindung**;
 connected without a valid Manifest it shows **Kein Manifest**. Neither state
 can run an Item's action. Reconnecting refetches; the previous valid Manifest
 stays in RAM until replaced. Rebooting always starts without a Manifest.
 
-A tap calls `script.lunactl_run` with exactly two string fields:
+A tap or bound key gesture calls `script.lunactl_run` with exactly two string fields:
 
 ```json
 {

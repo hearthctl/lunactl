@@ -19,12 +19,14 @@ int main() {
     lunactl::Core core;
     lunactl::Battery battery;
     bool battery_seen = false;
+    bool display_on = true;
     uint32_t request = 0;
     auto snapshots = output["snapshots"].to<JsonArray>();
     for (JsonObjectConst event : input["events"].as<JsonArrayConst>()) {
       std::string type = event["type"].as<std::string>();
       std::string error;
       int tapped = -1;
+      lunactl::ButtonEvent button_event;
       if (type == "connect") core.set_connected(true);
       else if (type == "disconnect") core.set_connected(false);
       else if (type == "fetch") request = core.begin_fetch();
@@ -43,6 +45,12 @@ int main() {
           core.press(event["x"], event["y"]);
           tapped = core.release(event["x"], event["y"]);
         }
+      } else if (type == "button") {
+        std::string key = event["key"].as<std::string>();
+        if (key != "a" && key != "b") return 2;
+        button_event = core.button(key == "a" ? lunactl::Key::A : lunactl::Key::B,
+                                   event["pressed"].as<bool>(), event["now"].as<uint32_t>());
+        if (button_event.wake) display_on = true;
       } else if (type == "battery") {
         battery_seen = true;
         size_t index = 0;
@@ -54,7 +62,8 @@ int main() {
           for (size_t i = 0; i < length; ++i) data[i] = read["bytes"][i].as<uint8_t>();
           return true;
         });
-      } else if (type != "error") return 2;
+      } else if (type == "sleep") display_on = false;
+      else if (type != "error") return 2;
       auto snapshot = snapshots.add<JsonObject>();
       snapshot["status"] = core.status();
       snapshot["tappable"] = core.tappable();
@@ -69,6 +78,10 @@ int main() {
         auto warnings = snapshot["warnings"].to<JsonArray>();
         for (const auto &warning : core.warnings()) warnings.add(warning);
       }
+      if (type == "button" || type == "sleep") snapshot["display_on"] = display_on;
+      if (type == "button") snapshot["wake"] = button_event.wake;
+      const lunactl::Action *action = nullptr;
+      if (!button_event.action.action.empty()) action = &button_event.action;
       if (core.tappable()) {
         snapshot["page"] = core.page_index();
         snapshot["home"] = core.page_index() == 0;
@@ -87,11 +100,12 @@ int main() {
             else quarter["color"] = "#202020";
           }
         } else item_view(snapshot["item"].to<JsonObject>(), core.item());
-        if (tapped >= 0) {
-          snapshot["call"]["service"] = "script.lunactl_run";
-          snapshot["call"]["action"] = core.item(tapped).action;
-          snapshot["call"]["data"] = core.item(tapped).data;
-        }
+        if (tapped >= 0) action = &core.item(tapped);
+      }
+      if (action != nullptr) {
+        snapshot["call"]["service"] = "script.lunactl_run";
+        snapshot["call"]["action"] = action->action;
+        snapshot["call"]["data"] = action->data;
       }
     }
     serializeJson(output, std::cout);

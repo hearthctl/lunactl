@@ -71,7 +71,7 @@ globals:
     type: unsigned int
     restore_value: false
     initial_value: "0"
-  - id: manifest_ui
+  - id: page_ui
     type: lunactl::UI
     restore_value: false
   - id: tapped_slot
@@ -84,6 +84,48 @@ globals:
   - id: battery
     type: lunactl::Battery
     restore_value: false
+
+# StopWatch: Taste A (yellow) = GPIO2, Taste B (blue) = GPIO1, active low.
+# Debounce both edges before the core measures a press.
+binary_sensor:
+  - platform: gpio
+    id: key_a
+    internal: true
+    pin:
+      number: GPIO2
+      mode: INPUT
+      inverted: true
+    filters:
+      - delayed_on_off: 10ms
+  - platform: gpio
+    id: key_b
+    internal: true
+    pin:
+      number: GPIO1
+      mode: INPUT
+      inverted: true
+    filters:
+      - delayed_on_off: 10ms
+
+interval:
+  # Polling lets a long gesture fire while the key is still held.
+  - interval: 10ms
+    then:
+      - script.execute:
+          id: handle_key
+          key: 0
+          pressed: !lambda return id(key_a).state;
+      - script.execute:
+          id: handle_key
+          key: 1
+          pressed: !lambda return id(key_b).state;
+
+  - interval: 1s
+    then:
+      - lambda: |-
+          auto now = id(ha_time).now();
+          id(manifest_core).set_time(now.hour, now.minute, now.is_valid());
+          id(page_ui).update_clock(id(manifest_core));
 
 button:
   - platform: template
@@ -98,6 +140,36 @@ button:
                 request: !lambda return id(manifest_core).begin_fetch();
 
 script:
+  - id: wake_display
+    then:
+      - lambda: |-
+          // Restore the CO5300's existing default brightness and LVGL activity.
+          // Display timeout and Manifest brightness are implemented in issue #9.
+          id(amoled).set_brightness(0xD0);
+          id(manifest_ui).set_paused(false, false);
+  - id: run_button_action
+    mode: parallel
+    parameters:
+      action: string
+      data: string
+    then:
+      - homeassistant.action:
+          action: script.lunactl_run
+          data:
+            action: !lambda return action;
+            data: !lambda return data;
+          on_error:
+            - lambda: 'ESP_LOGW("lunactl", "Button action failed: %s", error.c_str());'
+  - id: handle_key
+    parameters:
+      key: uint8_t
+      pressed: bool
+    then:
+      - lambda: |-
+          auto event = id(manifest_core).button(static_cast<lunactl::Key>(key), pressed, millis());
+          if (event.wake) id(wake_display).execute();
+          if (!event.action.action.empty())
+            id(run_button_action).execute(event.action.action, event.action.data);
   - id: render_battery
     then:
       - lambda: |-
@@ -138,8 +210,8 @@ script:
       - lambda: |-
           auto &core = id(manifest_core);
           lv_label_set_text(id(manifest_status), core.status());
-          id(manifest_ui).init(lv_obj_get_parent(id(touch_surface)), id(font_item)->get_lv_font(), id(font_icon)->get_lv_font());
-          id(manifest_ui).render(core);
+          id(page_ui).init(lv_obj_get_parent(id(touch_surface)), id(font_item)->get_lv_font(), id(font_icon)->get_lv_font());
+          id(page_ui).render(core);
           lv_obj_remove_flag(id(touch_surface), LV_OBJ_FLAG_SCROLLABLE);
           lv_obj_move_foreground(id(battery_hint));
           lv_obj_move_foreground(id(battery_level_text));
@@ -152,14 +224,6 @@ script:
 time:
   - platform: homeassistant
     id: ha_time
-
-interval:
-  - interval: 1s
-    then:
-      - lambda: |-
-          auto now = id(ha_time).now();
-          id(manifest_core).set_time(now.hour, now.minute, now.is_valid());
-          id(manifest_ui).update_clock(id(manifest_core));
 
 # OTA uses the api encryption key.
 ota:
@@ -323,6 +387,7 @@ font:
       - "\U000F02D7" # mdi:help-circle
 
 lvgl:
+  id: manifest_ui
   displays: [amoled]
   touchscreens: [touch]
   bg_color: 0x000000
@@ -350,7 +415,7 @@ lvgl:
         on_press:
           - lambda: |-
               id(manifest_core).press(point.x, point.y);
-              id(manifest_ui).highlight(id(manifest_core), point.x, point.y);
+              id(page_ui).highlight(id(manifest_core), point.x, point.y);
         on_release:
           - lambda: |-
               id(tapped_slot) = id(manifest_core).release(point.x, point.y);
