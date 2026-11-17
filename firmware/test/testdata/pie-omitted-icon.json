@@ -15,12 +15,20 @@
             "type": "pie",
             "quarters": [
               {
-                "label": "Hell",
-                "icon": "mdi:future-icon",
-                "color": "#F7C844",
+                "label": "Icon",
+                "color": "#123456",
                 "action": {
-                  "action": "script.hell"
-                }
+                  "action": "script.example"
+                },
+                "value": {
+                  "format": "{0} °C",
+                  "refs": [
+                    {
+                      "entity": "sensor.room"
+                    }
+                  ]
+                },
+                "icon": "mdi:help-circle"
               },
               null,
               null,
@@ -31,9 +39,9 @@
       }
     },
     {
-      "type": "tap",
-      "x": 130,
-      "y": 130
+      "type": "state",
+      "entity": "sensor.room",
+      "state": "23.4"
     },
     {
       "type": "manifest",
@@ -44,14 +52,21 @@
             "type": "pie",
             "quarters": [
               {
-                "label": "Hell",
-                "icon": "mdi:future-icon",
-                "color": "#F7C844",
+                "label": "Icon",
+                "color": "#123456",
                 "action": {
-                  "action": "script.hell"
+                  "action": "script.example"
+                },
+                "value": {
+                  "format": "{0} °C",
+                  "refs": [
+                    {
+                      "entity": "sensor.room"
+                    }
+                  ]
                 }
               },
-              {},
+              null,
               null,
               null
             ]
@@ -88,10 +103,11 @@
         "quarters": [
           {
             "tappable": true,
-            "label": "Hell",
-            "color": "#F7C844",
+            "label": "Icon",
+            "color": "#123456",
             "icon": "mdi:help-circle",
-            "glyph": "󰋗"
+            "glyph": "󰋗",
+            "value": "-- °C"
           },
           {
             "tappable": false,
@@ -105,9 +121,6 @@
             "tappable": false,
             "color": "#202020"
           }
-        ],
-        "warnings": [
-          "Unknown icon: mdi:future-icon; using mdi:help-circle"
         ]
       },
       {
@@ -122,10 +135,75 @@
         "quarters": [
           {
             "tappable": true,
-            "label": "Hell",
-            "color": "#F7C844",
+            "label": "Icon",
+            "color": "#123456",
             "icon": "mdi:help-circle",
-            "glyph": "󰋗"
+            "glyph": "󰋗",
+            "value": "23.4 °C"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Icon",
+            "color": "#123456",
+            "icon": "",
+            "glyph": "",
+            "value": "23.4 °C"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Icon",
+            "color": "#123456",
+            "icon": "",
+            "glyph": "",
+            "value": "23.4 °C"
           },
           {
             "tappable": false,
@@ -142,75 +220,7 @@
         ],
         "call": {
           "service": "script.lunactl_run",
-          "action": "script.hell",
-          "data": "{\"target\":{},\"data\":{}}"
-        }
-      },
-      {
-        "status": "",
-        "tappable": true,
-        "page": 0,
-        "home": true,
-        "dots": [],
-        "type": "pie",
-        "clock": "--:--",
-        "hole_radius": 56,
-        "quarters": [
-          {
-            "tappable": true,
-            "label": "Hell",
-            "color": "#F7C844",
-            "icon": "mdi:help-circle",
-            "glyph": "󰋗"
-          },
-          {
-            "tappable": false,
-            "color": "#202020"
-          },
-          {
-            "tappable": false,
-            "color": "#202020"
-          },
-          {
-            "tappable": false,
-            "color": "#202020"
-          }
-        ],
-        "error": "Invalid Item"
-      },
-      {
-        "status": "",
-        "tappable": true,
-        "page": 0,
-        "home": true,
-        "dots": [],
-        "type": "pie",
-        "clock": "--:--",
-        "hole_radius": 56,
-        "quarters": [
-          {
-            "tappable": true,
-            "label": "Hell",
-            "color": "#F7C844",
-            "icon": "mdi:help-circle",
-            "glyph": "󰋗"
-          },
-          {
-            "tappable": false,
-            "color": "#202020"
-          },
-          {
-            "tappable": false,
-            "color": "#202020"
-          },
-          {
-            "tappable": false,
-            "color": "#202020"
-          }
-        ],
-        "call": {
-          "service": "script.lunactl_run",
-          "action": "script.hell",
+          "action": "script.example",
           "data": "{\"target\":{},\"data\":{}}"
         }
       }

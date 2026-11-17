@@ -62,8 +62,8 @@
         "item": {
           "label": "Beispiel",
           "color": "#B91360",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "page": 0,
         "home": true,
@@ -81,8 +81,8 @@
         "item": {
           "label": "Beispiel",
           "color": "#B91360",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "page": 0,
         "home": true,

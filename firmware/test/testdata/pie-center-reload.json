@@ -611,8 +611,8 @@
             "tappable": true,
             "label": "Heizen",
             "color": "#B71C1C",
-            "icon": "mdi:help-circle",
-            "glyph": "󰋗"
+            "icon": "",
+            "glyph": ""
           },
           {
             "tappable": false,
@@ -645,8 +645,8 @@
             "tappable": true,
             "label": "Heizen",
             "color": "#B71C1C",
-            "icon": "mdi:help-circle",
-            "glyph": "󰋗"
+            "icon": "",
+            "glyph": ""
           },
           {
             "tappable": false,
@@ -679,8 +679,8 @@
             "tappable": true,
             "label": "Heizen",
             "color": "#B71C1C",
-            "icon": "mdi:help-circle",
-            "glyph": "󰋗"
+            "icon": "",
+            "glyph": ""
           },
           {
             "tappable": false,
@@ -713,8 +713,8 @@
             "tappable": true,
             "label": "Heizen",
             "color": "#B71C1C",
-            "icon": "mdi:help-circle",
-            "glyph": "󰋗"
+            "icon": "",
+            "glyph": ""
           },
           {
             "tappable": false,
@@ -739,8 +739,8 @@
         "item": {
           "label": "Single",
           "color": "#654321",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         }
       },
       {
@@ -756,8 +756,8 @@
         "item": {
           "label": "Single",
           "color": "#654321",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         }
       },
       {
@@ -774,8 +774,8 @@
         "item": {
           "label": "Single",
           "color": "#654321",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         }
       },
       {

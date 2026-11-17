@@ -245,8 +245,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -336,8 +336,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": false,
         "timeout_ms": 2500,
@@ -357,8 +357,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -378,8 +378,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -399,8 +399,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -420,8 +420,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -446,8 +446,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -467,8 +467,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": false,
         "timeout_ms": 2500,
@@ -488,8 +488,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -509,8 +509,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -530,8 +530,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -551,8 +551,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -572,8 +572,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": false,
         "timeout_ms": 2500,
@@ -593,8 +593,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -615,8 +615,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -636,8 +636,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -658,8 +658,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -679,8 +679,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": false,
         "timeout_ms": 2500,
@@ -700,8 +700,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -722,8 +722,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -744,8 +744,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": true,
         "timeout_ms": 2500,
@@ -765,8 +765,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": false,
         "timeout_ms": 2500,
@@ -786,8 +786,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": false,
         "timeout_ms": 2500,
@@ -808,8 +808,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": false,
         "timeout_ms": 2500,
@@ -830,8 +830,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": false,
         "timeout_ms": 2500,
@@ -852,8 +852,8 @@
         "item": {
           "label": "Home",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "display_on": false,
         "timeout_ms": 10000,

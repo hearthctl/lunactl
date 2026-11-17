@@ -50,7 +50,7 @@ struct Value {
 enum class ConnectionAction { NONE, RECONNECT, RESTART };
 
 struct Item : Action {
-  std::string icon{"mdi:help-circle"};
+  std::string icon;
   std::string label;
   std::string color;
   uint32_t rgb{0};
@@ -200,8 +200,7 @@ inline bool parse_action(JsonVariantConst action, Action &result, std::string &e
   return true;
 }
 
-inline bool parse_item(JsonVariantConst source, Item &item, std::string &error,
-                       std::vector<std::string> &warnings) {
+inline bool parse_item(JsonVariantConst source, Item &item, std::string &error) {
   auto reject = [&error](const char *message) { error = message; return false; };
   if (!keys(source, {"label", "color", "icon", "action", "value", "countdown"}) || !nonempty_string(source["label"]))
     return reject("Invalid Item");
@@ -228,8 +227,8 @@ inline bool parse_item(JsonVariantConst source, Item &item, std::string &error,
   }
   if (!source["icon"].isUnbound()) {
     std::string name = source["icon"].as<std::string>();
-    candidate.icon = resolve_icon(name.c_str()).name;
-    if (candidate.icon != name) warnings.push_back("Unknown icon: " + name + "; using mdi:help-circle");
+    if (!resolve_icon(name)) return reject("Invalid Item icon");
+    candidate.icon = std::move(name);
   }
   candidate.label = source["label"].as<std::string>();
   candidate.color = color;
@@ -239,8 +238,7 @@ inline bool parse_item(JsonVariantConst source, Item &item, std::string &error,
   return true;
 }
 
-inline bool parse_manifest(JsonVariantConst root, Manifest &manifest, std::string &error,
-                           std::vector<std::string> &warnings) {
+inline bool parse_manifest(JsonVariantConst root, Manifest &manifest, std::string &error) {
   auto reject = [&error](const char *message) { error = message; return false; };
   if (measureJson(root) > MAX_MANIFEST_BYTES) return reject("Manifest exceeds 32 KiB");
   if (!keys(root, {"schema", "pages", "buttons", "display"})) return reject("Invalid Manifest fields");
@@ -269,17 +267,17 @@ inline bool parse_manifest(JsonVariantConst root, Manifest &manifest, std::strin
     Page page;
     if (source["type"] == "single") {
       if (!keys(source, {"type", "item"})) return reject("Invalid single page");
-      if (!parse_item(source["item"], page.items[0], error, warnings)) return false;
+      if (!parse_item(source["item"], page.items[0], error)) return false;
     } else if (source["type"] == "pie") {
       if (!keys(source, {"type", "quarters", "center"})) return reject("Invalid pie page");
       auto quarters = source["quarters"];
       if (!quarters.is<JsonArrayConst>() || quarters.size() != 4) return reject("Expected four quarters");
       page.pie = true;
       if (!source["center"].isUnbound() &&
-          !parse_item(source["center"], page.items[CENTER_SLOT], error, warnings)) return false;
+          !parse_item(source["center"], page.items[CENTER_SLOT], error)) return false;
       for (size_t slot = 0; slot < 4; ++slot) {
         if (quarters[slot].isNull()) continue;
-        if (!parse_item(quarters[slot], page.items[slot], error, warnings)) return false;
+        if (!parse_item(quarters[slot], page.items[slot], error)) return false;
       }
     } else return reject("Unknown page type");
     manifest.pages.push_back(std::move(page));
@@ -316,11 +314,9 @@ class Core {
   uint32_t begin_fetch() { return connected_ ? ++request_ : 0; }
   bool current(uint32_t request) const { return connected_ && request != 0 && request == request_; }
   bool accept(uint32_t request, JsonVariantConst root, std::string &error) {
-    warnings_.clear();
     if (!current(request)) { error = "Stale Manifest response"; return false; }
     Manifest candidate;
-    std::vector<std::string> warnings;
-    if (!parse_manifest(root, candidate, error, warnings)) return false;
+    if (!parse_manifest(root, candidate, error)) return false;
     std::vector<Reference> required;
     auto require = [&](const Reference &ref) {
       if (std::find(required.begin(), required.end(), ref) == required.end()) required.push_back(ref);
@@ -350,14 +346,12 @@ class Core {
       }
     }
     manifest_ = std::move(candidate);
-    warnings_ = std::move(warnings);
     page_ = 0;
     ++revision_;
     has_manifest_ = true;
     return true;
   }
   bool accept_json(uint32_t request, const std::string &json, std::string &error) {
-    warnings_.clear();
     if (json.size() > MAX_MANIFEST_BYTES) { error = "Manifest exceeds 32 KiB"; return false; }
     JsonDocument doc;
     auto result = deserializeJson(doc, json, DeserializationOption::NestingLimit(32));
@@ -381,7 +375,6 @@ class Core {
     ++revision_;
     return true;
   }
-  const std::vector<std::string> &warnings() const { return warnings_; }
   const std::vector<Reference> &subscriptions() const { return subscriptions_; }
   ConnectionAction take_connection_action() {
     auto action = connection_action_;
@@ -580,7 +573,6 @@ class Core {
   uint32_t request_{0};
   Manifest manifest_;
   size_t page_{0};
-  std::vector<std::string> warnings_;
   std::string clock_{"--:--"};
   int64_t timestamp_{0};
   bool time_valid_{false};

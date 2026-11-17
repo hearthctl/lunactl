@@ -254,8 +254,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "--"
         }
       },
@@ -272,8 +272,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "--"
         },
         "connection_action": "reconnect",
@@ -303,8 +303,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "--"
         },
         "connection_action": "none",
@@ -334,8 +334,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "--"
         },
         "request": 3
@@ -350,8 +350,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         }
       },
       {
@@ -364,8 +364,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "connection_action": "none",
         "subscriptions": [
@@ -391,8 +391,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "request": 4
       },
@@ -406,8 +406,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "--"
         }
       },
@@ -421,8 +421,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "--"
         },
         "connection_action": "none",
@@ -449,8 +449,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "--"
         },
         "request": 5
@@ -465,8 +465,8 @@
         "item": {
           "label": "Neue Formatierung",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "Temperatur --"
         }
       },
@@ -480,8 +480,8 @@
         "item": {
           "label": "Neue Formatierung",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "Temperatur --"
         },
         "connection_action": "none",
@@ -508,8 +508,8 @@
         "item": {
           "label": "Neue Formatierung",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "Temperatur --"
         },
         "error": "Invalid Item value"
@@ -524,8 +524,8 @@
         "item": {
           "label": "Neue Formatierung",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "Temperatur --"
         },
         "connection_action": "none",
@@ -552,8 +552,8 @@
         "item": {
           "label": "Neue Formatierung",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "Temperatur --"
         },
         "error": "Manifest needs new subscriptions; restarting"
@@ -568,8 +568,8 @@
         "item": {
           "label": "Neue Formatierung",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "Temperatur --"
         },
         "connection_action": "restart",

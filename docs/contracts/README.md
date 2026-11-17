@@ -38,10 +38,13 @@ in that form. See the [complete field and icon reference](../manifest.md).
 
 Items require `label`, `color` (`#RRGGBB`) and `action`, with an optional `icon`.
 An action has an HA `action` name and optional `target` and `data` objects.
-The 44 compiled-in MDI names match [the icon mockup](../mockups/icons.png).
-Unknown names render `mdi:help-circle` and log a warning; an omitted icon uses
-the same fallback without a warning. Unsupported fields and Page types are
-rejected. Optional [live values](../values.md) and [countdowns](../countdown.md)
+The schema's `item.icon` enum is the source of truth for the 44 compiled-in MDI
+names, illustrated by [the icon mockup](../mockups/icons.png). Unknown names
+reject the Manifest like other invalid fields. Omitting `icon` shows no icon
+in Single or Pie quarters; label/value positions and the rest of the layout
+stay in place. `mdi:help-circle` remains available as a normal icon.
+Unsupported fields and Page types are rejected.
+Optional [live values](../values.md) and [countdowns](../countdown.md)
 reference HA entities; the device subscribes to them and formats them locally.
 
 The optional `display` object controls idle sleep and brightness:

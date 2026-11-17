@@ -200,8 +200,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · -- / -- {9}"
         }
       },
@@ -215,8 +215,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · -- / -- {9}"
         },
         "connection_action": "reconnect",
@@ -240,8 +240,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "21,3 °C · -- / 21,3 {9}"
         }
       },
@@ -255,8 +255,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "21,3 °C · Heizen / 21,3 {9}"
         }
       },
@@ -270,8 +270,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-3,2 °C · Heizen / -3,2 {9}"
         }
       },
@@ -285,8 +285,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "0,0 °C · Heizen / 0,0 {9}"
         }
       },
@@ -300,8 +300,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · Heizen / -- {9}"
         }
       },
@@ -315,8 +315,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · Nicht verfügbar / -- {9}"
         }
       },
@@ -330,8 +330,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · Nicht verfügbar / -- {9}"
         }
       },
@@ -345,8 +345,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · Nicht verfügbar / -- {9}"
         }
       },
@@ -360,8 +360,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · Nicht verfügbar / -- {9}"
         }
       },
@@ -375,8 +375,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · Nicht verfügbar / -- {9}"
         }
       },
@@ -390,8 +390,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · Nicht verfügbar / -- {9}"
         }
       },
@@ -405,8 +405,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · Nicht verfügbar / -- {9}"
         }
       },
@@ -420,8 +420,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "20,0 °C · Nicht verfügbar / 20,0 {9}"
         }
       },
@@ -435,8 +435,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "20,0 °C · cooling / 20,0 {9}"
         }
       },
@@ -450,8 +450,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "20,0 °C · cooling / 20,0 {9}"
         }
       },
@@ -473,8 +473,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · -- / -- {9}"
         }
       },
@@ -488,8 +488,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · -- / -- {9}"
         },
         "request": 5
@@ -504,8 +504,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · -- / -- {9}"
         }
       },
@@ -519,8 +519,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗",
+          "icon": "",
+          "glyph": "",
           "value": "-- °C · -- / -- {9}"
         },
         "connection_action": "none",

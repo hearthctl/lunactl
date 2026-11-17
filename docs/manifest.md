@@ -44,7 +44,7 @@ check fit on the real round display; [mockups](mockups/README.md) show intent.
 | `label` | Yes | Nonempty string. |
 | `color` | Yes | Six-digit `#RRGGBB` string; quote it in YAML. |
 | `action` | Yes | Full action object below; an Item is always tappable. |
-| `icon` | No | Nonempty HA MDI name from the list below; omitted/unknown names use `mdi:help-circle`. |
+| `icon` | No | HA MDI name from the schema enum (listed below); omission shows no icon, unknown names reject the Manifest. |
 | `value` | No | Live value object below. |
 | `countdown` | No | HA entity ID matching `timer.object_id`; rendered only in Single or Pie center. |
 
@@ -127,11 +127,13 @@ clears cached brightness. See the [contract](contracts/README.md) for details.
 
 ## Compiled-in icons
 
-Use the exact, case-sensitive names below. These are all 44 entries in
-[icons.h](../esphome/lunactl/icons.h), illustrated by the
-[icon mockup](mockups/icons.png). An unknown nonempty name is accepted by the
-current schema, renders `mdi:help-circle`, and logs a warning. An omitted icon
-uses that glyph without a warning. An empty string is invalid. Icons are built
+Use the exact, case-sensitive names below. The `item.icon` enum in the
+[schema](../schema/manifest.v1.schema.json) is the source of truth for these
+44 entries in [icons.h](../esphome/lunactl/icons.h), illustrated by the
+[icon mockup](mockups/icons.png). Unknown names and empty strings are invalid.
+An omitted icon leaves Single and Pie quarters showing only label and value,
+with all other layout positions unchanged. `mdi:help-circle` is a normal icon,
+available only when selected explicitly. Icons are built
 into the firmware; arbitrary HA icons, URLs and uploaded images are unsupported.
 
 | Group | Names |

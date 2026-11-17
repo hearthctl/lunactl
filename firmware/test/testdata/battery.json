@@ -665,8 +665,8 @@
         "item": {
           "label": "Beispiel",
           "color": "#B91360",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "battery": {
           "level": 19,
@@ -684,8 +684,8 @@
         "item": {
           "label": "Beispiel",
           "color": "#B91360",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "call": {
           "service": "script.lunactl_run",

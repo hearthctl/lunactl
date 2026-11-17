@@ -78,8 +78,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         }
       },
       {
@@ -92,8 +92,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "connection_action": "none",
         "subscriptions": []
@@ -108,8 +108,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "error": "Manifest needs new subscriptions; restarting"
       },
@@ -123,8 +123,8 @@
         "item": {
           "label": "Wert",
           "color": "#123456",
-          "icon": "mdi:help-circle",
-          "glyph": "󰋗"
+          "icon": "",
+          "glyph": ""
         },
         "connection_action": "restart",
         "subscriptions": []

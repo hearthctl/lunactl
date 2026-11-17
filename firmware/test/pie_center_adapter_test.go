@@ -9,6 +9,60 @@ import (
 	"github.com/hearthctl/lunactl/internal/testutil"
 )
 
+func TestProductionOptionalIcons(t *testing.T) {
+	checkAdapter(t, `#include "ui.h"
+#include <cassert>
+bool visible(lv_obj_t *obj) {
+ return obj && !(obj->flags & LV_OBJ_FLAG_HIDDEN) && (!obj->parent || visible(obj->parent));
+}
+lv_obj_t *text(lv_obj_t *obj, const std::string &value) {
+ if (!visible(obj)) return nullptr;
+ if (obj->text == value) return obj;
+ for (auto child : obj->children) if (auto found = text(child, value)) return found;
+ return nullptr;
+}
+int main() {
+ auto screen = lv_obj_create(nullptr);
+ auto ring = lv_arc_create(screen);
+ lv_font_t font, icons;
+ lunactl::UI ui;
+ ui.init(screen, &font, &icons, ring);
+ lunactl::Core core;
+ core.set_connected(true);
+ std::string error;
+ JsonDocument manifest;
+ deserializeJson(manifest, R"({"schema":1,"pages":[{"type":"single","item":{"label":"Single","color":"#123456","action":{"action":"script.single"},"value":{"format":"{0} °C","refs":[{"entity":"sensor.room"}]}}},{"type":"pie","quarters":[{"label":"Quarter","color":"#654321","action":{"action":"script.quarter"},"value":{"format":"{0} °C","refs":[{"entity":"sensor.room"}]}},null,null,null]}]})");
+ for (bool with_icon : {true, false, true, false}) {
+  for (auto item : {manifest["pages"][0]["item"].as<JsonObject>(), manifest["pages"][1]["quarters"][0].as<JsonObject>()}) {
+   if (with_icon) item["icon"] = "mdi:help-circle";
+   else item.remove("icon");
+  }
+  assert(core.accept(core.begin_fetch(), manifest.as<JsonVariantConst>(), error));
+  core.set_state({"sensor.room", ""}, "23.4");
+  for (size_t page = 0; page < 2; ++page) {
+   assert(core.show_page(page));
+   ui.render(core);
+   auto label = text(screen, page == 0 ? "Single" : "Quarter");
+   auto value = text(screen, "23.4 °C");
+   assert(label && value && label->parent == value->parent);
+   assert(label->x == (page == 0 ? 20 : 54) && label->y == (page == 0 ? 120 : 138));
+   assert(value->x == (page == 0 ? 20 : 54) && value->y == (page == 0 ? 174 : 172));
+   assert(label->parent->width == (page == 0 ? 280 : 230));
+   assert(label->parent->bg_color == (page == 0 ? 0x123456u : 0x654321u));
+   int icon_labels = 0;
+   for (auto child : label->parent->children) if (child->font == &icons) {
+    ++icon_labels;
+    assert(child->text == (with_icon ? lunactl::icon_glyph("mdi:help-circle") : ""));
+    assert(child->x == (page == 0 ? 0 : 54) && child->y == (page == 0 ? 45 : 80));
+   }
+   assert(icon_labels == 1 && !visible(ring));
+   assert(bool(text(screen, "--:--")) == (page == 1));
+  }
+ }
+}
+`, map[string]string{"lvgl.h": countdownLVGLStub})
+}
+
 // Exercise the production UI, observing visible text, arc geometry, fonts,
 // colours and page transitions. The firmware build checks the real LVGL APIs.
 func TestProductionPieCenter(t *testing.T) {
@@ -57,7 +111,7 @@ int main() {
  assert(text(screen, "1:00")->font == &large);
  auto clock = text(screen, "19:42");
  assert(clock && clock->x == 201 && clock->y == 3 && clock->font == &small);
- assert(!text(screen, "Quarter 23.4") && !text(screen, lunactl::resolve_icon("mdi:snowflake").glyph));
+ assert(!text(screen, "Quarter 23.4") && !text(screen, lunactl::icon_glyph("mdi:snowflake")));
  assert(visible(ring) && ring->value == 1000 && ring->arc_color == 0x111827);
  int arcs = 0, labels = 0;
  for (auto child : ring->parent->children) {

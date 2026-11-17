@@ -195,7 +195,7 @@ class UI {
   static void paint(lv_obj_t *obj, lv_obj_t *text, lv_obj_t *icon, const Item &item) {
     lv_obj_set_style_bg_color(obj, lv_color_hex(item.rgb), 0);
     lv_label_set_text(text, item.label.c_str());
-    lv_label_set_text(icon, resolve_icon(item.icon.c_str()).glyph);
+    lv_label_set_text(icon, icon_glyph(item.icon));
   }
   lv_obj_t *root_{nullptr}, *single_{nullptr}, *single_label_{nullptr}, *single_icon_{nullptr};
   lv_obj_t *single_value_{nullptr}, *single_countdown_{nullptr}, *ring_{nullptr};
