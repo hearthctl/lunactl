@@ -2,7 +2,7 @@
 
 Use [the room example](../examples/child-room.json) and
 [household setup](household.md) to get started. The authoritative field shapes
-are in [schema/manifest.schema.json](../schema/manifest.schema.json).
+are in [schema/manifest.v1.schema.json](../schema/manifest.v1.schema.json).
 The Manifest is plain JSON without Jinja, at most 32 KiB. Unknown fields are
 rejected at every defined level; `action.data` and value maps permit their own
 keys. Omit optional fields rather than setting them to `null`. Pie quarters
