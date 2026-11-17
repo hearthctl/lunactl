@@ -32,7 +32,8 @@ An action has an HA `action` name and optional `target` and `data` objects.
 The 44 compiled-in MDI names match [the icon mockup](../mockups/icons.png).
 Unknown names render `mdi:help-circle` and log a warning; an omitted icon uses
 the same fallback without a warning. Unsupported fields and Page types are
-rejected. Live values and countdowns belong to subsequent issues.
+rejected. Optional [live values](../values.md) and [countdowns](../countdown.md)
+reference HA entities; the device subscribes to them and formats them locally.
 
 The optional `display` object controls idle sleep and brightness:
 

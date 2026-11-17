@@ -8,7 +8,7 @@ namespace lunactl {
 // Allocated once. The core owns page selection, hit testing and action selection.
 class UI {
  public:
-  void init(lv_obj_t *parent, const lv_font_t *text, const lv_font_t *icons) {
+  void init(lv_obj_t *parent, const lv_font_t *text, const lv_font_t *icons, lv_obj_t *countdown_ring) {
     if (root_) return;
     root_ = box(parent, 0, 0, 466, 466, 0x000000, 233);
     lv_obj_set_style_clip_corner(root_, true, 0);
@@ -16,6 +16,22 @@ class UI {
     single_icon_ = label(single_, icons, 0, 45, 280);
     single_label_ = label(single_, text, 20, 120, 240);
     single_value_ = label(single_, text, 20, 174, 240);
+    single_countdown_ = label(single_, text, 20, 214, 240);
+    ring_ = countdown_ring;
+    lv_obj_set_parent(ring_, root_);
+    lv_obj_remove_style_all(ring_);
+    lv_obj_remove_flag(ring_, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_remove_flag(ring_, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_set_pos(ring_, 77, 77);
+    lv_obj_set_size(ring_, 312, 312);
+    lv_arc_set_rotation(ring_, 270);
+    lv_arc_set_bg_angles(ring_, 0, 360);
+    lv_arc_set_range(ring_, 0, 1000);
+    for (auto part : {LV_PART_MAIN, LV_PART_INDICATOR}) {
+      lv_obj_set_style_arc_width(ring_, 8, part);
+      lv_obj_set_style_arc_opa(ring_, LV_OPA_COVER, part);
+      lv_obj_set_style_arc_rounded(ring_, true, part);
+    }
     for (int slot = 0; slot < 4; ++slot) {
       int x = slot == 1 || slot == 2 ? 236 : 0;
       int y = slot >= 2 ? 236 : 0;
@@ -53,7 +69,7 @@ class UI {
         lv_label_set_text(quarter_icons_[slot], "");
       }
     }
-    update_clock(core);
+    update_time(core);
     visible(dots_, core.page_count() > 1);
     lv_obj_set_x(dots_, core.dots_left());
     lv_obj_set_width(dots_, core.dots_width());
@@ -72,6 +88,19 @@ class UI {
 
   void update_clock(const Core &core) {
     if (clock_) lv_label_set_text(clock_, core.clock().c_str());
+  }
+
+  void update_time(const Core &core) {
+    update_clock(core);
+    if (!ring_) return;
+    auto countdown = core.countdown();
+    visible(ring_, countdown.remaining > 0);
+    lv_label_set_text(single_countdown_, countdown.text.c_str());
+    if (countdown.remaining == 0) return;
+    auto color = lv_color_hex(core.item().rgb);
+    lv_obj_set_style_arc_color(ring_, lv_color_mix(color, lv_color_hex(0), 80), LV_PART_MAIN);
+    lv_obj_set_style_arc_color(ring_, lv_color_mix(lv_color_hex(0xFFFFFF), color, 160), LV_PART_INDICATOR);
+    lv_arc_set_value(ring_, countdown.ring);
   }
 
  private:
@@ -108,7 +137,7 @@ class UI {
     lv_label_set_text(icon, resolve_icon(item.icon.c_str()).glyph);
   }
   lv_obj_t *root_{nullptr}, *single_{nullptr}, *single_label_{nullptr}, *single_icon_{nullptr};
-  lv_obj_t *single_value_{nullptr};
+  lv_obj_t *single_value_{nullptr}, *single_countdown_{nullptr}, *ring_{nullptr};
   lv_obj_t *quarters_[4]{}, *quarter_labels_[4]{}, *quarter_icons_[4]{};
   lv_obj_t *quarter_values_[4]{};
   lv_obj_t *hole_{nullptr}, *clock_{nullptr}, *dots_{nullptr}, *dots[6]{};

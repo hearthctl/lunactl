@@ -1,0 +1,859 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Papa rufen",
+              "color": "#BB1260",
+              "icon": "mdi:bell-ring",
+              "action": {
+                "action": "script.example"
+              },
+              "value": {
+                "format": "{0}",
+                "refs": [
+                  {
+                    "entity": "sensor.answer"
+                  }
+                ]
+              },
+              "countdown": "timer.example"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "sync"
+    },
+    {
+      "type": "time",
+      "timestamp": 1794913200,
+      "valid": true
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "active"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "finishes_at",
+      "state": "2026-11-17T11:01:00Z"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "duration",
+      "state": "0:01:00"
+    },
+    {
+      "type": "disconnect"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "duration",
+      "state": "0:02:00"
+    },
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Papa rufen",
+              "color": "#BB1260",
+              "icon": "mdi:bell-ring",
+              "action": {
+                "action": "script.example"
+              },
+              "value": {
+                "format": "{0}",
+                "refs": [
+                  {
+                    "entity": "sensor.answer"
+                  }
+                ]
+              },
+              "countdown": "timer.example"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "sync"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "active"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "duration",
+      "state": "0:01:00"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "finishes_at",
+      "state": "2026-11-17T11:01:00Z"
+    },
+    {
+      "type": "time",
+      "timestamp": 1794913230,
+      "valid": true
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Papa rufen",
+              "color": "#BB1260",
+              "icon": "mdi:bell-ring",
+              "action": {
+                "action": "script.example"
+              },
+              "value": {
+                "format": "{0}",
+                "refs": [
+                  {
+                    "entity": "sensor.answer"
+                  }
+                ]
+              },
+              "countdown": "sensor.example"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "sync"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Papa rufen",
+              "color": "#BB1260",
+              "icon": "mdi:bell-ring",
+              "action": {
+                "action": "script.example"
+              },
+              "value": {
+                "format": "{0}",
+                "refs": [
+                  {
+                    "entity": "sensor.answer"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "sync"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Papa rufen",
+              "color": "#BB1260",
+              "icon": "mdi:bell-ring",
+              "action": {
+                "action": "script.example"
+              },
+              "value": {
+                "format": "{0}",
+                "refs": [
+                  {
+                    "entity": "sensor.answer"
+                  }
+                ]
+              },
+              "countdown": "timer.example"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Papa rufen",
+              "color": "#BB1260",
+              "icon": "mdi:bell-ring",
+              "action": {
+                "action": "script.example"
+              },
+              "value": {
+                "format": "{0}",
+                "refs": [
+                  {
+                    "entity": "sensor.answer"
+                  }
+                ]
+              },
+              "countdown": "timer.new"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "sync"
+    },
+    {
+      "type": "sync"
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        },
+        "connection_action": "reconnect",
+        "subscriptions": [
+          {
+            "entity": "sensor.answer"
+          },
+          {
+            "entity": "timer.example"
+          },
+          {
+            "entity": "timer.example",
+            "attribute": "finishes_at"
+          },
+          {
+            "entity": "timer.example",
+            "attribute": "duration"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 60,
+            "text": "1:00",
+            "ring": 1000
+          }
+        }
+      },
+      {
+        "status": "Keine Verbindung",
+        "tappable": false
+      },
+      {
+        "status": "Keine Verbindung",
+        "tappable": false
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        },
+        "request": 5
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        },
+        "connection_action": "none",
+        "subscriptions": [
+          {
+            "entity": "sensor.answer"
+          },
+          {
+            "entity": "timer.example"
+          },
+          {
+            "entity": "timer.example",
+            "attribute": "finishes_at"
+          },
+          {
+            "entity": "timer.example",
+            "attribute": "duration"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 60,
+            "text": "1:00",
+            "ring": 1000
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 30,
+            "text": "30 s",
+            "ring": 500
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 30,
+            "text": "30 s",
+            "ring": 500
+          }
+        },
+        "request": 6
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 30,
+            "text": "30 s",
+            "ring": 500
+          }
+        },
+        "error": "Invalid Item countdown"
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 30,
+            "text": "30 s",
+            "ring": 500
+          }
+        },
+        "connection_action": "none",
+        "subscriptions": [
+          {
+            "entity": "sensor.answer"
+          },
+          {
+            "entity": "timer.example"
+          },
+          {
+            "entity": "timer.example",
+            "attribute": "finishes_at"
+          },
+          {
+            "entity": "timer.example",
+            "attribute": "duration"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 30,
+            "text": "30 s",
+            "ring": 500
+          }
+        },
+        "request": 7
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--"
+        },
+        "connection_action": "none",
+        "subscriptions": [
+          {
+            "entity": "sensor.answer"
+          },
+          {
+            "entity": "timer.example"
+          },
+          {
+            "entity": "timer.example",
+            "attribute": "finishes_at"
+          },
+          {
+            "entity": "timer.example",
+            "attribute": "duration"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--"
+        },
+        "request": 8
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 30,
+            "text": "30 s",
+            "ring": 500
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 30,
+            "text": "30 s",
+            "ring": 500
+          }
+        },
+        "request": 9
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 30,
+            "text": "30 s",
+            "ring": 500
+          }
+        },
+        "error": "Manifest needs new subscriptions; restarting"
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 30,
+            "text": "30 s",
+            "ring": 500
+          }
+        },
+        "connection_action": "restart",
+        "subscriptions": [
+          {
+            "entity": "sensor.answer"
+          },
+          {
+            "entity": "timer.example"
+          },
+          {
+            "entity": "timer.example",
+            "attribute": "finishes_at"
+          },
+          {
+            "entity": "timer.example",
+            "attribute": "duration"
+          }
+        ]
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 30,
+            "text": "30 s",
+            "ring": 500
+          }
+        },
+        "connection_action": "none",
+        "subscriptions": [
+          {
+            "entity": "sensor.answer"
+          },
+          {
+            "entity": "timer.example"
+          },
+          {
+            "entity": "timer.example",
+            "attribute": "finishes_at"
+          },
+          {
+            "entity": "timer.example",
+            "attribute": "duration"
+          }
+        ]
+      }
+    ]
+  }
+}

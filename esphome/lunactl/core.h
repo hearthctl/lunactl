@@ -14,6 +14,7 @@
 #include <cmath>
 #include <cerrno>
 #include "icons.h"
+#include "countdown.h"
 
 namespace lunactl {
 
@@ -49,6 +50,7 @@ struct Item : Action {
   std::string color;
   uint32_t rgb{0};
   Value value;
+  std::string countdown;
 };
 
 enum class Key : uint8_t { A, B };
@@ -196,7 +198,7 @@ inline bool parse_action(JsonVariantConst action, Action &result, std::string &e
 inline bool parse_item(JsonVariantConst source, Item &item, std::string &error,
                        std::vector<std::string> &warnings) {
   auto reject = [&error](const char *message) { error = message; return false; };
-  if (!keys(source, {"label", "color", "icon", "action", "value"}) || !nonempty_string(source["label"]))
+  if (!keys(source, {"label", "color", "icon", "action", "value", "countdown"}) || !nonempty_string(source["label"]))
     return reject("Invalid Item");
   if (!source["icon"].isUnbound() && !nonempty_string(source["icon"])) return reject("Invalid Item icon");
   if (!source["color"].is<const char *>()) return reject("Invalid Item color");
@@ -214,6 +216,11 @@ inline bool parse_item(JsonVariantConst source, Item &item, std::string &error,
   if (!parse_action(source["action"], candidate, error)) return false;
   if (!source["value"].isUnbound() && !parse_value(source["value"], candidate.value))
     return reject("Invalid Item value");
+  if (!source["countdown"].isUnbound()) {
+    if (!action_name(source["countdown"])) return reject("Invalid Item countdown");
+    candidate.countdown = source["countdown"].as<std::string>();
+    if (candidate.countdown.compare(0, 6, "timer.") != 0) return reject("Invalid Item countdown");
+  }
   if (!source["icon"].isUnbound()) {
     std::string name = source["icon"].as<std::string>();
     candidate.icon = resolve_icon(name.c_str()).name;
@@ -308,14 +315,19 @@ class Core {
     std::vector<std::string> warnings;
     if (!parse_manifest(root, candidate, error, warnings)) return false;
     std::vector<Reference> required;
-    for (const auto &page : candidate.pages)
-      for (const auto &item : page.items)
-        for (const auto &ref : item.value.refs)
-          if (std::find(required.begin(), required.end(), ref) == required.end()) required.push_back(ref);
-    if (!candidate.display.brightness_entity.empty()) {
-      Reference ref{candidate.display.brightness_entity, ""};
+    auto require = [&](const Reference &ref) {
       if (std::find(required.begin(), required.end(), ref) == required.end()) required.push_back(ref);
-    }
+    };
+    for (const auto &page : candidate.pages)
+      for (const auto &item : page.items) {
+        for (const auto &ref : item.value.refs) require(ref);
+        if (!item.countdown.empty()) {
+          require({item.countdown, ""});
+          require({item.countdown, "finishes_at"});
+          require({item.countdown, "duration"});
+        }
+      }
+    if (!candidate.display.brightness_entity.empty()) require({candidate.display.brightness_entity, ""});
     if (!subscriptions_initialized_) {
       subscriptions_ = std::move(required);
       states_.resize(subscriptions_.size());
@@ -408,6 +420,16 @@ class Core {
     }
   }
   const std::string &clock() const { return clock_; }
+  void set_timestamp(int64_t now, bool valid = true) { timestamp_ = now; time_valid_ = valid; }
+  Countdown countdown() const {
+    if (!tappable() || pie() || item().countdown.empty()) return {};
+    auto state = [&](const char *attribute) -> std::string {
+      Reference ref{item().countdown, attribute};
+      auto found = std::find(subscriptions_.begin(), subscriptions_.end(), ref);
+      return found == subscriptions_.end() ? "" : states_[found - subscriptions_.begin()];
+    };
+    return countdown_view(state(""), state("finishes_at"), state("duration"), timestamp_, time_valid_);
+  }
   // Shared display geometry: 466 px circle, 112 px clock hole, 6 px dividers.
   int hit(int x, int y) const {
     if (!tappable() || x < 0 || x >= 466 || y < 0 || y >= 466) return -1;
@@ -541,6 +563,8 @@ class Core {
   size_t page_{0};
   std::vector<std::string> warnings_;
   std::string clock_{"--:--"};
+  int64_t timestamp_{0};
+  bool time_valid_{false};
   uint32_t revision_{0}, press_revision_{0};
   int press_x_{0}, press_y_{0};
   bool pressed_{false};

@@ -84,9 +84,16 @@ int main() {
 	checkAdapter(t, source)
 }
 
-func checkAdapter(t *testing.T, source string) {
+func checkAdapter(t *testing.T, source string, headers ...map[string]string) {
 	t.Helper()
 	dir := t.TempDir()
+	for _, files := range headers {
+		for name, content := range files {
+			if err := os.WriteFile(filepath.Join(dir, name), []byte(content), 0600); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
 	file := filepath.Join(dir, "adapter.cpp")
 	if err := os.WriteFile(file, []byte(source), 0600); err != nil {
 		t.Fatal(err)
@@ -96,7 +103,7 @@ func checkAdapter(t *testing.T, source string) {
 	if compiler == "" {
 		compiler = "c++"
 	}
-	cmd := exec.Command(compiler, "-std=c++17", "-Wall", "-Wextra", "-Werror", "-I"+filepath.Join(testutil.Root(), ".build/include"), "-I"+filepath.Join(testutil.Root(), "esphome/lunactl"), file, "-o", binary)
+	cmd := exec.Command(compiler, "-std=c++17", "-Wall", "-Wextra", "-Werror", "-I"+dir, "-I"+filepath.Join(testutil.Root(), ".build/include"), "-I"+filepath.Join(testutil.Root(), "esphome/lunactl"), file, "-o", binary)
 	if out, err := cmd.CombinedOutput(); err != nil {
 		t.Fatalf("compile adapter: %v\n%s", err, out)
 	}

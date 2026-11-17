@@ -1,0 +1,687 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Papa rufen",
+              "color": "#BB1260",
+              "icon": "mdi:bell-ring",
+              "action": {
+                "action": "script.example"
+              },
+              "value": {
+                "format": "{0}",
+                "refs": [
+                  {
+                    "entity": "sensor.answer"
+                  }
+                ]
+              },
+              "countdown": "timer.example"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "time",
+      "timestamp": 1794913200,
+      "valid": true
+    },
+    {
+      "type": "state",
+      "entity": "sensor.answer",
+      "attribute": "",
+      "state": "Papa kommt"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "active"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "finishes_at",
+      "state": "2026-11-17T11:01:00+00:00"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "duration",
+      "state": "0:01:00"
+    },
+    {
+      "type": "time",
+      "timestamp": 1794913218,
+      "valid": true
+    },
+    {
+      "type": "tap"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "idle"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "active"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "unavailable"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "active"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "unknown"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "active"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "paused"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "active"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": ""
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "active"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "unexpected"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "active"
+    },
+    {
+      "type": "time",
+      "timestamp": 1794913259,
+      "valid": true
+    },
+    {
+      "type": "time",
+      "timestamp": 1794913260,
+      "valid": true
+    },
+    {
+      "type": "time",
+      "timestamp": 1794913261,
+      "valid": true
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "finishes_at",
+      "state": "2026-11-17T11:03:01Z"
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "duration",
+      "state": "0:02:00"
+    },
+    {
+      "type": "time",
+      "timestamp": 1794913262,
+      "valid": true
+    },
+    {
+      "type": "state",
+      "entity": "timer.example",
+      "attribute": "",
+      "state": "idle"
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 60,
+            "text": "1:00",
+            "ring": 1000
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 42,
+            "text": "42 s",
+            "ring": 700
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 42,
+            "text": "42 s",
+            "ring": 700
+          }
+        },
+        "call": {
+          "service": "script.lunactl_run",
+          "action": "script.example",
+          "data": "{\"target\":{},\"data\":{}}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 42,
+            "text": "42 s",
+            "ring": 700
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 42,
+            "text": "42 s",
+            "ring": 700
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 42,
+            "text": "42 s",
+            "ring": 700
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 42,
+            "text": "42 s",
+            "ring": 700
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 42,
+            "text": "42 s",
+            "ring": 700
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 42,
+            "text": "42 s",
+            "ring": 700
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 1,
+            "text": "1 s",
+            "ring": 17
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 120,
+            "text": "2:00",
+            "ring": 1000
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 120,
+            "text": "2:00",
+            "ring": 1000
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": {
+            "remaining": 119,
+            "text": "1:59",
+            "ring": 992
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "Papa kommt",
+          "countdown": null
+        }
+      }
+    ]
+  }
+}

@@ -183,6 +183,11 @@
         },
         "value": {
           "$ref": "#/$defs/value"
+        },
+        "countdown": {
+          "type": "string",
+          "pattern": "^timer\\.[a-z0-9_]+$",
+          "description": "HA timer entity. Single shows remaining time and a ring while active, using finishes_at and duration."
         }
       }
     },

@@ -1,7 +1,7 @@
 esphome:
   name: lunactl
   # Copy the header, and include its type before ESPHome's static globals.
-  includes: [<core.h>, lunactl/core.h, lunactl/icons.h, <ui.h>, lunactl/ui.h, <battery.h>, lunactl/battery.h]
+  includes: [<core.h>, lunactl/core.h, lunactl/icons.h, lunactl/countdown.h, <ui.h>, lunactl/ui.h, <battery.h>, lunactl/battery.h]
   # Runs after the I2C bus (1000) and before the M5IOE1 setup (IO, 900).
   # Mirrors M5GFX's StopWatch power-on. Verified on device: on a battery cold
   # boot the M5IOE1 NACKs for ~50 ms (M5GFX allows up to 500 ms), and the
@@ -127,7 +127,8 @@ interval:
       - lambda: |-
           auto now = id(ha_time).now();
           id(manifest_core).set_time(now.hour, now.minute, now.is_valid());
-          id(page_ui).update_clock(id(manifest_core));
+          id(manifest_core).set_timestamp(now.timestamp, now.is_valid());
+          id(page_ui).update_time(id(manifest_core));
 
 button:
   - platform: template
@@ -246,7 +247,7 @@ script:
       - lambda: |-
           auto &core = id(manifest_core);
           lv_label_set_text(id(manifest_status), core.status());
-          id(page_ui).init(lv_obj_get_parent(id(touch_surface)), id(font_item)->get_lv_font(), id(font_icon)->get_lv_font());
+          id(page_ui).init(lv_obj_get_parent(id(touch_surface)), id(font_item)->get_lv_font(), id(font_icon)->get_lv_font(), id(countdown_ring));
           id(page_ui).render(core);
           lv_obj_remove_flag(id(touch_surface), LV_OBJ_FLAG_SCROLLABLE);
           lv_obj_move_foreground(id(battery_hint));
@@ -430,6 +431,12 @@ lvgl:
   touchscreens: [touch]
   bg_color: 0x000000
   widgets:
+    # Declaring the arc here enables LVGL's arc module. UI reparents and styles
+    # this same object with the Single Item; it stays inert and initially hidden.
+    - arc:
+        id: countdown_ring
+        hidden: true
+        adjustable: false
     - label:
         id: manifest_status
         align: center
