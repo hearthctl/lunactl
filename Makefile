@@ -15,8 +15,9 @@ $(ARDUINOJSON):
 	$(CXX) $(CXXFLAGS) -I.build/include firmware/host.cpp -o $@
 
 .PHONY: verify e2e check-core check-schema check-contracts
-verify: check-core check-schema check-integration check-firmware check-contracts
-e2e: check-contracts
+# verify needs no container runtime, so it runs in an agent pod; e2e holds what needs Podman.
+verify: check-core check-schema check-integration check-firmware
+e2e: check-hassfest check-contracts
 
 check-core: .build/manifest-host
 	go test -count=1 -v ./firmware/test
@@ -37,7 +38,6 @@ check-contracts: .build/manifest-host .build/ha-venv/.lunactl-ready
 .PHONY: check-integration check-hassfest
 check-integration: .build/ha-venv/.lunactl-ready
 	.build/ha-venv/bin/python -m pytest integration/test -v
-	$(MAKE) check-hassfest
 
 PODMAN ?= podman
 HASSFEST_IMAGE ?= ghcr.io/home-assistant/hassfest@sha256:a02392184579d55a89cc26e7eb1b5555b19bd944bc25c09e92680237d23c7e7e

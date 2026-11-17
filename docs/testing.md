@@ -1,7 +1,7 @@
 # Tracer checks
 
 Requirements: Go as specified by `go.mod`, a C++17 compiler (`CXX`), curl,
-sha256sum, uv and Podman. The host uses the same pinned
+sha256sum and uv; `make e2e` also needs Podman. The host uses the same pinned
 ArduinoJson version as ESPHome; `make` downloads and checks its header in
 `.build/`.
 
@@ -12,9 +12,10 @@ make check-core       # seam 1: C++ host, Go tables and golden snapshots
 make check-schema     # seam 2: valid/invalid Manifests, schema/core agreement
 make check-contracts  # seam 3: disposable HA, integration and host → action
 make check-firmware   # ESPHome config and ESP32-S3 compile with example secrets
-make check-integration # HA storage, lifecycle, websocket API and translations
-make verify           # every automated #35 criterion, including Podman HA
-make e2e              # contracts: needs Podman
+make check-integration # HA storage, lifecycle and websocket API
+make check-hassfest   # integration metadata and translations: needs Podman
+make verify           # core, schema, integration and firmware: needs no infrastructure
+make e2e              # hassfest and contracts: need Podman
 ```
 
 The contract runner creates its own local HA and test user, installs the actual
@@ -25,6 +26,10 @@ packages are used. `PODMAN` can select a different Podman command, and
 cannot start; unavailable infrastructure does not count as a passing check.
 
 Plain `make` runs `make verify`.
+
+`make verify` must pass before a pull request is opened, and it must run without
+a container runtime: agent pods have none. A check that needs Podman belongs in
+`make e2e`, which CI runs after `make verify` on every pull request.
 
 For issue [#11](https://github.com/hearthctl/lunactl/issues/11),
 `TestManifestSchemaAndCoreAgree/child-room-example` reads the actual
