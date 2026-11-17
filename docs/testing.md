@@ -11,8 +11,8 @@ make check-core       # seam 1: C++ host, Go tables and golden snapshots
 make check-schema     # seam 2: valid/invalid Manifests, schema/core agreement
 make check-contracts  # seam 3: disposable HA, reference scripts and host → action
 make check-firmware  # ESPHome config and ESP32-S3 compile with example secrets
-# Or all four:
-make check
+make verify           # core, schema and firmware: needs no infrastructure
+make e2e              # contracts: needs Podman
 ```
 
 The contract runner creates its own local HA and test user, runs the Go tests,
@@ -21,10 +21,10 @@ packages are used. `PODMAN` can select a different Podman command, and
 `HA_TEST_PORT` changes the default local port 18123. It deliberately fails if HA
 cannot start; unavailable infrastructure does not count as a passing check.
 
-Where Podman cannot run, as in the Kelos agent pods, do not install or work
-around it. Run the other three checks and leave `make check-contracts` to CI,
-which runs `make check` on every pull request and must be green before a merge.
-State in the pull request that the contract check was left to CI.
+`make verify` must pass before a pull request is opened. `make e2e` needs
+infrastructure and is run only by CI, where the one check named `verify` runs
+`make verify` and then `make e2e` on the pull request merged on top of the
+current base branch. It must be green before a merge.
 
 Golden cases cover a single Item and tap, UTF-8/nested action data, missing
 target/data, reload success, invalid replacement, initial errors, disconnect,
@@ -46,7 +46,7 @@ compiles the actual YAML polling, wake and action lambdas with display stubs,
 checking key mapping, wake and dispatch. Schema/core agreement cases validate
 all four bindings with the shared action/target/data cases. Contract tests run
 each bound gesture from a dark display through the host and `lunactl_run` in
-disposable HA. Run `make check` for these checks and the firmware compile.
+disposable HA. Run `make verify` and `make e2e` for these checks and the firmware compile.
 
 Issue [#3](https://github.com/hearthctl/lunactl/issues/3) is verified by the three
 automated seams above and `make check-firmware`. On-device acceptance belongs to
