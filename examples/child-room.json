@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "display": {
+    "timeout": 10,
+    "brightness": "input_number.lunactl_brightness"
+  },
+  "buttons": {
+    "a_short": {"action": "script.lunactl_taste_a"},
+    "b_long": {"action": "script.lunactl_papa_rufen"}
+  },
+  "pages": [
+    {
+      "type": "pie",
+      "quarters": [
+        {
+          "label": "Hell",
+          "icon": "mdi:white-balance-sunny",
+          "color": "#D69319",
+          "action": {
+            "action": "scene.turn_on",
+            "target": {"entity_id": "scene.kinderzimmer_hell"}
+          }
+        },
+        {
+          "label": "Lesen",
+          "icon": "mdi:book-open-variant",
+          "color": "#2876A8",
+          "action": {
+            "action": "scene.turn_on",
+            "target": {"entity_id": "scene.kinderzimmer_lesen"}
+          }
+        },
+        {
+          "label": "Gemütlich",
+          "icon": "mdi:sofa",
+          "color": "#B85C20",
+          "action": {
+            "action": "scene.turn_on",
+            "target": {"entity_id": "scene.kinderzimmer_gemuetlich"}
+          }
+        },
+        {
+          "label": "Schlafen gehen",
+          "icon": "mdi:weather-night",
+          "color": "#573382",
+          "action": {
+            "action": "scene.turn_on",
+            "target": {"entity_id": "scene.kinderzimmer_schlafen_gehen"}
+          }
+        }
+      ]
+    },
+    {
+      "type": "pie",
+      "quarters": [
+        {
+          "label": "Kühlen",
+          "icon": "mdi:snowflake",
+          "color": "#2876A8",
+          "action": {"action": "script.lunactl_kuehlen"}
+        },
+        {
+          "label": "Heizen",
+          "icon": "mdi:fire",
+          "color": "#B85C20",
+          "action": {"action": "script.lunactl_heizen"}
+        },
+        null,
+        null
+      ],
+      "center": {
+        "label": "Klima aus",
+        "icon": "mdi:power",
+        "color": "#286B61",
+        "action": {"action": "script.lunactl_klima_aus"},
+        "value": {
+          "format": "{0} °C · {1}",
+          "refs": [
+            {"entity": "sensor.kinderzimmer_temperatur", "decimals": 1, "decimal_comma": true},
+            {"entity": "climate.kinderzimmer", "attribute": "hvac_action", "map": {
+              "cooling": "Kühlen", "heating": "Heizen", "idle": "Aus", "off": "Aus"
+            }}
+          ]
+        },
+        "countdown": "timer.kinderzimmer_klima_lauf"
+      }
+    },
+    {
+      "type": "single",
+      "item": {
+        "label": "Papa rufen",
+        "icon": "mdi:hand-wave",
+        "color": "#B91360",
+        "action": {"action": "script.lunactl_papa_rufen"},
+        "value": {
+          "format": "{0}",
+          "refs": [
+            {"entity": "input_boolean.lunactl_papa_kommt", "map": {"on": "Papa kommt", "off": ""}}
+          ]
+        }
+      }
+    }
+  ]
+}

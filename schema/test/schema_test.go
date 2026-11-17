@@ -42,6 +42,15 @@ func TestManifestSchemaAndCoreAgree(t *testing.T) {
 	if err := json.Unmarshal(raw, &cases); err != nil {
 		t.Fatal(err)
 	}
+	// Validate the actual household example, rather than a duplicated fixture.
+	example, err := os.ReadFile(filepath.Join(testutil.Root(), "examples", "child-room.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(example) > 32*1024 {
+		t.Fatal("household example exceeds the 32 KiB response limit")
+	}
+	cases = append(cases, manifestCase{"child-room-example", true, example})
 	itemCases := append([]manifestCase(nil), cases...)
 	addButtons := func(name string, valid bool, buttons any) {
 		t.Helper()
