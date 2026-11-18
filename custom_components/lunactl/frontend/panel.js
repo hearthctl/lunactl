@@ -40,7 +40,8 @@ class LunactlDesigner extends LitElement {
     code { overflow-wrap: anywhere; }
     .confirmation { border: 2px solid var(--warning-color, #d69319); }
     @media (max-width: 800px) { .workspace { grid-template-columns: 1fr; } }
-    textarea { min-height: 55vh; resize: vertical; font: 14px/1.5 monospace;
+    textarea { resize: vertical; }
+    #manifest { min-height: 55vh; font: 14px/1.5 monospace;
       tab-size: 2; white-space: pre; }
     button { cursor: pointer; padding: 10px 14px; border-radius: 6px;
       border: 1px solid currentColor; color: var(--primary-color);
@@ -219,8 +220,8 @@ class LunactlDesigner extends LitElement {
     const change = (key, value) => editor.apply(setItem(editor.manifest, editor.page, editor.slot,
       withField(item, key, value)));
     return html`
-      <label>${text.label}<input .value=${typeof item.label === "string" ? item.label : ""}
-        @input=${(e) => change("label", e.target.value)}></label>
+      <label>${text.label}<textarea .value=${typeof item.label === "string" ? item.label : ""}
+        @input=${(e) => change("label", e.target.value)}></textarea></label>
       <p>${text.color}</p><div class="palette">
         ${palette.map(([name, color]) => html`<button style=${`background:${color}`}
           title=${text.paletteNames[name]} aria-label=${text.paletteNames[name]}
