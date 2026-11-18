@@ -69,6 +69,13 @@ An unknown MAC or a device without a stored Manifest returns `{}`. Enable
 **Allow the device to perform Home Assistant actions** in ESPHome's device
 options. Repair issues identify missing household references.
 
+### Update lunactl through HACS
+
+HACS offers published GitHub releases of lunactl as integration updates. In
+Home Assistant, open **Settings → Updates**, select the lunactl update and
+install it through HACS. Restart Home Assistant after installation to load the
+new integration version. Firmware is updated separately through ESPHome.
+
 ## 3. Flash and connect the StopWatch
 
 Install the tools in [testing.md](testing.md). Copy
