@@ -121,8 +121,38 @@ int main() {
         auto dots = snapshot["dots"].to<JsonArray>();
         if (core.page_count() > 1)
           for (size_t i = 0; i < core.page_count(); ++i) dots.add(i == core.page_index());
-        snapshot["type"] = core.pie() ? "pie" : "single";
-        if (core.pie()) {
+        snapshot["type"] = core.pie() ? "pie" : core.dial() ? "dial" : "single";
+        if (core.dial()) {
+          snapshot["clock"] = core.clock();
+          auto dial = snapshot["dial"].to<JsonObject>();
+          dial["status"] = core.dial_status();
+          dial["value"] = core.dial_value();
+          dial["caption"] = core.dial_caption();
+          char color[8];
+          std::snprintf(color, sizeof(color), "#%06X", static_cast<unsigned>(core.dial_rgb()));
+          dial["color"] = color;
+          for (size_t slot = 0; slot < 2; ++slot) {
+            auto button = dial[slot == 0 ? "minus" : "plus"].to<JsonObject>();
+            button["visible"] = core.slot_tappable(slot);
+            button["color"] = core.item(slot).color;
+          }
+          auto items = dial["items"].to<JsonArray>();
+          for (size_t slot = 2; slot < 5; ++slot) {
+            auto item = items.add<JsonObject>();
+            item["tappable"] = core.slot_tappable(slot);
+            if (!core.slot_tappable(slot)) continue;
+            item["icon"] = core.item(slot).icon;
+            item["glyph"] = lunactl::icon_glyph(core.item(slot).icon);
+            item["color"] = core.item(slot).color;
+            item["active"] = core.active(slot);
+          }
+          auto countdown = core.countdown();
+          if (countdown.remaining == 0) dial["countdown"] = nullptr;
+          else {
+            dial["countdown"]["remaining"] = countdown.remaining;
+            dial["countdown"]["ring"] = countdown.ring;
+          }
+        } else if (core.pie()) {
           snapshot["clock"] = core.clock();
           snapshot["hole_radius"] = core.hole_radius();
           if (core.center()) {

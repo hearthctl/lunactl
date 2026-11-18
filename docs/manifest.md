@@ -31,8 +31,9 @@ An invalid replacement keeps the previous valid Manifest. See the
 | Single | `{"type":"single","item":{…}}`; one required Item. | Icon, label, colour, optional live value and countdown text/ring. No page clock. |
 | Pie without `center` | `{"type":"pie","quarters":[…]}`; exactly four Items or `null`, clockwise: top-left, top-right, bottom-right, bottom-left. | Quarter icon, label, colour and live value. Small clock hole. No quarter countdown. |
 | Pie with `center` | Same four `quarters`, plus `"center":{…}` with a full Item. `center: null` is invalid; omit it for the other Pie form. | Quarters show curved label and colour only. Center shows label, live value and countdown text/ring, without an icon. Clock in the top gap. |
+| Dial | `{"type":"dial","value":{…},"minus":{…},"plus":{…},"items":[…]}`, optional `status`, `caption` and `countdown`; see [Dial](#dial). | Large live value with minus and plus beside it, three icon-only buttons below, status line and caption. Clock at the top, ring open at the bottom. |
 
-A `null` quarter is dark and inert. The clock, dividers, gaps and countdown ring
+A `null` quarter or Dial Slot is dark and inert. The clock, dividers, gaps and countdown ring
 are inert; tapping an Item runs its action. The Pie clock uses HA local time,
 with `--:--` before time sync. Fields accepted on an Item but not shown by its
 Page type still keep their references and subscriptions. Keep labels short and
@@ -44,10 +45,11 @@ check fit on the real round display; [mockups](mockups/README.md) show intent.
 | --- | --- | --- |
 | `label` | Yes | Nonempty string. |
 | `color` | Yes | Six-digit `#RRGGBB` string; quote it in YAML. |
-| `action` | Yes | Full action object below; an Item is always tappable. |
+| `action` | Yes | Full action object below; an Item is tappable, except Dial minus/plus while inactive. |
 | `icon` | No | HA MDI name from the schema enum (listed below); omission shows no icon, unknown names reject the Manifest. |
 | `value` | No | Live value object below. |
 | `countdown` | No | HA entity ID matching `timer.object_id`; rendered only in Single or Pie center. |
+| `active` | No | Aktiv reference below; shown only by Dial. |
 
 An Item's `action` and each key binding use the same object:
 
@@ -67,6 +69,55 @@ nested objects, arrays and scalar values. Missing `target`/`data` become `{}`.
 Both retain their structure through `lunactl.run`. HA validates whether
 the selected action, target and data make sense. Conditional household logic
 belongs in an HA script, not the Manifest.
+
+## Dial
+
+```json
+{
+  "type": "dial",
+  "status": {"format": "{0}", "refs": [{"entity": "sensor.klima_status"}]},
+  "value": {"format": "{0}", "refs": [{"entity": "sensor.klima_wert"}]},
+  "caption": {"format": "{0}", "refs": [{"entity": "sensor.klima_zeile"}]},
+  "minus": {"label": "Kälter", "color": "#374151", "action": {"action": "script.kaelter"},
+            "active": {"entity": "climate.room", "attribute": "hvac_mode", "states": ["cool", "heat"]}},
+  "plus": {"label": "Wärmer", "color": "#374151", "action": {"action": "script.waermer"},
+           "active": {"entity": "climate.room", "attribute": "hvac_mode", "states": ["cool", "heat"]}},
+  "items": [
+    {"label": "Kühlen", "icon": "mdi:snowflake", "color": "#3B82F6", "action": {"action": "script.kuehlen"},
+     "active": {"entity": "climate.room", "attribute": "hvac_mode", "states": ["cool"]}},
+    {"label": "Aus", "icon": "mdi:power", "color": "#8A93A3", "action": {"action": "script.klima_aus"},
+     "active": {"entity": "climate.room", "attribute": "hvac_mode", "states": ["off"]}},
+    {"label": "Heizen", "icon": "mdi:fire", "color": "#F0782A", "action": {"action": "script.heizen"},
+     "active": {"entity": "climate.room", "attribute": "hvac_mode", "states": ["heat"]}}
+  ],
+  "countdown": "timer.klima_lauf"
+}
+```
+
+| Field | Required | Shown as |
+| --- | --- | --- |
+| `value` | Yes | Large white text in the centre. Its font has only `0123456789,.-–°%` and space; other characters are not drawn. |
+| `status` | No | Line below the clock, in the colour of the active bottom Item, grey if none is active. While `countdown` runs the device appends ` · noch N min`, N rounded up. |
+| `caption` | No | Grey line below the large value. |
+| `minus`, `plus` | Yes | Round buttons left and right of the value, outlined in the Item colour. Hidden and inert while their `active` reference is inactive; always shown without one. Icon and label are not displayed. |
+| `items` | Yes | Exactly three Slots, left to right, each an Item with a required `icon` or `null`. Shown as round icon-only buttons: an active Item is filled with its colour and has a halo; an inactive one is dark with the icon in its colour. |
+| `countdown` | No | HA timer entity, as for Items. A ring open at the bottom, in the status colour, shows the remaining fraction. |
+
+Each tap runs its Item's action once; holding does not repeat. The device never
+anticipates a result: the large value changes only when HA reports a new state.
+Whether the value shows a setpoint or a room temperature, and when minus and plus
+apply, is household logic in HA, typically template sensors and helpers.
+
+`active` makes an Item Aktiv while the referenced state is one of `states`:
+
+| Field | Required | Value |
+| --- | --- | --- |
+| `entity` | Yes | Entity ID `domain.object_id`. Reads its state by default. |
+| `attribute` | No | Nonempty attribute name to read instead of the state. |
+| `states` | Yes | Nonempty array of exact state strings. A missing, `unknown` or `unavailable` state is inactive unless listed. |
+
+`active` is accepted on every Item and subscribed like a live value, but only
+Dial shows it.
 
 ## Live values and countdowns
 

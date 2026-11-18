@@ -10,7 +10,8 @@ namespace lunactl {
 class UI {
  public:
   void init(lv_obj_t *parent, const lv_font_t *text, const lv_font_t *icons, lv_obj_t *countdown_ring,
-            const lv_font_t *clock_font = nullptr, const lv_font_t *countdown_font = nullptr) {
+            const lv_font_t *clock_font = nullptr, const lv_font_t *countdown_font = nullptr,
+            const lv_font_t *dial_font = nullptr) {
     if (root_) return;
     text_font_ = text;
     clock_font_ = clock_font ? clock_font : text;
@@ -30,13 +31,8 @@ class UI {
     lv_obj_remove_style_all(ring_);
     lv_obj_remove_flag(ring_, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_remove_flag(ring_, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_set_pos(ring_, 77, 77);
-    lv_obj_set_size(ring_, 312, 312);
-    lv_arc_set_rotation(ring_, 270);
-    lv_arc_set_bg_angles(ring_, 0, 360);
     lv_arc_set_range(ring_, 0, 1000);
     for (auto part : {LV_PART_MAIN, LV_PART_INDICATOR}) {
-      lv_obj_set_style_arc_width(ring_, 8, part);
       lv_obj_set_style_arc_opa(ring_, LV_OPA_COVER, part);
       lv_obj_set_style_arc_rounded(ring_, true, part);
     }
@@ -85,6 +81,26 @@ class UI {
       lv_arclabel_set_overflow(curved, LV_ARCLABEL_OVERFLOW_ELLIPSIS);
       lv_arclabel_set_text(curved, "");
     }
+    // Dial: transparent layer with its live values and five round buttons.
+    dial_ = box(root_, 0, 0, 466, 466, 0, 0);
+    lv_obj_set_style_bg_opa(dial_, LV_OPA_TRANSP, 0);
+    dial_status_ = label(dial_, text, 63, 82, 340);
+    dial_value_ = label(dial_, dial_font ? dial_font : text, 133, 132, 200);
+    dial_caption_ = label(dial_, text, 133, 248, 200);
+    lv_obj_set_style_text_color(dial_caption_, lv_color_hex(DIAL_IDLE_RGB), 0);
+    for (size_t slot = 0; slot < DIAL_CENTERS.size(); ++slot) {
+      auto *button = dial_buttons_[slot] = box(dial_, DIAL_CENTERS[slot][0] - DIAL_BUTTON_RADIUS,
+          DIAL_CENTERS[slot][1] - DIAL_BUTTON_RADIUS, 2 * DIAL_BUTTON_RADIUS, 2 * DIAL_BUTTON_RADIUS,
+          DIAL_BUTTON_RGB, DIAL_BUTTON_RADIUS);
+      if (slot >= 2) {
+        dial_icons_[slot] = label(button, icons, 0, 20, 2 * DIAL_BUTTON_RADIUS);
+        lv_obj_set_style_outline_pad(button, 3, 0);
+        continue;
+      }
+      lv_obj_set_style_border_width(button, 3, 0);
+      box(button, 25, 39, 33, 9, 0xFFFFFF, 4);
+      if (slot == 1) box(button, 37, 27, 9, 33, 0xFFFFFF, 4);
+    }
     hole_ = box(root_, 177, 177, 112, 112, 0x000000, 56);
     clock_ = label(root_, text, 177, 215, 112);
     dots_ = box(root_, 0, 437, 1, 28, 0x000000, 14);
@@ -96,20 +112,33 @@ class UI {
   void render(const Core &core) {
     visible(root_, core.shown());
     if (!core.shown()) return;
-    visible(single_, !core.pie());
+    bool single = !core.pie() && !core.dial();
+    visible(single_, single);
     visible(center_, core.center());
+    visible(dial_, core.dial());
     visible(hole_, core.pie() && !core.center());
-    visible(clock_, core.pie());
-    lv_obj_set_pos(clock_, core.center() ? 201 : 177, core.center() ? 3 : 215);
-    lv_obj_set_width(clock_, core.center() ? 64 : 112);
-    lv_obj_set_style_text_font(clock_, core.center() ? clock_font_ : text_font_, 0);
+    visible(clock_, core.pie() || core.dial());
+    lv_obj_set_pos(clock_, core.dial() ? 183 : core.center() ? 201 : 177, core.dial() ? 34 : core.center() ? 3 : 215);
+    lv_obj_set_width(clock_, core.dial() ? 100 : core.center() ? 64 : 112);
+    lv_obj_set_style_text_font(clock_, core.center() || core.dial() ? clock_font_ : text_font_, 0);
+    // Single and Pie center: a closed ring around the centre. Dial: open at the bottom.
+    // Style setters always redraw, so the geometry changes only with the Page type.
+    if (ring_dial_ != static_cast<int>(core.dial())) {
+      ring_dial_ = core.dial();
+      lv_obj_set_pos(ring_, core.dial() ? 9 : 77, core.dial() ? 9 : 77);
+      lv_obj_set_size(ring_, core.dial() ? 448 : 312, core.dial() ? 448 : 312);
+      lv_arc_set_rotation(ring_, core.dial() ? 135 : 270);
+      lv_arc_set_bg_angles(ring_, 0, core.dial() ? 270 : 360);
+      for (auto part : {LV_PART_MAIN, LV_PART_INDICATOR}) lv_obj_set_style_arc_width(ring_, core.dial() ? 12 : 8, part);
+    }
+    if (core.dial()) render_dial(core);
     if (core.center()) {
       const auto &item = core.item(CENTER_SLOT);
       lv_obj_set_style_bg_color(center_, lv_color_hex(item.rgb), 0);
       lv_label_set_text(center_label_, item.label.c_str());
       lv_label_set_text(center_value_, core.value(CENTER_SLOT).c_str());
     }
-    if (!core.pie()) {
+    if (single) {
       paint(single_, single_label_, single_icon_, core.item());
       lv_label_set_text(single_value_, core.value().c_str());
     }
@@ -148,7 +177,9 @@ class UI {
     auto rgb = core.item(slot).rgb;
     unsigned brightness = (299 * ((rgb >> 16) & 255) + 587 * ((rgb >> 8) & 255) + 114 * (rgb & 255)) / 1000;
     auto color = lv_color_mix(lv_color_hex(brightness >= 128 ? 0x000000 : 0xFFFFFF), lv_color_hex(rgb), 128);
-    if (core.center() && slot != static_cast<int>(CENTER_SLOT))
+    if (core.dial())
+      lv_obj_set_style_bg_color(dial_buttons_[slot], color, 0);
+    else if (core.center() && slot != static_cast<int>(CENTER_SLOT))
       lv_obj_set_style_arc_color(quarter_arcs_[slot], color, LV_PART_MAIN);
     else {
       auto *obj = core.center() ? center_ : core.pie() ? quarters_[slot] : single_;
@@ -165,12 +196,13 @@ class UI {
     if (!ring_) return;
     auto countdown = core.countdown();
     visible(ring_, countdown.remaining > 0);
-    set_text(single_countdown_, !core.pie() ? countdown.text.c_str() : "");
+    set_text(single_countdown_, !core.pie() && !core.dial() ? countdown.text.c_str() : "");
+    if (core.dial()) set_text(dial_status_, core.dial_status().c_str());
     set_text(center_countdown_, core.center() ? countdown.text.c_str() : "");
     if (countdown.remaining == 0) return;
-    auto color = lv_color_hex(core.item(core.main_slot()).rgb);
-    auto background = lv_color_mix(color, lv_color_hex(0), 80);
-    auto foreground = lv_color_mix(lv_color_hex(0xFFFFFF), color, 160);
+    auto color = lv_color_hex(core.dial() ? core.dial_rgb() : core.item(core.main_slot()).rgb);
+    auto background = core.dial() ? lv_color_hex(DIAL_TRACK_RGB) : lv_color_mix(color, lv_color_hex(0), 80);
+    auto foreground = core.dial() ? color : lv_color_mix(lv_color_hex(0xFFFFFF), color, 160);
     if (!lv_color_eq(lv_obj_get_style_arc_color(ring_, LV_PART_MAIN), background))
       lv_obj_set_style_arc_color(ring_, background, LV_PART_MAIN);
     if (!lv_color_eq(lv_obj_get_style_arc_color(ring_, LV_PART_INDICATOR), foreground))
@@ -179,6 +211,30 @@ class UI {
   }
 
  private:
+  static constexpr uint32_t DIAL_BUTTON_RGB = 0x1D2129, DIAL_TRACK_RGB = 0x1B1E25;
+  void render_dial(const Core &core) {
+    auto color = lv_color_hex(core.dial_rgb());
+    lv_obj_set_style_text_color(dial_status_, color, 0);  // update_time() sets its text.
+    set_text(dial_value_, core.dial_value().c_str());
+    set_text(dial_caption_, core.dial_caption().c_str());
+    for (size_t slot = 0; slot < DIAL_CENTERS.size(); ++slot) {
+      auto *button = dial_buttons_[slot];
+      visible(button, core.slot_tappable(slot));
+      if (!core.slot_tappable(slot)) continue;
+      const auto &item = core.item(slot);
+      if (slot < 2) {
+        lv_obj_set_style_bg_color(button, lv_color_hex(DIAL_BUTTON_RGB), 0);
+        lv_obj_set_style_border_color(button, lv_color_hex(item.rgb), 0);
+        continue;
+      }
+      bool active = core.active(slot);
+      lv_obj_set_style_bg_color(button, lv_color_hex(active ? item.rgb : DIAL_BUTTON_RGB), 0);
+      lv_obj_set_style_outline_width(button, active ? 6 : 0, 0);
+      lv_obj_set_style_outline_color(button, lv_color_mix(lv_color_hex(item.rgb), lv_color_hex(0), 90), 0);
+      lv_obj_set_style_text_color(dial_icons_[slot], lv_color_hex(active ? 0xFFFFFF : item.rgb), 0);
+      set_text(dial_icons_[slot], icon_glyph(item.icon));
+    }
+  }
   static void set_text(lv_obj_t *obj, const char *text) {
     if (std::strcmp(lv_label_get_text(obj), text) != 0) lv_label_set_text(obj, text);
   }
@@ -221,5 +277,8 @@ class UI {
   lv_obj_t *center_{nullptr}, *center_label_{nullptr}, *center_value_{nullptr}, *center_countdown_{nullptr};
   const lv_font_t *text_font_{nullptr}, *clock_font_{nullptr};
   lv_obj_t *hole_{nullptr}, *clock_{nullptr}, *dots_{nullptr}, *dots[6]{};
+  lv_obj_t *dial_{nullptr}, *dial_status_{nullptr}, *dial_value_{nullptr}, *dial_caption_{nullptr};
+  lv_obj_t *dial_buttons_[5]{}, *dial_icons_[5]{};
+  int ring_dial_{-1};  // Ring geometry last set for a Dial (1) or another Page type (0).
 };
 }  // namespace lunactl

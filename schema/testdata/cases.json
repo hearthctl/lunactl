@@ -2567,5 +2567,1179 @@
         }
       ]
     }
+  },
+  {
+    "name": "dial-minimal",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-full",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            },
+            "active": {
+              "entity": "climate.room",
+              "attribute": "hvac_mode",
+              "states": [
+                "cool",
+                "heat"
+              ]
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              },
+              "active": {
+                "entity": "climate.room",
+                "attribute": "hvac_mode",
+                "states": [
+                  "cool"
+                ]
+              }
+            },
+            {
+              "label": "Aus",
+              "icon": "mdi:power",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              },
+              "active": {
+                "entity": "climate.room",
+                "attribute": "hvac_mode",
+                "states": [
+                  "off"
+                ]
+              }
+            },
+            {
+              "label": "Heizen",
+              "icon": "mdi:fire",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            }
+          ],
+          "status": {
+            "format": "{0}",
+            "refs": [
+              {
+                "entity": "climate.room",
+                "attribute": "hvac_action"
+              }
+            ]
+          },
+          "caption": {
+            "format": "{0} °C",
+            "refs": [
+              {
+                "entity": "sensor.room",
+                "decimals": 1
+              }
+            ]
+          },
+          "countdown": "timer.run"
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-all-items-empty",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-missing-value",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-missing-minus",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-missing-plus",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-missing-items",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-null-minus",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": null,
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-two-items",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-four-items",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-item-without-icon",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-invalid-item",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "blue",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-invalid-value",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}"
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-invalid-status",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ],
+          "status": "Kühlt"
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-invalid-caption",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ],
+          "caption": {
+            "format": "",
+            "refs": [
+              {
+                "entity": "sensor.room"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-invalid-countdown",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ],
+          "countdown": "sensor.run"
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-unknown-field",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ],
+          "center": {
+            "label": "Kühlen",
+            "icon": "mdi:snowflake",
+            "color": "#3B82F6",
+            "action": {
+              "action": "script.cool"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "dial-item-field",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "dial",
+          "value": {
+            "format": "{0}°",
+            "refs": [
+              {
+                "entity": "input_number.setpoint"
+              }
+            ]
+          },
+          "minus": {
+            "label": "Kälter",
+            "color": "#374151",
+            "action": {
+              "action": "script.minus"
+            }
+          },
+          "plus": {
+            "label": "Wärmer",
+            "color": "#374151",
+            "action": {
+              "action": "script.plus"
+            }
+          },
+          "items": [
+            {
+              "label": "Kühlen",
+              "icon": "mdi:snowflake",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              }
+            },
+            null,
+            null
+          ],
+          "item": {
+            "label": "Kühlen",
+            "icon": "mdi:snowflake",
+            "color": "#3B82F6",
+            "action": {
+              "action": "script.cool"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-single",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Aktiv",
+            "color": "#123456",
+            "action": {
+              "action": "script.example"
+            },
+            "active": {
+              "entity": "climate.room",
+              "attribute": "hvac_mode",
+              "states": [
+                "cool"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-pie-quarter",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "pie",
+          "quarters": [
+            {
+              "label": "Kühlen",
+              "color": "#3B82F6",
+              "action": {
+                "action": "script.cool"
+              },
+              "active": {
+                "entity": "input_boolean.run",
+                "states": [
+                  "on"
+                ]
+              }
+            },
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-empty-state",
+    "valid": true,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Aktiv",
+            "color": "#123456",
+            "action": {
+              "action": "script.example"
+            },
+            "active": {
+              "entity": "sensor.mode",
+              "states": [
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-null",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Aktiv",
+            "color": "#123456",
+            "action": {
+              "action": "script.example"
+            },
+            "active": null
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-string",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Aktiv",
+            "color": "#123456",
+            "action": {
+              "action": "script.example"
+            },
+            "active": "climate.room"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-missing-entity",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Aktiv",
+            "color": "#123456",
+            "action": {
+              "action": "script.example"
+            },
+            "active": {
+              "states": [
+                "cool"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-invalid-entity",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Aktiv",
+            "color": "#123456",
+            "action": {
+              "action": "script.example"
+            },
+            "active": {
+              "entity": "Climate.room",
+              "states": [
+                "cool"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-missing-states",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Aktiv",
+            "color": "#123456",
+            "action": {
+              "action": "script.example"
+            },
+            "active": {
+              "entity": "climate.room"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-empty-states",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Aktiv",
+            "color": "#123456",
+            "action": {
+              "action": "script.example"
+            },
+            "active": {
+              "entity": "climate.room",
+              "states": []
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-state-number",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Aktiv",
+            "color": "#123456",
+            "action": {
+              "action": "script.example"
+            },
+            "active": {
+              "entity": "climate.room",
+              "states": [
+                1
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-states-string",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Aktiv",
+            "color": "#123456",
+            "action": {
+              "action": "script.example"
+            },
+            "active": {
+              "entity": "climate.room",
+              "states": "cool"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-empty-attribute",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Aktiv",
+            "color": "#123456",
+            "action": {
+              "action": "script.example"
+            },
+            "active": {
+              "entity": "climate.room",
+              "attribute": "",
+              "states": [
+                "cool"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "active-unknown-field",
+    "valid": false,
+    "manifest": {
+      "schema": 1,
+      "pages": [
+        {
+          "type": "single",
+          "item": {
+            "label": "Aktiv",
+            "color": "#123456",
+            "action": {
+              "action": "script.example"
+            },
+            "active": {
+              "entity": "climate.room",
+              "attribute": "hvac_mode",
+              "states": [
+                "cool"
+              ],
+              "map": {
+                "cool": "x"
+              }
+            }
+          }
+        }
+      ]
+    }
   }
 ]
