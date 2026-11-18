@@ -70,7 +70,10 @@ export function textFitHints(manifest, states, measure) {
     for (const [field, value] of fields) {
       if (typeof value !== "string" || !value) continue;
       // Measure each explicit line; character counts cannot predict font width.
-      const width = Math.max(...value.split(/\r\n|\r|\n/).map((line) => measure(line, FIT_FONT)));
+      let width = -Infinity;
+      for (const line of value.split(/\r\n|\r|\n/)) {
+        width = Math.max(width, measure(line, FIT_FONT));
+      }
       if (Number.isFinite(width) && width > available)
         hints.push({kind: "text-fit", path: `${path}.${field}`, page, slot});
     }

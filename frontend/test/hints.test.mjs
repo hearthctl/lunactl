@@ -109,6 +109,14 @@ test("fit uses browser widths of explicit lines and formatted live values on eve
   assert.deepEqual(live, [{kind: "text-fit", path: "pages[0].item.value", page: 0, slot: 0}]);
 });
 
+test("fit handles a Single label with many explicit lines", () => {
+  const manifest = JSON.parse(JSON.stringify(single({label: "x\n".repeat(200000) + "wide"})));
+  assert.deepEqual(textFitHints(manifest, {}, () => 8), []);
+  assert.deepEqual(textFitHints(manifest, {}, (line) => line === "wide" ? 241 : 8), [
+    {kind: "text-fit", path: "pages[0].item.label", ...location},
+  ]);
+});
+
 test("hidden quarter values, icons, countdowns and clock do not produce fit hints", () => {
   const manifest = {pages: [{type: "pie", quarters: [{...item, label: "", value: {format: "too wide", refs: []}, countdown: "timer.run"}], center: {...item, label: ""}}]};
   assert.deepEqual(textFitHints(manifest, {}, () => { assert.fail("no visible label/value to measure"); }), []);
