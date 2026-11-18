@@ -1,0 +1,117 @@
+USB benchmark (ten full frames per Page type)
+[01:06:09.178][I][perf:057]: frame - total=98984us render=57113us flush=41871us px=217156 areas=1
+[01:06:12.749][I][perf:057]: frame - total=7907us render=6591us flush=1316us px=4800 areas=1
+[01:06:24.161][I][perf:057]: frame - total=85636us render=43574us flush=42062us px=217156 areas=1
+[01:06:24.397][I][perf:057]: frame single total=84356us render=42314us flush=42042us px=217156 areas=1
+[01:06:24.636][I][perf:057]: frame single total=87919us render=46377us flush=41542us px=217156 areas=1
+[01:06:24.873][I][perf:057]: frame single total=84476us render=42320us flush=42156us px=217156 areas=1
+[01:06:25.109][I][perf:057]: frame single total=83980us render=41968us flush=42012us px=217156 areas=1
+[01:06:25.347][I][perf:057]: frame single total=85466us render=43955us flush=41511us px=217156 areas=1
+[01:06:25.582][I][perf:057]: frame single total=84339us render=42940us flush=41399us px=217156 areas=1
+[01:06:25.820][I][perf:057]: frame single total=86771us render=42525us flush=44246us px=217156 areas=1
+[01:06:26.059][I][perf:057]: frame single total=86258us render=44557us flush=41701us px=217156 areas=1
+[01:06:26.295][I][perf:057]: frame single total=83818us render=42205us flush=41613us px=217156 areas=1
+[01:06:26.532][I][perf:057]: frame single total=84726us render=41978us flush=42748us px=217156 areas=1
+[01:06:26.806][I][perf:057]: frame - total=115172us render=73566us flush=41606us px=217156 areas=1
+[01:06:27.068][I][perf:057]: frame pie total=109792us render=68248us flush=41544us px=217156 areas=1
+[01:06:27.330][I][perf:057]: frame pie total=109694us render=67542us flush=42152us px=217156 areas=1
+[01:06:27.592][I][perf:057]: frame pie total=109803us render=68389us flush=41414us px=217156 areas=1
+[01:06:27.855][I][perf:057]: frame pie total=110765us render=68276us flush=42489us px=217156 areas=1
+[01:06:28.117][I][perf:057]: frame pie total=109550us render=68141us flush=41409us px=217156 areas=1
+[01:06:28.378][I][perf:057]: frame pie total=108269us render=66006us flush=42263us px=217156 areas=1
+[01:06:28.641][I][perf:057]: frame pie total=111575us render=70071us flush=41504us px=217156 areas=1
+[01:06:28.903][I][perf:057]: frame pie total=109560us render=66095us flush=43465us px=217156 areas=1
+[01:06:29.164][I][perf:057]: frame pie total=108363us render=66967us flush=41396us px=217156 areas=1
+[01:06:29.425][I][perf:057]: frame pie total=108883us render=67364us flush=41519us px=217156 areas=1
+[01:06:29.741][I][perf:057]: frame - total=156243us render=114760us flush=41483us px=217156 areas=1
+[01:06:30.043][I][perf:057]: frame center total=148985us render=107304us flush=41681us px=217156 areas=1
+[01:06:30.344][I][perf:057]: frame center total=149693us render=108042us flush=41651us px=217156 areas=1
+[01:06:30.647][I][perf:057]: frame center total=150712us render=106840us flush=43872us px=217156 areas=1
+[01:06:30.948][I][perf:057]: frame center total=148265us render=106235us flush=42030us px=217156 areas=1
+[01:06:31.250][I][perf:057]: frame center total=150917us render=106953us flush=43964us px=217156 areas=1
+[01:06:31.551][I][perf:057]: frame center total=148672us render=106189us flush=42483us px=217156 areas=1
+[01:06:31.852][I][perf:057]: frame center total=148880us render=106347us flush=42533us px=217156 areas=1
+[01:06:32.154][I][perf:057]: frame center total=149278us render=106834us flush=42444us px=217156 areas=1
+[01:06:32.457][I][perf:057]: frame center total=151510us render=109056us flush=42454us px=217156 areas=1
+[01:06:32.764][I][perf:057]: frame center total=154333us render=111962us flush=42371us px=217156 areas=1
+[01:06:33.010][I][perf:057]: frame - total=89738us render=48328us flush=41410us px=217156 areas=1
+[01:06:33.011][I][perf:309]: tap page=0
+[01:06:33.047][I][perf:057]: frame highlight total=33873us render=18060us flush=15813us px=79524 areas=1
+[01:06:33.139][I][perf:057]: frame release_render total=86328us render=44873us flush=41455us px=217156 areas=1
+[01:06:33.761][I][perf:057]: frame - total=112431us render=70921us flush=41510us px=217156 areas=1
+[01:06:33.761][I][perf:309]: tap page=1
+[01:06:33.788][I][perf:057]: frame highlight total=23826us render=11104us flush=12722us px=52900 areas=1
+[01:06:33.912][I][perf:057]: frame release_render total=114513us render=69482us flush=45031us px=217156 areas=1
+[01:06:34.574][I][perf:057]: frame - total=153857us render=112471us flush=41386us px=217156 areas=1
+[01:06:34.575][I][perf:309]: tap page=2
+[01:06:34.639][I][perf:057]: frame highlight total=61313us render=49725us flush=11588us px=54756 areas=1
+[01:06:34.796][I][perf:057]: frame release_render total=149911us render=108333us flush=41578us px=217156 areas=1
+[01:06:35.297][I][perf:326]: idle start
+[01:06:52.800][I][perf:057]: frame idle total=22725us render=21432us flush=1293us px=4720 areas=1
+[01:07:00.829][I][perf:057]: frame - total=21731us render=20707us flush=1024us px=2808 areas=1
+[01:07:02.794][I][perf:057]: frame - total=22485us render=21193us flush=1292us px=4720 areas=1
+[01:07:10.299][I][perf:330]: bench done
+[01:07:22.797][I][perf:057]: frame - total=22777us render=21478us flush=1299us px=4720 areas=1
+
+Repeat with battery text logging
+[01:07:54.128][I][perf:057]: frame - total=99387us render=57775us flush=41612us px=217156 areas=1
+[01:07:54.173][I][perf:249]: battery text=Akku 96 %
+[01:07:54.183][I][perf:057]: frame - total=7890us render=6558us flush=1332us px=4800 areas=1
+[01:08:04.173][I][perf:249]: battery text=Akku 94 %
+[01:08:04.182][I][perf:057]: frame - total=7014us render=5699us flush=1315us px=4720 areas=1
+[01:08:09.109][I][perf:057]: frame - total=84906us render=43785us flush=41121us px=217156 areas=1
+[01:08:09.345][I][perf:057]: frame single total=84331us render=42275us flush=42056us px=217156 areas=1
+[01:08:09.585][I][perf:057]: frame single total=87756us render=46517us flush=41239us px=217156 areas=1
+[01:08:09.820][I][perf:057]: frame single total=83442us render=42322us flush=41120us px=217156 areas=1
+[01:08:10.057][I][perf:057]: frame single total=84216us render=42056us flush=42160us px=217156 areas=1
+[01:08:10.294][I][perf:057]: frame single total=85049us render=43824us flush=41225us px=217156 areas=1
+[01:08:10.532][I][perf:057]: frame single total=86240us render=45118us flush=41122us px=217156 areas=1
+[01:08:10.770][I][perf:057]: frame single total=84380us render=42050us flush=42330us px=217156 areas=1
+[01:08:11.005][I][perf:057]: frame single total=84628us render=43472us flush=41156us px=217156 areas=1
+[01:08:11.244][I][perf:057]: frame single total=86546us render=45429us flush=41117us px=217156 areas=1
+[01:08:11.481][I][perf:057]: frame single total=84333us render=42066us flush=42267us px=217156 areas=1
+[01:08:11.753][I][perf:057]: frame - total=112969us render=71857us flush=41112us px=217156 areas=1
+[01:08:12.014][I][perf:057]: frame pie total=108408us render=66668us flush=41740us px=217156 areas=1
+[01:08:12.274][I][perf:057]: frame pie total=108333us render=67054us flush=41279us px=217156 areas=1
+[01:08:12.534][I][perf:057]: frame pie total=107928us render=66179us flush=41749us px=217156 areas=1
+[01:08:12.794][I][perf:057]: frame pie total=108414us render=67179us flush=41235us px=217156 areas=1
+[01:08:13.056][I][perf:057]: frame pie total=108891us render=67747us flush=41144us px=217156 areas=1
+[01:08:13.316][I][perf:057]: frame pie total=108606us render=67179us flush=41427us px=217156 areas=1
+[01:08:13.578][I][perf:057]: frame pie total=109609us render=68446us flush=41163us px=217156 areas=1
+[01:08:13.839][I][perf:057]: frame pie total=108578us render=66370us flush=42208us px=217156 areas=1
+[01:08:14.103][I][perf:057]: frame pie total=111562us render=70347us flush=41215us px=217156 areas=1
+[01:08:14.173][I][perf:249]: battery text=Akku 95 %
+[01:08:14.185][I][perf:057]: frame - total=9244us render=7933us flush=1311us px=4720 areas=1
+[01:08:14.364][I][perf:057]: frame pie total=108126us render=66176us flush=41950us px=217156 areas=1
+[01:08:14.675][I][perf:057]: frame - total=152978us render=108872us flush=44106us px=217156 areas=1
+[01:08:14.977][I][perf:057]: frame center total=149764us render=107677us flush=42087us px=217156 areas=1
+[01:08:15.281][I][perf:057]: frame center total=150724us render=108452us flush=42272us px=217156 areas=1
+[01:08:15.582][I][perf:057]: frame center total=148818us render=104679us flush=44139us px=217156 areas=1
+[01:08:15.880][I][perf:057]: frame center total=146314us render=103896us flush=42418us px=217156 areas=1
+[01:08:16.179][I][perf:057]: frame center total=145974us render=104750us flush=41224us px=217156 areas=1
+[01:08:16.478][I][perf:057]: frame center total=147012us render=105776us flush=41236us px=217156 areas=1
+[01:08:16.776][I][perf:057]: frame center total=146283us render=105108us flush=41175us px=217156 areas=1
+[01:08:17.074][I][perf:057]: frame center total=145771us render=104583us flush=41188us px=217156 areas=1
+[01:08:17.375][I][perf:057]: frame center total=147939us render=106694us flush=41245us px=217156 areas=1
+[01:08:17.678][I][perf:057]: frame center total=151776us render=110591us flush=41185us px=217156 areas=1
+[01:08:17.921][I][perf:057]: frame - total=86210us render=44598us flush=41612us px=217156 areas=1
+[01:08:17.921][I][perf:309]: tap page=0
+[01:08:17.958][I][perf:057]: frame highlight total=33837us render=18117us flush=15720us px=79524 areas=1
+[01:08:18.049][I][perf:057]: frame release_render total=85974us render=43973us flush=42001us px=217156 areas=1
+[01:08:18.673][I][perf:057]: frame - total=114583us render=69764us flush=44819us px=217156 areas=1
+[01:08:18.673][I][perf:309]: tap page=1
+[01:08:18.697][I][perf:057]: frame highlight total=21363us render=10523us flush=10840us px=52900 areas=1
+[01:08:18.818][I][perf:057]: frame release_render total=112256us render=71131us flush=41125us px=217156 areas=1
+[01:08:19.476][I][perf:057]: frame - total=149976us render=107782us flush=42194us px=217156 areas=1
+[01:08:19.477][I][perf:309]: tap page=2
+[01:08:19.529][I][perf:057]: frame highlight total=49831us render=38660us flush=11171us px=54756 areas=1
+[01:08:19.693][I][perf:057]: frame release_render total=156659us render=111658us flush=45001us px=217156 areas=1
+[01:08:20.194][I][perf:326]: idle start
+[01:08:24.173][I][perf:249]: battery text=Akku 96 %
+[01:08:24.200][I][perf:057]: frame idle total=21808us render=20498us flush=1310us px=4720 areas=1
+[01:08:34.173][I][perf:249]: battery text=Akku 95 %
+[01:08:34.204][I][perf:057]: frame - total=21995us render=20487us flush=1508us px=4720 areas=1
+[01:08:55.195][I][perf:330]: bench done
+[01:09:01.729][I][perf:057]: frame - total=19693us render=18645us flush=1048us px=2808 areas=1
+[01:09:04.173][I][perf:249]: battery text=Akku 96 %
+[01:09:04.201][I][perf:057]: frame - total=21663us render=20362us flush=1301us px=4720 areas=1

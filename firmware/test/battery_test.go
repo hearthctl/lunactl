@@ -28,6 +28,7 @@ func TestProductionBatteryAdapter(t *testing.T) {
 	render := extract(`(?s)  - id: render_battery\n    then:\n      - lambda: \|-\n(.*?)\n  - id:`)
 	address := extract(`(?s)i2c_device:\n  id: pmic\n  address: (0x[0-9A-Fa-f]+)`)
 	source := `#include "battery.h"
+#include <cstring>
 #include <cmath>
 #include <functional>
 #include <stdexcept>
@@ -36,7 +37,9 @@ func TestProductionBatteryAdapter(t *testing.T) {
 namespace i2c { constexpr int ERROR_OK = 0; }
 int warnings = 0, delays = 0;
 void delay(int ms) { if (ms != 1) throw std::runtime_error("retry delay"); ++delays; }
-void lv_label_set_text(std::string &label, const char *text) { label = text; }
+const char *lv_label_get_text(const std::string &label) { return label.c_str(); }
+int label_writes = 0;
+void lv_label_set_text(std::string &label, const char *text) { ++label_writes; label = text; }
 struct Render { std::function<void()> callback; void execute() { callback(); } };
 struct PMIC {
  int calls = 0, nack = 0;
@@ -66,6 +69,8 @@ int main() {
  pmic.nack = 1;
  if (poll() != 19 || battery_hint != "Zurück an die Halterung" ||
      battery_level_text != "Akku 19 %" || pmic.calls != 3 || delays != 1 || warnings) return 2;
+ label_writes = 0;
+ if (poll() != 19 || label_writes != 0) return 10;
  // Adding USB must not report the 5V supply as a full battery or hide the hint.
  pmic.source = 5;
  if (poll() != 19 || battery_hint.empty()) return 3;

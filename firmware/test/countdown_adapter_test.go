@@ -104,6 +104,9 @@ int main() {
  ha_time.current.valid = true;
  tick();
  if (ring->flags & (LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_CLICKABLE) || ring->value != 1000 || !has_text(screen, "1:00")) return 5;
+ label_writes = 0;
+ tick();
+ if (label_writes != 0) return 21;
  if (ring->x != 77 || ring->y != 77 || ring->width != 312 || ring->height != 312) return 6;
  if (!has_text(screen, "Papa rufen") || !has_text(screen, "0:01:00")) return 7;
  ha_time.current.timestamp += 18;
@@ -153,7 +156,7 @@ struct lv_obj_t {
  lv_obj_t *parent{nullptr};
  std::vector<lv_obj_t *> children;
  std::string text, kind{"box"};
- unsigned bg_color{0}, arc_color{0};
+ unsigned bg_color{0}, arc_color{0}, indicator_color{0};
  const lv_font_t *font{nullptr};
  int start{0}, size{0}, direction{0}, radius{0}, arc_width{0};
  int flags{3}, value{0}, x{0}, y{0}, width{0}, height{0};
@@ -185,7 +188,7 @@ inline void lv_arclabel_set_angle_size(lv_obj_t *o, int v) { o->size=v; }
 inline void lv_arclabel_set_radius(lv_obj_t *o, int v) { o->radius=v; }
 inline void lv_arclabel_set_dir(lv_obj_t *o, int v) { o->direction=v; }
 inline void lv_obj_set_style_bg_color(lv_obj_t *o, unsigned c, int) { o->bg_color=c; }
-inline void lv_obj_set_style_arc_color(lv_obj_t *o, unsigned c, int part) { if (part==LV_PART_MAIN) o->arc_color=c; }
+inline void lv_obj_set_style_arc_color(lv_obj_t *o, unsigned c, int part) { if (part==LV_PART_MAIN) o->arc_color=c; else o->indicator_color=c; }
 inline void lv_obj_set_style_arc_width(lv_obj_t *o, int v, int part) { if (part==LV_PART_MAIN) o->arc_width=v; }
 inline void lv_obj_set_style_text_font(lv_obj_t *o, const lv_font_t *f, int) { o->font=f; }
 inline void lv_arc_set_bg_angles(lv_obj_t *o, int start, int end) { o->start=start; o->size=end-start; }
@@ -195,8 +198,12 @@ inline void lv_obj_set_pos(lv_obj_t *o, int x, int y) { o->x=x; o->y=y; }
 inline void lv_obj_set_size(lv_obj_t *o, int w, int h) { o->width=w; o->height=h; }
 inline void lv_obj_set_width(lv_obj_t *o, int w) { o->width=w; }
 inline void lv_obj_set_x(lv_obj_t *o, int x) { o->x=x; }
-inline void lv_label_set_text(lv_obj_t *o, const char *s) { o->text=s; }
+inline int label_writes = 0;
+inline const char *lv_label_get_text(lv_obj_t *o) { return o->text.c_str(); }
+inline void lv_label_set_text(lv_obj_t *o, const char *s) { ++label_writes; o->text=s; }
 inline void lv_arc_set_value(lv_obj_t *o, int v) { o->value=v; }
+inline unsigned lv_obj_get_style_arc_color(lv_obj_t *o, int part) { return part==LV_PART_MAIN ? o->arc_color : o->indicator_color; }
+inline bool lv_color_eq(unsigned a, unsigned b) { return a==b; }
 inline unsigned lv_color_hex(unsigned color) { return color; }
 inline unsigned lv_color_mix(unsigned a, unsigned, int) { return a; }
 #define LV_NOOP(name) template<typename... Args> inline void name(Args...) {}
