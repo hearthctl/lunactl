@@ -184,8 +184,8 @@ class ValueForm extends LitElement {
         @click=${() => { this._mode = "simple"; }}>${text.simple}</button>
       <button aria-pressed=${this._mode === "expert"} @click=${() => { this._mode = "expert"; }}>${text.expert}</button>
       ${!simple ? html`<p class="hint">${text.expertRequired}</p>` : ""}
-      ${this._mode === "expert" ? html`<label>${text.format}<input .value=${valueText(this.value.format)}
-        @input=${(e) => this._change({...this.value, format: e.target.value})}></label>` : ""}
+      ${this._mode === "expert" ? html`<label>${text.format}<textarea .value=${valueText(this.value.format)}
+        @input=${(e) => this._change({...this.value, format: e.target.value})}></textarea></label>` : ""}
       ${(Array.isArray(this.value.refs) ? this.value.refs : []).map((ref, index) =>
         this._reference(object(ref) ? ref : {}, index))}
       ${this._mode === "expert" ? html`<button @click=${() => this._change(addReference(this.value))}>${text.addRef}</button>` : ""}

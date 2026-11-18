@@ -195,6 +195,32 @@ test("panel Item handlers update label, palette/custom hex, optional icon and co
   assert.equal(item().countdown, "timer.cooling");
 });
 
+test("editing an Expert live-value format preserves its newline in autosave", async () => {
+  const refs = [{entity: "sensor.room"}];
+  const initial = {format: "{0}\n°C", refs};
+  const manifest = {schema: 1, pages: [{type: "single", item: {value: initial}}]};
+  const requests = [];
+  const editor = new ManifestEditor({manifest}, async (request) => {
+    requests.push(request);
+    return {manifest: request.manifest};
+  }, () => {}, {setTimeout() {}, clearTimeout() {}});
+  editor.edit(JSON.stringify(manifest));
+  editor.selectSlot(0);
+  const panel = make("lunactl-designer", {hass});
+  const itemForm = panel._itemForm(editor, editor.manifest.pages[0].item);
+  const valueForm = templates(itemForm).find((t) => t.strings.join("").includes("<lunactl-value-form"));
+  const form = make("lunactl-value-form", {hass, value: bindings(valueForm, ".value=").at(-1)});
+  const formatField = templates(form.render()).find((t) => t.values.includes(text.format));
+  assert.match(formatField.strings.join(""), /<textarea\b/);
+  const [format] = bindings(formatField, ".value=");
+  assert.equal(format, initial.format);
+  handler(formatField, "input")(input(format + "!"));
+  handler(itemForm, "form-change", 2)({detail: form.emitted});
+  await editor.flush();
+  assert.deepEqual(requests.find((request) => request.type === "lunactl/manifest/save")
+    ?.manifest.pages[0].item.value, {format: "{0}\n°C!", refs});
+});
+
 test("panel wires all four key pickers and only stores non-default display fields", () => {
   const editor = new ManifestEditor({manifest: {schema: 1, pages: [{type: "pie", quarters: [null, null, null, null]}]}},
     undefined, () => {}, {setTimeout() {}, clearTimeout() {}});
