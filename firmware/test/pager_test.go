@@ -5,8 +5,9 @@ import (
 	"testing"
 )
 
-func TestPagerLifecycle(t *testing.T) {
-	checkAdapter(t, `#include "pager.h"
+func TestPager(t *testing.T) {
+	for _, tc := range []struct{ name, source string }{
+		{name: "deferred values and reversal", source: `#include "pager.h"
 #include <cassert>
 int main() {
  auto *surface = lv_obj_create(nullptr);
@@ -44,6 +45,27 @@ int main() {
  assert(core.page_index() == 1 && snapshot_count == 3);
  assert(!(surface->children[1]->children[0]->flags & LV_OBJ_FLAG_HIDDEN));
  assert(snapshot_text.find("after") != std::string::npos);
+
+}
+`},
+		{name: "tap feedback restores clean color", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+ poll(); poll();
+ assert(snapshot_count == 2);
+ assert(!(surface->children[0]->children[0]->flags & (1 << 20)));
+ core.show_page(1); pager.render(core);
  // A real tap on the settled page remains actionable.
  input.state = LV_INDEV_STATE_PRESSED;
  assert(core.press(233,233)); pager.highlight(core,233,233);
@@ -52,8 +74,28 @@ int main() {
  input.state = LV_INDEV_STATE_RELEASED;
  assert(core.release(233,233) == 0 && core.item().action == "script.second");
  pager.render(core); poll();
- assert(item->bg_color == 0x654321 && snapshot_count == 3);
+ assert(item->bg_color == 0x654321 && snapshot_count == 2);
  // The press color is restored without replacing the clean cached image.
+
+}
+`},
+		{name: "manifest replaces an interrupted gesture", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+ poll(); poll();
+ assert(snapshot_count == 2);
+ assert(!(surface->children[0]->children[0]->flags & (1 << 20)));
  // Tapping while an earlier swipe is settling must not run the old page's action.
  scrolling = true; scroll_x = 300; input.state = LV_INDEV_STATE_PRESSED;
  core.press(233,233); pager.highlight(core,233,233);
@@ -63,6 +105,26 @@ int main() {
  assert(core.page_index() == 0 && scroll_x == 0 && wait_release_count == 1);
  assert(core.release(233,233) == -1);
  input.state = LV_INDEV_STATE_RELEASED; poll(); poll();
+
+}
+`},
+		{name: "disconnect reconnect and wake", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+ poll(); poll();
+ assert(snapshot_count == 2);
+ assert(!(surface->children[0]->children[0]->flags & (1 << 20)));
  // Disconnect during a gesture removes pages and invalidates actions/caches.
  input.state = LV_INDEV_STATE_PRESSED;
  core.press(233,233); pager.highlight(core,233,233);
@@ -80,7 +142,177 @@ int main() {
  assert(core.release(233,233) == -1); pager.render(core); poll();
  assert(scroll_dir == LV_DIR_HOR);
 }
-`, map[string]string{"lvgl.h": strings.Replace(countdownLVGLStub, "LV_NOOP(lv_obj_set_style_clip_corner)", `inline void lv_obj_set_style_clip_corner(lv_obj_t *o, bool clip, int) { if (clip) o->flags |= 1 << 20; else o->flags &= ~(1 << 20); }`, 1) + pagerLVGLStub})
+`},
+		{name: "swipe then sleep restores departure color", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+ poll(); poll();
+ assert(snapshot_count == 2);
+ assert(!(surface->children[0]->children[0]->flags & (1 << 20)));
+
+ input.state = LV_INDEV_STATE_PRESSED;
+ assert(core.press(233,233)); pager.highlight(core,233,233);
+ auto *home_item = surface->children[0]->children[0]->children[0];
+ assert(home_item->bg_color != 0x123456);
+ emit(surface, LV_EVENT_SCROLL_BEGIN);
+ scrolling = true; scroll_x = 240;
+ assert(core.release(100,233) == -1);
+ input.state = LV_INDEV_STATE_RELEASED;
+ scrolling = false; scroll_x = 466; poll();
+ assert(core.page_index() == 1);
+ assert(home_item->bg_color == 0x123456);
+ core.sleep(); pager.render(core);
+ input.state = LV_INDEV_STATE_PRESSED;
+ bool active = core.press(233,233);
+ assert(!active); pager.highlight(core,-1,-1);
+ assert(home_item->bg_color == 0x123456);
+ input.state = LV_INDEV_STATE_RELEASED;
+ assert(core.release(233,233) == -1); pager.render(core); poll();
+ assert(home_item->bg_color == 0x123456 && snapshot_count == 2);
+
+}
+`},
+		{name: "round live fallback with missing snapshots", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+
+ auto *home = surface->children[0]->children[0];
+ auto *second = surface->children[1]->children[0];
+ input.state = LV_INDEV_STATE_PRESSED;
+ core.press(233,233); pager.highlight(core,233,233);
+ emit(surface, LV_EVENT_SCROLL_BEGIN);
+ assert(!(home->flags & LV_OBJ_FLAG_HIDDEN));
+ assert(home->flags & (1 << 20));
+ assert(second->flags & (1 << 20));
+ scrolling = true; scroll_x = 240;
+ assert(core.release(100,233) == -1);
+ input.state = LV_INDEV_STATE_RELEASED;
+ scrolling = false; scroll_x = 466; poll();
+ assert(core.page_index() == 1);
+ assert(!(home->flags & (1 << 20)) && !(second->flags & (1 << 20)));
+
+}
+`},
+		{name: "round live fallback with dirty snapshot", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+ poll(); poll();
+ core.set_state({"sensor.value", ""}, "changed"); pager.render(core);
+ auto *home = surface->children[0]->children[0];
+ auto *second = surface->children[1]->children[0];
+ input.state = LV_INDEV_STATE_PRESSED;
+ core.press(233,233); pager.highlight(core,233,233);
+ emit(surface, LV_EVENT_SCROLL_BEGIN);
+ assert(!(home->flags & LV_OBJ_FLAG_HIDDEN));
+ assert(home->flags & (1 << 20));
+ assert(second->flags & (1 << 20));
+ scrolling = true; scroll_x = 240;
+ assert(core.release(100,233) == -1);
+ input.state = LV_INDEV_STATE_RELEASED;
+ scrolling = false; scroll_x = 466; poll();
+ assert(core.page_index() == 1);
+ assert(!(home->flags & (1 << 20)) && !(second->flags & (1 << 20)));
+
+}
+`},
+		{name: "round live fallback with allocation failure", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+ snapshot_fail = true; poll(); poll();
+ auto *home = surface->children[0]->children[0];
+ auto *second = surface->children[1]->children[0];
+ input.state = LV_INDEV_STATE_PRESSED;
+ core.press(233,233); pager.highlight(core,233,233);
+ emit(surface, LV_EVENT_SCROLL_BEGIN);
+ assert(!(home->flags & LV_OBJ_FLAG_HIDDEN));
+ assert(home->flags & (1 << 20));
+ assert(second->flags & (1 << 20));
+ scrolling = true; scroll_x = 240;
+ assert(core.release(100,233) == -1);
+ input.state = LV_INDEV_STATE_RELEASED;
+ scrolling = false; scroll_x = 466; poll();
+ assert(core.page_index() == 1);
+ assert(!(home->flags & (1 << 20)) && !(second->flags & (1 << 20)));
+
+}
+`},
+		{name: "manifest cancels rounded live fallback", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+
+ auto *home = surface->children[0]->children[0];
+ input.state = LV_INDEV_STATE_PRESSED;
+ core.press(233,233); pager.highlight(core,233,233);
+ emit(surface, LV_EVENT_SCROLL_BEGIN);
+ assert(home->flags & (1 << 20));
+ scrolling = true; scroll_x = 240;
+ assert(core.accept_json(core.begin_fetch(),manifest,error)); pager.render(core);
+ assert(scroll_x == 0 && !scrolling && wait_release_count == 1);
+ assert(!(home->flags & (1 << 20)));
+ assert(core.release(233,233) == -1);
+
+}
+`},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			checkAdapter(t, tc.source, map[string]string{"lvgl.h": strings.Replace(countdownLVGLStub, "LV_NOOP(lv_obj_set_style_clip_corner)", `inline void lv_obj_set_style_clip_corner(lv_obj_t *o, bool clip, int) { if (clip) o->flags |= 1 << 20; else o->flags &= ~(1 << 20); }`, 1) + pagerLVGLStub})
+		})
+	}
 }
 
 const pagerLVGLStub = `
@@ -99,7 +331,7 @@ struct lv_timer_t { void (*callback)(lv_timer_t *); void *user; };
 struct lv_draw_buf_t {};
 inline std::vector<lv_timer_t *> timers;
 inline std::map<lv_obj_t *,std::pair<void (*)(lv_event_t *),void *>> callbacks;
-inline bool scrolling=false;
+inline bool scrolling=false, snapshot_fail=false;
 inline int scroll_x=0,scroll_dir=0,snapshot_count=0,destroyed=0,wait_release_count=0;
 inline std::string snapshot_text;
 inline void lv_obj_center(lv_obj_t *) {}
@@ -126,8 +358,8 @@ inline void lv_obj_update_layout(lv_obj_t *) {}
 inline void lv_obj_set_style_bg_image_src(lv_obj_t *,const void *,int) {}
 inline void lv_draw_buf_destroy(lv_draw_buf_t *p) { ++destroyed; delete p; }
 inline void collect(lv_obj_t *o) { snapshot_text+=o->text; for(auto *child:o->children) collect(child); }
-inline lv_draw_buf_t *lv_snapshot_take(lv_obj_t *o,int) { assert(o->flags & (1 << 20)); ++snapshot_count; snapshot_text.clear(); collect(o); return new lv_draw_buf_t; }
-inline int lv_snapshot_take_to_draw_buf(lv_obj_t *o,int,lv_draw_buf_t *) { assert(o->flags & (1 << 20)); ++snapshot_count; snapshot_text.clear(); collect(o); return LV_RESULT_OK; }
+inline lv_draw_buf_t *lv_snapshot_take(lv_obj_t *o,int) { assert(o->flags & (1 << 20)); ++snapshot_count; snapshot_text.clear(); collect(o); return snapshot_fail ? nullptr : new lv_draw_buf_t; }
+inline int lv_snapshot_take_to_draw_buf(lv_obj_t *o,int,lv_draw_buf_t *) { assert(o->flags & (1 << 20)); ++snapshot_count; snapshot_text.clear(); collect(o); return snapshot_fail ? 1 : LV_RESULT_OK; }
 inline void poll() { for(auto *timer:timers) timer->callback(timer); }
 inline void emit(lv_obj_t *o,int code) { auto entry=callbacks.at(o); lv_event_t event{code,entry.second}; entry.first(&event); }
 `

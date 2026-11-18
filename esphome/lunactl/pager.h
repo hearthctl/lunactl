@@ -28,7 +28,9 @@ class Pager {
         self->core_->move(point.x, point.y);
       } else if (lv_event_get_code(e) == LV_EVENT_SCROLL_BEGIN && self->contact_) {
         self->core_->cancel_press();
-        self->set_cached(self->cache_ready());
+        bool cached = self->cache_ready();
+        self->set_live_clip(!cached);
+        self->set_cached(cached);
       }
     }, LV_EVENT_ALL, this);
     lv_timer_create([](lv_timer_t *timer) {
@@ -70,7 +72,7 @@ class Pager {
     lv_obj_set_scroll_dir(surface_, active ? LV_DIR_HOR : LV_DIR_NONE);
     if (active && !unsettled && core.page_index() < count_) {
       pages_[core.page_index()].ui.highlight(core, x, y);
-      highlighted_ = true;
+      pages_[core.page_index()].highlighted = true;
     }
   }
 
@@ -80,14 +82,14 @@ class Pager {
     lv_obj_t *container{nullptr}, *image{nullptr};
     lv_draw_buf_t *snapshot{nullptr};
     std::vector<std::string> content;
-    bool dirty{false}, valid{false};
+    bool dirty{false}, valid{false}, highlighted{false};
   } pages_[6];
   lv_obj_t *surface_{nullptr};
   Core *core_{nullptr};
   const lv_font_t *text_{nullptr}, *icons_{nullptr}, *clock_{nullptr}, *countdown_{nullptr};
   size_t count_{0};
   uint32_t revision_{0};
-  bool contact_{false}, cached_{false}, pending_{false}, highlighted_{false};
+  bool contact_{false}, cached_{false}, pending_{false};
 
   static bool pressed() {
     for (auto *input = lv_indev_get_next(nullptr); input; input = lv_indev_get_next(input))
@@ -99,6 +101,10 @@ class Pager {
     for (size_t i = 0; i < count_; ++i)
       if (!pages_[i].valid || pages_[i].dirty) return false;
     return count_ > 0;
+  }
+  void set_live_clip(bool value) {
+    for (size_t i = 0; i < count_; ++i)
+      lv_obj_set_style_clip_corner(pages_[i].ui.root(), value, 0);
   }
   void set_cached(bool value) {
     if (value == cached_) return;
@@ -131,6 +137,7 @@ class Pager {
   }
   void paint() {
     set_cached(false);
+    set_live_clip(false);
     pending_ = false;
     count_ = core_->tappable() ? core_->page_count() : 0;
     Core view = *core_;
@@ -143,7 +150,7 @@ class Pager {
           lv_draw_buf_destroy(page.snapshot);
           page.snapshot = nullptr;
         }
-        page.valid = page.dirty = false;
+        page.valid = page.dirty = page.highlighted = false;
         page.content.clear();
         continue;
       }
@@ -173,9 +180,9 @@ class Pager {
         page.valid = false;
       }
       // Also removes a press highlight without capturing it in the cache.
-      if (changed || (highlighted_ && i == core_->page_index())) page.ui.render(view);
+      if (changed || page.highlighted) page.ui.render(view);
+      page.highlighted = false;
     }
-    highlighted_ = false;
     lv_obj_update_layout(surface_);
     lv_obj_scroll_to_x(surface_, core_->page_index() * 466, LV_ANIM_OFF);
   }

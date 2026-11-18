@@ -1,5 +1,8 @@
 # Drag-follow on ESPHome
 
+Implements drag-follow paging from [#73](https://github.com/hearthctl/lunactl/issues/73),
+building on the measurements in [#71](https://github.com/hearthctl/lunactl/issues/71).
+
 The StopWatch prototype established that native LVGL scrolling with cached RGB565
 pages follows the finger well with the actual lunactl Single and Pie widgets.
 The user described the cached variant as very smooth, with no flashing when
@@ -21,8 +24,10 @@ when the finger returns to its starting position. Native scroll start also cance
 it. A dark-screen touch only wakes the display.
 
 Snapshots are clipped to the circular page boundary with black corners. LVGL
-corner clipping is enabled only during snapshot creation, so it does not add
-masking work to each cached swipe frame.
+corner clipping is enabled during snapshot creation, so it does not add masking
+work to each cached swipe frame. When snapshots are unavailable, live scrolling
+also enables circular clipping until settling or cancellation. That fallback can
+be slower, but keeps the same circular outline.
 
 Snapshots are invalidated by changes in rendered page content. Unchanged HA
 updates do not rebuild them. One dirty page is captured per idle timer turn;
@@ -40,10 +45,13 @@ and waiting for release prevent an old contact from acting on a new manifest.
 
 Core golden cases cover reversal, vertical movement, cancellation and small tap
 jitter. The Pager adapter test exercises actual production C++ against an LVGL
-state stub: delayed page selection, cache/live transitions, deferred live values,
-manifest replacement, disconnect/reconnect and wake-only contact. Existing
+state stub, with independent scenarios for delayed page selection, cache/live
+transitions, deferred live values, manifest replacement, disconnect/reconnect,
+wake-only contact, departure-page press feedback after sleep, and circular live
+fallback with missing, dirty or failed snapshots. Existing
 firmware adapter and schema tests pass. The ESPHome 2026.10.2 build checks real
 LVGL API signatures. The integrated firmware was flashed with hash verification
-and connected to Home Assistant. The user confirmed the integrated firmware is fluid enough and deliberate taps
-trigger the intended actions while swipes do not. Physical verification of
+and connected to Home Assistant. The user confirmed the integrated firmware is
+fluid enough, deliberate taps trigger the intended actions while swipes do not,
+and cached swipe contours look correct. Physical verification of
 live-update and manifest-replacement edge cases remains pending.
