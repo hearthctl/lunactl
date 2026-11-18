@@ -1,0 +1,204 @@
+{
+  "manifest": {
+    "schema": 1,
+    "pages": [
+      {
+        "type": "single",
+        "item": {
+          "label": "A",
+          "color": "#Ab12eF",
+          "action": {
+            "action": "light.turn_on",
+            "target": {
+              "entity_id": [
+                "light.bed",
+                "light.ceiling"
+              ],
+              "device_id": [
+                "device"
+              ],
+              "area_id": "room",
+              "floor_id": "floor",
+              "label_id": [
+                "night"
+              ]
+            },
+            "data": {
+              "brightness_pct": 40,
+              "nested": [
+                "Kühlen",
+                null
+              ]
+            }
+          },
+          "value": {
+            "format": "{0} °C",
+            "refs": [
+              {
+                "entity": "sensor.room",
+                "decimal_comma": true,
+                "decimals": 1,
+                "map": {
+                  "unknown": "?"
+                }
+              }
+            ]
+          },
+          "countdown": "timer.cooling"
+        }
+      },
+      {
+        "type": "pie",
+        "quarters": [
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    ],
+    "buttons": {
+      "a_short": {
+        "action": "light.turn_on",
+        "target": {
+          "entity_id": [
+            "light.bed",
+            "light.ceiling"
+          ],
+          "device_id": [
+            "device"
+          ],
+          "area_id": "room",
+          "floor_id": "floor",
+          "label_id": [
+            "night"
+          ]
+        },
+        "data": {
+          "brightness_pct": 40,
+          "nested": [
+            "Kühlen",
+            null
+          ]
+        }
+      },
+      "a_long": {
+        "action": "light.turn_on",
+        "target": {
+          "entity_id": [
+            "light.bed",
+            "light.ceiling"
+          ],
+          "device_id": [
+            "device"
+          ],
+          "area_id": "room",
+          "floor_id": "floor",
+          "label_id": [
+            "night"
+          ]
+        },
+        "data": {
+          "brightness_pct": 40,
+          "nested": [
+            "Kühlen",
+            null
+          ]
+        }
+      },
+      "b_short": {
+        "action": "light.turn_on",
+        "target": {
+          "entity_id": [
+            "light.bed",
+            "light.ceiling"
+          ],
+          "device_id": [
+            "device"
+          ],
+          "area_id": "room",
+          "floor_id": "floor",
+          "label_id": [
+            "night"
+          ]
+        },
+        "data": {
+          "brightness_pct": 40,
+          "nested": [
+            "Kühlen",
+            null
+          ]
+        }
+      },
+      "b_long": {
+        "action": "light.turn_on",
+        "target": {
+          "entity_id": [
+            "light.bed",
+            "light.ceiling"
+          ],
+          "device_id": [
+            "device"
+          ],
+          "area_id": "room",
+          "floor_id": "floor",
+          "label_id": [
+            "night"
+          ]
+        },
+        "data": {
+          "brightness_pct": 40,
+          "nested": [
+            "Kühlen",
+            null
+          ]
+        }
+      }
+    },
+    "display": {
+      "brightness": "input_number.brightness"
+    }
+  },
+  "calls": [
+    [
+      "lunactl",
+      "run",
+      {
+        "action": "light.turn_on",
+        "data": "{\"target\":{\"entity_id\":[\"light.bed\",\"light.ceiling\"],\"device_id\":[\"device\"],\"area_id\":\"room\",\"floor_id\":\"floor\",\"label_id\":[\"night\"]},\"data\":{\"brightness_pct\":40,\"nested\":[\"Kühlen\",null]}}"
+      }
+    ],
+    [
+      "lunactl",
+      "run",
+      {
+        "action": "light.turn_on",
+        "data": "{\"target\":{\"entity_id\":[\"light.bed\",\"light.ceiling\"],\"device_id\":[\"device\"],\"area_id\":\"room\",\"floor_id\":\"floor\",\"label_id\":[\"night\"]},\"data\":{\"brightness_pct\":40,\"nested\":[\"Kühlen\",null]}}"
+      }
+    ],
+    [
+      "lunactl",
+      "run",
+      {
+        "action": "light.turn_on",
+        "data": "{\"target\":{\"entity_id\":[\"light.bed\",\"light.ceiling\"],\"device_id\":[\"device\"],\"area_id\":\"room\",\"floor_id\":\"floor\",\"label_id\":[\"night\"]},\"data\":{\"brightness_pct\":40,\"nested\":[\"Kühlen\",null]}}"
+      }
+    ],
+    [
+      "lunactl",
+      "run",
+      {
+        "action": "light.turn_on",
+        "data": "{\"target\":{\"entity_id\":[\"light.bed\",\"light.ceiling\"],\"device_id\":[\"device\"],\"area_id\":\"room\",\"floor_id\":\"floor\",\"label_id\":[\"night\"]},\"data\":{\"brightness_pct\":40,\"nested\":[\"Kühlen\",null]}}"
+      }
+    ],
+    [
+      "lunactl",
+      "run",
+      {
+        "action": "light.turn_on",
+        "data": "{\"target\":{\"entity_id\":[\"light.bed\",\"light.ceiling\"],\"device_id\":[\"device\"],\"area_id\":\"room\",\"floor_id\":\"floor\",\"label_id\":[\"night\"]},\"data\":{\"brightness_pct\":40,\"nested\":[\"Kühlen\",null]}}"
+      }
+    ]
+  ]
+}

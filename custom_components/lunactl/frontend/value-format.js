@@ -30,14 +30,9 @@ function fixed(number, decimals) {
   return number < 0 && rounded !== 0n ? `-${result}` : result;
 }
 
-export function formatReference(ref, state) {
-  if (!state || !ref || typeof ref !== "object") return "--";
-  if (ref.decimals !== undefined && (!Number.isInteger(ref.decimals) || ref.decimals < 0 || ref.decimals > 6)) return "--";
-  if (ref.map && Object.hasOwn(ref.map, state)) return typeof ref.map[state] === "string" ? ref.map[state] : "--";
-  if (state === "unknown" || state === "unavailable") return "--";
-  if (ref.decimals === undefined && !ref.decimal_comma) return state;
+export function numericState(state) {
   // strtod permits leading ASCII whitespace, but no trailing text/whitespace.
-  if (state.trimEnd() !== state) return "--";
+  if (state.trimEnd() !== state) return NaN;
   const decimal = /^[\t\n\v\f\r ]*[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(state);
   const hex = /^[\t\n\v\f\r ]*([+-]?)0[xX]([\da-fA-F]+(?:\.[\da-fA-F]*)?|\.[\da-fA-F]+)(?:[pP]([+-]?\d+))?$/.exec(state);
   let number = decimal ? Number(state) : NaN;
@@ -46,7 +41,18 @@ export function formatReference(ref, state) {
     number = (parseInt(whole || "0", 16) + (fraction ? parseInt(fraction, 16) / 16 ** fraction.length : 0)) *
       2 ** Number(hex[3] || 0) * (hex[1] === "-" ? -1 : 1);
   }
-  if (!Number.isFinite(number) || (Math.abs(number) < 2 ** -1022 && /[1-9a-f]/i.test(state.replace(/(?:[ep][+-]?\d+)$/i, "")))) return "--";
+  if (!Number.isFinite(number) || (Math.abs(number) < 2 ** -1022 && /[1-9a-f]/i.test(state.replace(/(?:[ep][+-]?\d+)$/i, "")))) return NaN;
+  return number;
+}
+
+export function formatReference(ref, state) {
+  if (!state || !ref || typeof ref !== "object") return "--";
+  if (ref.decimals !== undefined && (!Number.isInteger(ref.decimals) || ref.decimals < 0 || ref.decimals > 6)) return "--";
+  if (ref.map && Object.hasOwn(ref.map, state)) return typeof ref.map[state] === "string" ? ref.map[state] : "--";
+  if (state === "unknown" || state === "unavailable") return "--";
+  if (ref.decimals === undefined && !ref.decimal_comma) return state;
+  const number = numericState(state);
+  if (!Number.isFinite(number)) return "--";
   let result = ref.decimals === undefined ? state : fixed(number, ref.decimals);
   if (ref.decimal_comma) result = result.replaceAll(".", ",");
   return result;

@@ -1,12 +1,12 @@
-import {LitElement, html, css} from "./vendor/lit-all.min.js";
+import {LitElement, html, css, keyed} from "./vendor/lit-all.min.js";
 import {deviceList, deviceHeader} from "./devices.js";
 import "./preview-element.js";
 import {ManifestEditor, parseManifest} from "./manifest-editor.js";
-import {canEditManifest, slotItem} from "./manifest-operations.js";
+import {canEditManifest, slotItem, setItem} from "./manifest-operations.js";
 import {text, errorText} from "./strings.js";
-
-// Raw JSON may contain schema-invalid objects where a setting should be text.
-const settingText = (value) => typeof value === "object" ? JSON.stringify(value) : value;
+import {palette, iconNames, withField, setDisplay, setBinding, object, restoreLineEndings} from "./forms.js";
+import {icons} from "./icons.js";
+import {formStyles} from "./form-elements.js";
 
 class LunactlDesigner extends LitElement {
   static properties = {
@@ -14,7 +14,7 @@ class LunactlDesigner extends LitElement {
     narrow: {type: Boolean},
   };
 
-  static styles = css`
+  static styles = [formStyles, css`
     :host { display: block; height: 100%; overflow: auto;
       color: var(--primary-text-color); background: var(--primary-background-color); }
     header { display: flex; align-items: center; gap: 16px; padding: 16px;
@@ -40,7 +40,8 @@ class LunactlDesigner extends LitElement {
     code { overflow-wrap: anywhere; }
     .confirmation { border: 2px solid var(--warning-color, #d69319); }
     @media (max-width: 800px) { .workspace { grid-template-columns: 1fr; } }
-    textarea { min-height: 55vh; resize: vertical; font: 14px/1.5 monospace;
+    textarea { resize: vertical; }
+    #manifest { min-height: 55vh; font: 14px/1.5 monospace;
       tab-size: 2; white-space: pre; }
     button { cursor: pointer; padding: 10px 14px; border-radius: 6px;
       border: 1px solid currentColor; color: var(--primary-color);
@@ -52,7 +53,16 @@ class LunactlDesigner extends LitElement {
       margin: 16px 0; background: var(--card-background-color); }
     .state { padding: 8px 0; } .hint { color: var(--secondary-text-color); }
     @media (max-width: 600px) { main { padding: 16px; } }
-  `;
+    .palette { display: flex; flex-wrap: wrap; gap: 6px; }
+    .palette button { color: white; width: 36px; height: 36px; padding: 0; margin: 4px; border-radius: 50%; }
+    .icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      max-height: 320px; overflow: auto; gap: 8px; padding: 4px; }
+    .icons button { margin: 0; padding: 8px 4px; overflow-wrap: anywhere; }
+    .glyph { display: block; font-family: "Lunactl MDI"; font-size: 28px; }
+    .binding { border-top: 1px solid var(--divider-color); padding: 12px 0; }
+    .binding h4 { margin: 0; }
+    .card textarea { min-height: 90px; }
+  `];
 
   constructor() {
     super();
@@ -196,28 +206,71 @@ class LunactlDesigner extends LitElement {
       ${editor.slot === null || !canEditManifest(manifest) ? html`<h3>${text.itemForm}</h3><p>${text.selectSlot}</p>` : html`
         <p class="hint">${text.page(editor.page + 1)} · ${text.slot(page.type, editor.slot)}</p>
         <h3>${typeof item?.label === "string" ? item.label : text.itemForm}</h3>
-        <p>${text.formPlaceholder}</p>
-        <p>${text.jsonPath}: <code>${path}</code></p>
         ${item == null ? html`<button @click=${() => editor.addItem()}>${text.addItem}</button>
           <p class="hint">${text.draftHint}</p>` : html`
+          ${this._itemForm(editor, object(item) ? item : {})}
           <button @click=${() => editor.removeItem()}>${text.removeItem}</button>`}
+        <p class="hint">${text.jsonPath}: <code>${path}</code></p>
         <button @click=${() => this._openJSON(editor)}>${text.editJSON}</button>
       `}
     </section>`;
+  }
+
+  _itemForm(editor, item) {
+    const change = (key, value) => editor.apply(setItem(editor.manifest, editor.page, editor.slot,
+      withField(item, key, value)));
+    const label = typeof item.label === "string" ? item.label : "";
+    return html`
+      <label>${text.label}<textarea .value=${label}
+        @input=${(e) => change("label", restoreLineEndings(label, e.target.value))}></textarea></label>
+      <p>${text.color}</p><div class="palette">
+        ${palette.map(([name, color]) => html`<button style=${`background:${color}`}
+          title=${text.paletteNames[name]} aria-label=${text.paletteNames[name]}
+          aria-pressed=${typeof item.color === "string" && item.color.toUpperCase() === color} @click=${() => change("color", color)}>Aa</button>`)}
+      </div>
+      <label>${text.customColor}<input placeholder="#RRGGBB" pattern="#[0-9A-Fa-f]{6}"
+        .value=${typeof item.color === "string" ? item.color : ""} @input=${(e) => change("color", e.target.value)}></label>
+      <label>${text.iconSearch}<input type="search" .value=${this._iconSearch || ""}
+        @input=${(e) => { this._iconSearch = e.target.value; this.requestUpdate(); }}></label>
+      ${editor.slot === 4 ? html`<p class="hint">${text.centerIcon}</p>` : ""}
+      <div class="icons" aria-label=${text.icon}>
+        <button aria-pressed=${item.icon === undefined} @click=${() => change("icon", undefined)}>${text.noIcon}</button>
+        ${iconNames(this._iconSearch).map((name) => html`<button aria-pressed=${item.icon === name}
+          @click=${() => change("icon", name)}><span class="glyph" aria-hidden="true">${icons[name]}</span>${name}</button>`)}
+      </div>
+      <lunactl-action-form .hass=${this.hass} .binding=${item.action}
+        @form-change=${(e) => change("action", e.detail)}></lunactl-action-form>
+      <lunactl-entity-picker .hass=${this.hass} .value=${item.countdown || ""} .domains=${["timer"]}
+        .label=${text.countdown} @form-change=${(e) => change("countdown", e.detail || undefined)}></lunactl-entity-picker>
+      <lunactl-value-form .hass=${this.hass} .value=${item.value}
+        @form-change=${(e) => change("value", e.detail)}></lunactl-value-form>`;
   }
 
   _settings(editor) {
     const manifest = editor.manifest;
     return html`
       <section class="card"><h3>${text.buttons}</h3>
-        ${Object.entries(text.buttonNames).map(([key, name]) => html`
-          <p>${name}: <code>${settingText(manifest?.buttons?.[key]?.action || text.unbound)}</code></p>`)}
-        <button @click=${() => this._openJSON(editor)}>${text.editJSON}</button>
+        ${Object.entries(text.buttonNames).map(([key, name]) => html`<div class="binding">
+          <h4>${name}</h4><label><input type="checkbox" .checked=${manifest?.buttons?.[key] !== undefined}
+            @change=${(e) => editor.apply(setBinding(editor.manifest, key, e.target.checked ? {action: ""} : undefined))}>
+            ${text.action}</label>
+          ${manifest?.buttons?.[key] === undefined ? html`<p>${text.unbound}</p>` : html`
+            <lunactl-action-form .hass=${this.hass} .binding=${manifest.buttons[key]}
+              @form-change=${(e) => editor.apply(setBinding(editor.manifest, key, e.detail))}></lunactl-action-form>`}
+        </div>`)}
       </section>
       <section class="card"><h3>${text.display}</h3>
-        <p>${text.timeout}: ${settingText(manifest?.display?.timeout ?? 10)} ${text.seconds}</p>
-        <p>${text.brightness}: <code>${settingText(manifest?.display?.brightness ?? text.defaultBrightness)}</code></p>
-        <button @click=${() => this._openJSON(editor)}>${text.editJSON}</button>
+        <label>${text.timeout} (${text.seconds})<input type="number" min="0.001" max="4294967.295" step="0.001"
+          .value=${String(manifest?.display?.timeout ?? 10)} @change=${({target}) => {
+            if (!target.validity.badInput) {
+              editor.apply(setDisplay(editor.manifest, "timeout", target.value === "" ? undefined : Number(target.value)));
+            }
+            target.value = String(editor.manifest?.display?.timeout ?? 10);
+          }}></label>
+        <lunactl-entity-picker .hass=${this.hass} .value=${manifest?.display?.brightness || ""}
+          .domains=${["input_number", "number", "sensor"]} .label=${text.brightness}
+          @form-change=${(e) => editor.apply(setDisplay(editor.manifest, "brightness", e.detail))}></lunactl-entity-picker>
+        <p class="hint">${text.brightnessHint}</p>
       </section>`;
   }
 
@@ -238,9 +291,9 @@ class LunactlDesigner extends LitElement {
           .page=${editor.page} .interactive=${canEditManifest(editor.manifest)} .selectedSlot=${editor.slot}
           @page-select=${(event) => editor.selectPage(event.detail)}
           @slot-select=${(event) => editor.selectSlot(event.detail)}></lunactl-preview>
-        ${editor.view === "visual" ? this._settings(editor) : ""}
+        ${editor.view === "visual" ? keyed(`${this._selected}:${editor.generation}`, this._settings(editor)) : ""}
       </div><div>
-        ${editor.view === "visual" ? this._slotPanel(editor) : html`
+        ${editor.view === "visual" ? keyed(`${this._selected}:${editor.generation}:${editor.page}:${editor.slot}`, this._slotPanel(editor)) : html`
           <label for="manifest">${text.manifest}</label>
           <textarea id="manifest" spellcheck="false" autocapitalize="off"
             .value=${editor.source} aria-invalid=${editor.status === "invalid"}
