@@ -181,3 +181,45 @@ int main() {
 }
 `, map[string]string{"lvgl.h": countdownLVGLStub})
 }
+
+func TestProductionPressFeedback(t *testing.T) {
+	checkAdapter(t, `#include "ui.h"
+#include <cassert>
+int main() {
+ auto screen = lv_obj_create(nullptr);
+ auto ring = lv_arc_create(screen);
+ lv_font_t font;
+ lunactl::UI ui;
+ ui.init(screen, &font, &font, ring);
+ lunactl::Core core;
+ core.set_connected(true);
+ std::string error;
+ JsonDocument manifest;
+ deserializeJson(manifest, R"({"schema":1,"pages":[{"type":"single","item":{"label":"Item","color":"#000000","action":{"action":"script.run"}}}]})");
+ struct Case { const char *color; unsigned original, pressed; };
+ for (const auto &test : {Case{"#000000", 0x000000, 0x808080}, Case{"#FFFFFF", 0xFFFFFF, 0x7F7F7F}, Case{"#F7C844", 0xF7C844, 0x7B6321}, Case{"#111827", 0x111827, 0x888B93}}) {
+  manifest["pages"][0]["item"]["color"] = test.color;
+  assert(core.accept(core.begin_fetch(), manifest.as<JsonVariantConst>(), error));
+  ui.render(core);
+  lv_obj_t *item = nullptr;
+  for (auto root : screen->children) for (auto child : root->children)
+   for (auto label : child->children) if (label->text == "Item") item = child;
+  assert(item && item->bg_color == test.original);
+  assert(core.press(233, 233, 1));
+  ui.highlight(core, 233, 233);
+  assert(item->bg_color == test.pressed);
+  assert(core.release(233, 233, 2) == 0);
+  ui.render(core);
+  assert(item->bg_color == test.original);
+  ui.highlight(core, -1, -1);
+  assert(item->bg_color == test.original);
+ }
+}
+`, map[string]string{"lvgl.h": strings.Replace(countdownLVGLStub,
+		"inline unsigned lv_color_mix(unsigned a, unsigned, int) { return a; }",
+		`inline unsigned lv_color_mix(unsigned a, unsigned b, int mix) {
+ unsigned color = 0;
+ for (int shift : {0, 8, 16}) color |= ((((a >> shift) & 255) * mix + ((b >> shift) & 255) * (255 - mix)) / 255) << shift;
+ return color;
+ }`, 1)})
+}
