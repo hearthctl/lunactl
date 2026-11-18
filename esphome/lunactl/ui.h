@@ -91,6 +91,8 @@ class UI {
     for (int i = 0; i < 6; ++i) dots[i] = box(dots_, 11 + i * 18, 9, 10, 10, 0x666666, 5);
   }
 
+  lv_obj_t *root() const { return root_; }
+
   void render(const Core &core) {
     visible(root_, core.tappable());
     if (!core.tappable()) return;
