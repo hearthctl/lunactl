@@ -53,6 +53,16 @@ for (const entity_id of ["all", "none"]) {
   });
 }
 
+test("a Single action checks each comma-separated scalar target after trimming", () => {
+  const manifest = single({action: {...action, target: {entity_id: "light.desk, light.bed "}}});
+  const states = {"light.desk": {state: "off"}, "light.bed": {state: "on"}};
+  assert.deepEqual(manifestHints(manifest, states, services), []);
+  assert.deepEqual(manifestHints(manifest, {"light.bed": {state: "unavailable"}}, services), [
+    {kind: "entity-missing", path: "pages[0].item.action.target.entity_id", ...location, entity: "light.desk"},
+    {kind: "entity-unavailable", path: "pages[0].item.action.target.entity_id", ...location, entity: "light.bed"},
+  ]);
+});
+
 test("only specified reference fields are inspected; all refs and target entities are visited", () => {
   const manifest = single({action: {...action, data: {entity_id: "sensor.data", bogus: "value"},
     target: {entity_id: ["light.a", "light.b"], device_id: "device.missing", area_id: "room.missing"}},
