@@ -80,6 +80,22 @@ test("hint list covers other pages, keys and display; dots mark only current aff
   assert.equal(svg(element), readFileSync(url, "utf8"));
 });
 
+test("a missing target marker clears the curved quarter label", () => {
+  const quarter = {label: "MMMMM", color: "#000000",
+    action: {action: "light.turn_on", target: {entity_id: "light.missing"}}};
+  const element = preview({schema: 1, pages: [{type: "pie", center: {label: "Center"},
+    quarters: [quarter, null, null, null]}]});
+  element.hass = {states: {}, services: {light: {turn_on: {}}}};
+  const markup = svg(element);
+  assert.match(markup, /<textPath href="#label-0" startOffset="50%">MMMMM<\/textPath>/);
+  const marker = markup.match(/data-hint-slot="0"[^>]*><title>[^<]*light\.missing[^<]*<\/title><circle cx="([\d.]+)" cy="([\d.]+)" r="([\d.]+)"/);
+  assert.ok(marker);
+  const [, x, y, radius] = marker.map(Number);
+  const markerOuterEdge = Math.hypot(x - 233, y - 233) + radius + 1;
+  // Leave at least half a 28px font size between the marker and the label path.
+  assert.ok(markerOuterEdge <= 200 - 14, `Marker extends to radius ${markerOuterEdge}`);
+});
+
 test("all hint kinds are present while the same draft is debounced and autosaved", async () => {
   let scheduled;
   const clock = {setTimeout(fn, delay) { assert.equal(delay, 1000); scheduled = fn; return 1; }, clearTimeout() {}};

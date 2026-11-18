@@ -98,7 +98,8 @@ export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0, e
   if (page?.type === "single") body += hintMarker(pageHints, 0, 335, 155);
   else if (page?.type === "pie") {
     for (let slot = 0; slot < 4; slot++) {
-      const [x, y] = point(page.center ? 208 : 168, ANGLES[slot]).split(" ").map(Number);
+      // Keep the marker inside the curved label path and clear of the center countdown ring.
+      const [x, y] = point(page.center ? CENTER_HOLE + 4 : 168, ANGLES[slot]).split(" ").map(Number);
       body += hintMarker(pageHints, slot, x, y);
     }
     body += hintMarker(pageHints, 4, 335, 155);
