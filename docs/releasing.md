@@ -14,12 +14,14 @@ To cut a release:
 1. Open a release PR that bumps `version` in
    `custom_components/lunactl/manifest.json` to the next SemVer version. Run
    `make verify` and merge the PR.
-2. Fetch the merged `main` and tag that release commit with `v` followed by the
-   exact integration version. For example, for `"version": "1.0.1"`:
+2. Copy the exact merge commit SHA from the merged release PR and fetch `main`
+   to make that commit available locally. Tag the copied SHA with `v` followed
+   by the exact integration version. For example, for `"version": "1.0.1"`,
+   replace `RELEASE_COMMIT_SHA` with the SHA you copied:
 
    ```sh
    git fetch origin main
-   git tag v1.0.1 origin/main
+   git tag v1.0.1 RELEASE_COMMIT_SHA
    git push origin v1.0.1
    ```
 
