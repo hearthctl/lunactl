@@ -39,6 +39,7 @@ function make(name, props = {}) {
   return element;
 }
 const input = (value) => ({target: {value}});
+const enter = (value) => ({...input(value), key: "Enter", preventDefault() {}});
 const hass = {locale: {number_format: "decimal_comma"}, states: {
   "sensor.room": {state: "22.5", attributes: {unit_of_measurement: "°C", display_precision: 1}},
   "timer.cooling": {state: "active", attributes: {friendly_name: "Klima-Lauf"}},
@@ -46,6 +47,17 @@ const hass = {locale: {number_format: "decimal_comma"}, states: {
 }, services: {light: {turn_on: {description: "Helligkeit ändern", fields: {
   brightness_pct: {description: "Prozent", example: 47},
 }}}}};
+
+test("leaving a partial countdown search preserves the existing binding", () => {
+  const picker = make("lunactl-entity-picker", {hass, value: "timer.original", domains: ["timer"]});
+  const field = input("timer.cool");
+  handler(picker.render(), "input")(field);
+  bindings(picker.render(), "@change=")[0]?.(field);
+  bindings(picker.render(), "@blur=")[0]?.(field);
+  assert.equal(picker.emitted, undefined);
+  handler(picker.render(), "click", 1)();
+  assert.equal(picker.emitted, "timer.cooling");
+});
 
 test("entity picker emits selected IDs and restricts countdown to timers", () => {
   const picker = make("lunactl-entity-picker", {hass, value: "", domains: ["timer"]});
@@ -55,9 +67,9 @@ test("entity picker emits selected IDs and restricts countdown to timers", () =>
   handler(results, "click", 1)();
   assert.equal(picker.emitted, "timer.cooling");
   picker.emitted = undefined;
-  handler(picker.render(), "change")(input("sensor.room"));
+  handler(picker.render(), "keydown")(enter("sensor.room"));
   assert.equal(picker.emitted, undefined);
-  handler(picker.render(), "change")(input("timer.missing"));
+  handler(picker.render(), "keydown")(enter(" timer.missing "));
   assert.equal(picker.emitted, "timer.missing");
   handler(picker.render(), "click")();
   assert.equal(picker.emitted, "");
@@ -65,7 +77,7 @@ test("entity picker emits selected IDs and restricts countdown to timers", () =>
 
 test("multi entity picker preserves selected targets and removes one at a time", () => {
   const picker = make("lunactl-entity-picker", {hass, value: ["light.bed"], multiple: true});
-  handler(picker.render(), "change")(input("light.ceiling"));
+  handler(picker.render(), "keydown")(enter("light.ceiling"));
   assert.deepEqual(picker.emitted, ["light.bed", "light.ceiling"]);
   picker.value = picker.emitted;
   picker.willUpdate();

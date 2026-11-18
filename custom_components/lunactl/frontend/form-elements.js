@@ -54,7 +54,11 @@ class EntityPicker extends LitElement {
         .value=${this._query ?? (this.multiple ? "" : valueText(this.value))}
         @focus=${() => { this._query = this.multiple ? "" : valueText(this.value); }}
         @input=${(e) => { this._query = e.target.value; }}
-        @change=${(e) => this._choose(e.target.value.trim())}></label>
+        @keydown=${(e) => {
+          if (e.key !== "Enter" || e.isComposing) return;
+          e.preventDefault();
+          this._choose(e.target.value.trim());
+        }}></label>
       ${this.multiple ? selected.map((id) => html`<button @click=${() =>
         send(this, selected.filter((entry) => entry !== id))}>${id} ×</button>`) :
         html`<button ?disabled=${!this.value} @click=${() => this._choose("")}>${text.clear}</button>`}
