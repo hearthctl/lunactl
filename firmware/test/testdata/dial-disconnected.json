@@ -1,0 +1,397 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "dial",
+            "value": {
+              "format": "{0}°",
+              "refs": [
+                {
+                  "entity": "input_number.setpoint",
+                  "decimals": 0
+                }
+              ]
+            },
+            "minus": {
+              "label": "Kälter",
+              "color": "#374151",
+              "action": {
+                "action": "script.minus"
+              },
+              "active": {
+                "entity": "climate.room",
+                "attribute": "hvac_mode",
+                "states": [
+                  "heat"
+                ]
+              }
+            },
+            "plus": {
+              "label": "Wärmer",
+              "color": "#374151",
+              "action": {
+                "action": "script.plus"
+              },
+              "active": {
+                "entity": "climate.room",
+                "attribute": "hvac_mode",
+                "states": [
+                  "heat"
+                ]
+              }
+            },
+            "items": [
+              null,
+              null,
+              {
+                "label": "Heizen",
+                "icon": "mdi:fire",
+                "color": "#F0782A",
+                "action": {
+                  "action": "script.heat"
+                },
+                "active": {
+                  "entity": "climate.room",
+                  "attribute": "hvac_mode",
+                  "states": [
+                    "heat"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "state",
+      "entity": "climate.room",
+      "attribute": "hvac_mode",
+      "state": "heat"
+    },
+    {
+      "type": "state",
+      "entity": "input_number.setpoint",
+      "state": "23"
+    },
+    {
+      "type": "disconnect"
+    },
+    {
+      "type": "state",
+      "entity": "climate.room",
+      "attribute": "hvac_mode",
+      "state": "off"
+    },
+    {
+      "type": "tap",
+      "x": 382,
+      "y": 196,
+      "now": 1000
+    },
+    {
+      "type": "tap",
+      "x": 335,
+      "y": 358,
+      "now": 1500
+    }
+  ],
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "dial",
+        "clock": "--:--",
+        "dial": {
+          "status": "",
+          "value": "--°",
+          "caption": "",
+          "color": "#8A93A3",
+          "minus": {
+            "visible": false,
+            "color": "#374151"
+          },
+          "plus": {
+            "visible": false,
+            "color": "#374151"
+          },
+          "items": [
+            {
+              "tappable": false
+            },
+            {
+              "tappable": false
+            },
+            {
+              "tappable": true,
+              "icon": "mdi:fire",
+              "glyph": "󰈸",
+              "color": "#F0782A",
+              "active": false
+            }
+          ],
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "dial",
+        "clock": "--:--",
+        "dial": {
+          "status": "",
+          "value": "--°",
+          "caption": "",
+          "color": "#F0782A",
+          "minus": {
+            "visible": true,
+            "color": "#374151"
+          },
+          "plus": {
+            "visible": true,
+            "color": "#374151"
+          },
+          "items": [
+            {
+              "tappable": false
+            },
+            {
+              "tappable": false
+            },
+            {
+              "tappable": true,
+              "icon": "mdi:fire",
+              "glyph": "󰈸",
+              "color": "#F0782A",
+              "active": true
+            }
+          ],
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "dial",
+        "clock": "--:--",
+        "dial": {
+          "status": "",
+          "value": "23°",
+          "caption": "",
+          "color": "#F0782A",
+          "minus": {
+            "visible": true,
+            "color": "#374151"
+          },
+          "plus": {
+            "visible": true,
+            "color": "#374151"
+          },
+          "items": [
+            {
+              "tappable": false
+            },
+            {
+              "tappable": false
+            },
+            {
+              "tappable": true,
+              "icon": "mdi:fire",
+              "glyph": "󰈸",
+              "color": "#F0782A",
+              "active": true
+            }
+          ],
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "dial",
+        "clock": "--:--",
+        "dial": {
+          "status": "",
+          "value": "23°",
+          "caption": "",
+          "color": "#F0782A",
+          "minus": {
+            "visible": true,
+            "color": "#374151"
+          },
+          "plus": {
+            "visible": true,
+            "color": "#374151"
+          },
+          "items": [
+            {
+              "tappable": false
+            },
+            {
+              "tappable": false
+            },
+            {
+              "tappable": true,
+              "icon": "mdi:fire",
+              "glyph": "󰈸",
+              "color": "#F0782A",
+              "active": true
+            }
+          ],
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "dial",
+        "clock": "--:--",
+        "dial": {
+          "status": "",
+          "value": "23°",
+          "caption": "",
+          "color": "#F0782A",
+          "minus": {
+            "visible": true,
+            "color": "#374151"
+          },
+          "plus": {
+            "visible": true,
+            "color": "#374151"
+          },
+          "items": [
+            {
+              "tappable": false
+            },
+            {
+              "tappable": false
+            },
+            {
+              "tappable": true,
+              "icon": "mdi:fire",
+              "glyph": "󰈸",
+              "color": "#F0782A",
+              "active": true
+            }
+          ],
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "offline_icon": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "dial",
+        "clock": "--:--",
+        "dial": {
+          "status": "",
+          "value": "23°",
+          "caption": "",
+          "color": "#F0782A",
+          "minus": {
+            "visible": true,
+            "color": "#374151"
+          },
+          "plus": {
+            "visible": true,
+            "color": "#374151"
+          },
+          "items": [
+            {
+              "tappable": false
+            },
+            {
+              "tappable": false
+            },
+            {
+              "tappable": true,
+              "icon": "mdi:fire",
+              "glyph": "󰈸",
+              "color": "#F0782A",
+              "active": true
+            }
+          ],
+          "countdown": null
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "offline_icon": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "dial",
+        "clock": "--:--",
+        "dial": {
+          "status": "",
+          "value": "23°",
+          "caption": "",
+          "color": "#F0782A",
+          "minus": {
+            "visible": true,
+            "color": "#374151"
+          },
+          "plus": {
+            "visible": true,
+            "color": "#374151"
+          },
+          "items": [
+            {
+              "tappable": false
+            },
+            {
+              "tappable": false
+            },
+            {
+              "tappable": true,
+              "icon": "mdi:fire",
+              "glyph": "󰈸",
+              "color": "#F0782A",
+              "active": true
+            }
+          ],
+          "countdown": null
+        }
+      }
+    ]
+  }
+}

@@ -279,7 +279,7 @@ script:
       - lambda: |-
           auto &core = id(manifest_core);
           lv_label_set_text(id(manifest_status), core.status());
-          id(page_ui).init(id(touch_surface), id(font_item)->get_lv_font(), id(font_icon)->get_lv_font(), id(countdown_ring), id(font_battery)->get_lv_font(), id(font_countdown)->get_lv_font());
+          id(page_ui).init(id(touch_surface), id(font_item)->get_lv_font(), id(font_icon)->get_lv_font(), id(countdown_ring), id(font_battery)->get_lv_font(), id(font_countdown)->get_lv_font(), id(font_dial)->get_lv_font());
           id(page_ui).render(core);
           lv_obj_move_foreground(id(battery_hint));
           lv_obj_move_foreground(id(battery_level_text));
@@ -414,6 +414,12 @@ font:
     size: 48
     bpp: 4
     glyphs: "0123456789: s"
+  # Dial's large value: digits and the few signs a temperature or percentage needs.
+  - id: font_dial
+    file: "gfonts://Nunito@800"
+    size: 96
+    bpp: 4
+    glyphs: "0123456789,.-–°% "
   - id: font_icon
     file: https://raw.githubusercontent.com/Templarian/MaterialDesign-Webfont/v7.4.47/fonts/materialdesignicons-webfont.ttf
     size: 48
@@ -471,7 +477,7 @@ lvgl:
   bg_color: 0x000000
   widgets:
     # Declaring the arc here enables LVGL's arc module. UI reparents and styles
-    # this same object with the Single or Pie center Item; it stays inert and initially hidden.
+    # this same object with the Single, Pie center or Dial page; it stays inert and initially hidden.
     - arc:
         id: countdown_ring
         hidden: true

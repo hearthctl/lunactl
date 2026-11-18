@@ -26,6 +26,11 @@ constexpr int CENTER_HOLE_RADIUS = 168;
 constexpr int CENTER_QUARTER_ANGLE = 74;
 // Clockwise from top-left, in LVGL's coordinates (0° right, 90° bottom).
 constexpr std::array<int, 4> QUARTER_ANGLES{{225, 315, 45, 135}};
+// Dial: minus, plus, then the three bottom Slots from left to right.
+constexpr int DIAL_BUTTON_RADIUS = 44;
+constexpr int DIAL_HIT_RADIUS = 50;
+constexpr std::array<std::array<int, 2>, 5> DIAL_CENTERS{{{{84, 196}}, {{382, 196}}, {{131, 358}}, {{233, 358}}, {{335, 358}}}};
+constexpr uint32_t DIAL_IDLE_RGB = 0x8A93A3;
 
 struct Action {
   std::string action;
@@ -51,6 +56,12 @@ struct Value {
 };
 enum class ConnectionAction { NONE, RECONNECT, RESTART };
 
+// Aktiv: the Item counts as active while the referenced state is one of states.
+struct Active : Reference {
+  bool present{false};
+  std::vector<std::string> states;
+};
+
 struct Item : Action {
   std::string icon;
   std::string label;
@@ -58,6 +69,7 @@ struct Item : Action {
   uint32_t rgb{0};
   Value value;
   std::string countdown;
+  Active active;
 };
 
 enum class Key : uint8_t { A, B };
@@ -170,8 +182,12 @@ inline bool target_valid(JsonVariantConst value) {
 
 struct Page {
   bool pie{false};
-  // Clockwise: top-left, top-right, bottom-right, bottom-left.
-  std::array<Item, 5> items;  // Optional Pie center is slot 4.
+  bool dial{false};
+  // Pie, clockwise: top-left, top-right, bottom-right, bottom-left; optional center is slot 4.
+  // Dial: minus, plus, then the three bottom Slots (see DIAL_CENTERS).
+  std::array<Item, 5> items;
+  Value status, value, caption;  // Dial live values.
+  std::string countdown;         // Dial timer.
 };
 struct Display {
   uint32_t timeout_ms{10000};
@@ -206,9 +222,29 @@ inline bool parse_action(JsonVariantConst action, Action &result, std::string &e
   return true;
 }
 
+inline bool timer_name(JsonVariantConst value) {
+  return action_name(value) && value.as<std::string>().compare(0, 6, "timer.") == 0;
+}
+
+inline bool parse_active(JsonVariantConst source, Active &active) {
+  if (!keys(source, {"entity", "attribute", "states"}) || !action_name(source["entity"]) ||
+      !source["states"].is<JsonArrayConst>() || source["states"].size() == 0) return false;
+  if (!source["attribute"].isUnbound()) {
+    if (!nonempty_string(source["attribute"])) return false;
+    active.attribute = source["attribute"].as<std::string>();
+  }
+  for (JsonVariantConst state : source["states"].as<JsonArrayConst>()) {
+    if (!state.is<const char *>()) return false;
+    active.states.push_back(state.as<std::string>());
+  }
+  active.entity = source["entity"].as<std::string>();
+  active.present = true;
+  return true;
+}
+
 inline bool parse_item(JsonVariantConst source, Item &item, std::string &error) {
   auto reject = [&error](const char *message) { error = message; return false; };
-  if (!keys(source, {"label", "color", "icon", "action", "value", "countdown"}) || !nonempty_string(source["label"]))
+  if (!keys(source, {"label", "color", "icon", "action", "value", "countdown", "active"}) || !nonempty_string(source["label"]))
     return reject("Invalid Item");
   if (!source["icon"].isUnbound() && !nonempty_string(source["icon"])) return reject("Invalid Item icon");
   if (!source["color"].is<const char *>()) return reject("Invalid Item color");
@@ -227,10 +263,11 @@ inline bool parse_item(JsonVariantConst source, Item &item, std::string &error) 
   if (!source["value"].isUnbound() && !parse_value(source["value"], candidate.value))
     return reject("Invalid Item value");
   if (!source["countdown"].isUnbound()) {
-    if (!action_name(source["countdown"])) return reject("Invalid Item countdown");
+    if (!timer_name(source["countdown"])) return reject("Invalid Item countdown");
     candidate.countdown = source["countdown"].as<std::string>();
-    if (candidate.countdown.compare(0, 6, "timer.") != 0) return reject("Invalid Item countdown");
   }
+  if (!source["active"].isUnbound() && !parse_active(source["active"], candidate.active))
+    return reject("Invalid Item active");
   if (!source["icon"].isUnbound()) {
     std::string name = source["icon"].as<std::string>();
     if (!resolve_icon(name)) return reject("Invalid Item icon");
@@ -287,6 +324,27 @@ inline bool parse_manifest(JsonVariantConst root, Manifest &manifest, std::strin
         if (quarters[slot].isNull()) continue;
         if (!parse_item(quarters[slot], page.items[slot], error)) return false;
       }
+    } else if (source["type"] == "dial") {
+      if (!keys(source, {"type", "status", "value", "caption", "minus", "plus", "items", "countdown"}))
+        return reject("Invalid dial page");
+      page.dial = true;
+      if (!parse_value(source["value"], page.value) ||
+          (!source["status"].isUnbound() && !parse_value(source["status"], page.status)) ||
+          (!source["caption"].isUnbound() && !parse_value(source["caption"], page.caption)))
+        return reject("Invalid dial value");
+      if (!source["countdown"].isUnbound()) {
+        if (!timer_name(source["countdown"])) return reject("Invalid dial countdown");
+        page.countdown = source["countdown"].as<std::string>();
+      }
+      if (!parse_item(source["minus"], page.items[0], error) ||
+          !parse_item(source["plus"], page.items[1], error)) return false;
+      auto items = source["items"];
+      if (!items.is<JsonArrayConst>() || items.size() != 3) return reject("Expected three dial items");
+      for (size_t slot = 0; slot < 3; ++slot) {
+        if (items[slot].isNull()) continue;
+        if (!parse_item(items[slot], page.items[slot + 2], error)) return false;
+        if (page.items[slot + 2].icon.empty()) return reject("Dial items need an icon");
+      }
     } else return reject("Unknown page type");
     manifest.pages.push_back(std::move(page));
   }
@@ -332,15 +390,22 @@ class Core {
     auto require = [&](const Reference &ref) {
       if (std::find(required.begin(), required.end(), ref) == required.end()) required.push_back(ref);
     };
-    for (const auto &page : candidate.pages)
+    auto require_timer = [&](const std::string &timer) {
+      if (timer.empty()) return;
+      require({timer, ""});
+      require({timer, "finishes_at"});
+      require({timer, "duration"});
+    };
+    for (const auto &page : candidate.pages) {
       for (const auto &item : page.items) {
         for (const auto &ref : item.value.refs) require(ref);
-        if (!item.countdown.empty()) {
-          require({item.countdown, ""});
-          require({item.countdown, "finishes_at"});
-          require({item.countdown, "duration"});
-        }
+        require_timer(item.countdown);
+        if (item.active.present) require(item.active);
       }
+      for (const auto *value : {&page.status, &page.value, &page.caption})
+        for (const auto &ref : value->refs) require(ref);
+      require_timer(page.countdown);
+    }
     if (!candidate.display.brightness_entity.empty()) require({candidate.display.brightness_entity, ""});
     if (!subscriptions_initialized_) {
       subscriptions_ = std::move(required);
@@ -378,10 +443,37 @@ class Core {
            (now_ - disconnected_at_ >= OFFLINE_STALE_MS || (attempted_ && now_ - attempted_at_ < OFFLINE_HINT_MS));
   }
   const Item &item(size_t slot = 0) const { return manifest_.pages[page_].items[slot]; }
+  size_t slots() const { return pie() || dial() ? 5u : 1u; }
   bool slot_tappable(size_t slot) const {
-    return shown() && slot < (pie() ? 5u : 1u) && !item(slot).action.empty();
+    return shown() && slot < slots() && !item(slot).action.empty() && (!dial() || slot >= 2 || active(slot));
   }
   bool pie() const { return has_manifest_ && manifest_.pages[page_].pie; }
+  bool dial() const { return has_manifest_ && manifest_.pages[page_].dial; }
+  // Without an active reference, an Item counts as active only for Dial's minus and plus.
+  bool active(size_t slot) const {
+    if (!shown() || slot >= slots()) return false;
+    const auto &active = item(slot).active;
+    if (!active.present) return dial() && slot < 2;
+    auto state = this->state(active);
+    return std::find(active.states.begin(), active.states.end(), state) != active.states.end();
+  }
+  // Dial ring and status: the first active bottom Item's colour, else grey.
+  uint32_t dial_rgb() const {
+    for (size_t slot = 2; slot < 5; ++slot)
+      if (slot_tappable(slot) && active(slot)) return item(slot).rgb;
+    return DIAL_IDLE_RGB;
+  }
+  std::string dial_status() const {
+    if (!dial()) return "";
+    std::string text = format(manifest_.pages[page_].status);
+    auto timer = countdown();
+    if (timer.remaining > 0) {
+      text += (text.empty() ? "noch " : " · noch ") + std::to_string((timer.remaining + 59) / 60) + " min";
+    }
+    return text;
+  }
+  std::string dial_value() const { return dial() ? format(manifest_.pages[page_].value) : ""; }
+  std::string dial_caption() const { return dial() ? format(manifest_.pages[page_].caption) : ""; }
   bool center() const { return pie() && !item(CENTER_SLOT).action.empty(); }
   size_t main_slot() const { return center() ? CENTER_SLOT : 0; }
   int hole_radius() const { return center() ? CENTER_HOLE_RADIUS : 56; }
@@ -405,13 +497,12 @@ class Core {
     if (found != subscriptions_.end()) states_[found - subscriptions_.begin()] = state;
   }
   std::string value(size_t slot = 0) const {
-    if (!shown() || slot >= (pie() ? 5u : 1u)) return "";
-    const auto &value = item(slot).value;
+    if (!shown() || slot >= slots()) return "";
+    return format(item(slot).value);
+  }
+  std::string format(const Value &value) const {
     std::vector<std::string> replacements;
-    for (const auto &ref : value.refs) {
-      auto found = std::find(subscriptions_.begin(), subscriptions_.end(), ref);
-      replacements.push_back(format_reference(ref, found == subscriptions_.end() ? "" : states_[found - subscriptions_.begin()]));
-    }
+    for (const auto &ref : value.refs) replacements.push_back(format_reference(ref, state(ref)));
     // Match complete tokens in the original format. State text is never parsed
     // as another placeholder, and {1} cannot accidentally replace part of {10}.
     std::string result;
@@ -443,13 +534,11 @@ class Core {
   const std::string &clock() const { return clock_; }
   void set_timestamp(int64_t now, bool valid = true) { timestamp_ = now; time_valid_ = valid; }
   Countdown countdown() const {
-    if (!shown() || (pie() && !center()) || item(main_slot()).countdown.empty()) return {};
-    auto state = [&](const char *attribute) -> std::string {
-      Reference ref{item(main_slot()).countdown, attribute};
-      auto found = std::find(subscriptions_.begin(), subscriptions_.end(), ref);
-      return found == subscriptions_.end() ? "" : states_[found - subscriptions_.begin()];
-    };
-    return countdown_view(state(""), state("finishes_at"), state("duration"), timestamp_, time_valid_);
+    if (!shown() || (pie() && !center())) return {};
+    const auto &timer = dial() ? manifest_.pages[page_].countdown : item(main_slot()).countdown;
+    if (timer.empty()) return {};
+    return countdown_view(state({timer, ""}), state({timer, "finishes_at"}), state({timer, "duration"}),
+                          timestamp_, time_valid_);
   }
   // Shared display geometry for the host and LVGL UI.
   int hit(int x, int y) const {
@@ -458,6 +547,13 @@ class Core {
     if (dx * dx + dy * dy > 233 * 233) return -1;
     if (page_count() > 1 && y >= 437 && y < 465 &&
         x >= dots_left() && x < dots_left() + dots_width()) return -1;
+    if (dial()) {
+      for (size_t slot = 0; slot < DIAL_CENTERS.size(); ++slot) {
+        int bx = x - DIAL_CENTERS[slot][0], by = y - DIAL_CENTERS[slot][1];
+        if (bx * bx + by * by <= DIAL_HIT_RADIUS * DIAL_HIT_RADIUS) return slot_tappable(slot) ? slot : -1;
+      }
+      return -1;
+    }
     if (!pie()) return dx * dx + dy * dy <= 140 * 140 ? 0 : -1;
     if (center()) {
       if (dx * dx + dy * dy <= 140 * 140) return CENTER_SLOT;
@@ -594,6 +690,10 @@ class Core {
   }
 
  private:
+  std::string state(const Reference &ref) const {
+    auto found = std::find(subscriptions_.begin(), subscriptions_.end(), ref);
+    return found == subscriptions_.end() ? "" : states_[found - subscriptions_.begin()];
+  }
   void attempt(uint32_t now) {
     attempted_ = true;
     attempted_at_ = now;

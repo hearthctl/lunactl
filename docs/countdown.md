@@ -16,6 +16,8 @@ An Item can reference a Home Assistant timer:
 remaining time below the label and optional live value, with a ring around the
 Item. A Pie `center` Item shows the label above the remaining time, the optional
 live value below it, and the same ring around the Item. Pie quarters accept the reference but do not display a countdown.
+A Dial page takes `countdown` on the page instead of an Item: a ring open at the
+bottom and ` · noch N min` (minutes rounded up) after the status line.
 The Item keeps its action whether or not the timer is running.
 
 The device subscribes to the timer's state, `finishes_at` and `duration`, sharing

@@ -65,6 +65,72 @@
                 }
               }
             }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "value",
+              "minus",
+              "plus",
+              "items"
+            ],
+            "properties": {
+              "type": {
+                "const": "dial"
+              },
+              "status": {
+                "$ref": "#/$defs/value",
+                "description": "Coloured line below the clock; the device appends \" · noch N min\" while the countdown runs."
+              },
+              "value": {
+                "$ref": "#/$defs/value",
+                "description": "Large centre value. Only 0123456789,.-–°% and space are shown."
+              },
+              "caption": {
+                "$ref": "#/$defs/value",
+                "description": "Line below the large value."
+              },
+              "minus": {
+                "$ref": "#/$defs/item",
+                "description": "Round button left of the value; hidden while its active reference is inactive."
+              },
+              "plus": {
+                "$ref": "#/$defs/item",
+                "description": "Round button right of the value; hidden while its active reference is inactive."
+              },
+              "items": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "description": "Three round icon-only buttons at the bottom, left to right. An active one is filled with its colour.",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "allOf": [
+                        {
+                          "$ref": "#/$defs/item"
+                        },
+                        {
+                          "required": [
+                            "icon"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "countdown": {
+                "type": "string",
+                "pattern": "^timer\\.[a-z0-9_]+$",
+                "description": "HA timer entity shown as a ring open at the bottom and as remaining minutes in the status line."
+              }
+            }
           }
         ]
       }
@@ -237,6 +303,9 @@
           "type": "string",
           "pattern": "^timer\\.[a-z0-9_]+$",
           "description": "HA timer entity. Single and Pie center show remaining time and a ring while active, using finishes_at and duration."
+        },
+        "active": {
+          "$ref": "#/$defs/active"
         }
       }
     },
@@ -288,6 +357,32 @@
         "map": {
           "type": "object",
           "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "active": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entity",
+        "states"
+      ],
+      "description": "Aktiv: the Item counts as active while the entity state (or attribute) is one of states. Shown by Dial only.",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+\\.[a-z0-9_]+$"
+        },
+        "attribute": {
+          "type": "string",
+          "minLength": 1
+        },
+        "states": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
             "type": "string"
           }
         }

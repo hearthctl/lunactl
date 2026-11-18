@@ -7,10 +7,10 @@ namespace lunactl {
 class Pager {
  public:
   void init(lv_obj_t *surface, const lv_font_t *text, const lv_font_t *icons, lv_obj_t *,
-            const lv_font_t *clock, const lv_font_t *countdown) {
+            const lv_font_t *clock, const lv_font_t *countdown, const lv_font_t *dial = nullptr) {
     if (surface_) return;
     surface_ = surface;
-    text_ = text; icons_ = icons; clock_ = clock; countdown_ = countdown;
+    text_ = text; icons_ = icons; clock_ = clock; countdown_ = countdown; dial_ = dial;
     lv_obj_remove_style_all(surface_);
     lv_obj_set_size(surface_, 466, 466);
     lv_obj_center(surface_);
@@ -87,7 +87,7 @@ class Pager {
   } pages_[6];
   lv_obj_t *surface_{nullptr};
   Core *core_{nullptr};
-  const lv_font_t *text_{nullptr}, *icons_{nullptr}, *clock_{nullptr}, *countdown_{nullptr};
+  const lv_font_t *text_{nullptr}, *icons_{nullptr}, *clock_{nullptr}, *countdown_{nullptr}, *dial_{nullptr};
   size_t count_{0};
   uint32_t revision_{0};
   bool contact_{false}, cached_{false}, pending_{false}, feedback_pending_{false};
@@ -138,10 +138,16 @@ class Pager {
   // Only visible content invalidates a snapshot, not an unrelated HA update.
   static std::vector<std::string> content(const Core &view) {
     std::vector<std::string> result{std::to_string(view.page_count()),
-      view.pie() ? "pie" : "single", view.center() ? "center" : "", view.pie() ? view.clock() : ""};
-    for (size_t slot = 0; slot < (view.pie() ? 5u : 1u); ++slot) {
+      view.pie() ? "pie" : view.dial() ? "dial" : "single", view.center() ? "center" : "",
+      view.pie() || view.dial() ? view.clock() : ""};
+    if (view.dial()) {
+      result.push_back(view.dial_status()); result.push_back(view.dial_value());
+      result.push_back(view.dial_caption()); result.push_back(std::to_string(view.dial_rgb()));
+    }
+    for (size_t slot = 0; slot < view.slots(); ++slot) {
       const auto &item = view.item(slot);
       result.push_back(view.slot_tappable(slot) ? "filled" : "empty");
+      result.push_back(view.active(slot) ? "active" : "");
       result.push_back(item.label); result.push_back(item.icon);
       result.push_back(std::to_string(item.rgb)); result.push_back(view.value(slot));
     }
@@ -177,7 +183,7 @@ class Pager {
         lv_obj_remove_flag(page.container, LV_OBJ_FLAG_CLICKABLE);
         lv_obj_remove_flag(page.container, LV_OBJ_FLAG_SCROLLABLE);
         lv_obj_add_flag(page.container, LV_OBJ_FLAG_SNAPPABLE);
-        page.ui.init(page.container, text_, icons_, lv_arc_create(page.container), clock_, countdown_);
+        page.ui.init(page.container, text_, icons_, lv_arc_create(page.container), clock_, countdown_, dial_);
         page.image = lv_obj_create(page.container);
         lv_obj_remove_style_all(page.image);
         lv_obj_set_size(page.image, 466, 466);

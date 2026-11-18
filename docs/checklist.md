@@ -235,6 +235,32 @@ Before starting:
   A successful read restores the level and appropriate hint. If reliable PMIC
   readings cannot be achieved, record the failures for the human running #13.
 
+## Dial (#93)
+
+Temporarily add the Dial example from [manifest.md](manifest.md#dial) as a page.
+Test helpers can stand in for its entities, for example an `input_select` with
+the options `cool`, `off` and `heat` in place of the climate `hvac_mode`.
+
+- [ ] Compare with [the mockup](mockups/klima-thermostat.png): clock, coloured
+  status line, large value, caption, minus/plus and the three bottom buttons sit
+  inside the round edge without clipping; the large value is readable from arm's length.
+- [ ] Mode Kühlen with a running timer: Kühlen is filled blue with a halo, the
+  ring is blue and open at the bottom, the status ends in ` · noch N min` and
+  counts down. Heizen likewise in orange. Mode off: minus and plus disappear,
+  nothing is filled, no ring.
+- [ ] Each button runs only its own action once, including taps near its edge;
+  the gaps between buttons, the value, the status line and the ring run nothing.
+  Holding minus does not repeat. Let a child try the 88 px buttons and record
+  whether they hit reliably.
+- [ ] A large value with a letter shows no letter; digits, `,`, `.`, `-`, `–`,
+  `°` and `%` render.
+- [ ] Switching mode in HA restyles the page within a second; swiping to and
+  from the Dial shows no stale button, ring or colour.
+- [ ] Disconnected: the Dial keeps its last values and ring; a tap shows
+  `wifi-off` over the clock and runs nothing.
+- [ ] Render cost: measure a full Dial frame as in
+  [render-cost.md](spikes/render-cost.md) and record it next to Single and Pie.
+
 ## Disconnected (ADR 0006)
 
 - [ ] With a Manifest shown, switch off the Wi-Fi access point (or block the

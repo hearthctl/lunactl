@@ -167,6 +167,20 @@ and compiles the firmware with its declared LVGL arc. The [countdown
 contract](countdown.md) defines formatting and hidden states. On-device start,
 restart and cancel checks remain part of issue #13.
 
+Issue [#93](https://github.com/hearthctl/lunactl/issues/93) adds the Dial Page
+type and the Item field `active`. The `dial`, `dial-active` and
+`dial-disconnected` goldens cover parsing, all five Slot taps and inert `null`
+Slots, Aktiv per bottom Item, minus/plus hidden and inert while inactive, the
+status colour, ` · noch N min` rounding as the timer runs and stops,
+subscription order and deduplication, and Disconnected taps. Schema/core
+agreement cases accept minimal and full Dial pages and `active` on Single and
+Pie, and reject missing or extra Dial fields, two or four Slots, Slots without
+an icon and malformed `active` references. The production adapter test renders
+a Dial in the cooling and off states and then a Single page on the same UI,
+checking positions, fonts, colours, the halo, the hidden buttons and both ring
+geometries. Look, touch accuracy and render cost on hardware are in the
+[checklist](checklist.md).
+
 Issue [#3](https://github.com/hearthctl/lunactl/issues/3) is verified by the three
 automated seams above and `make check-firmware`. On-device acceptance belongs to
 issue [#13](https://github.com/hearthctl/lunactl/issues/13): compilation and host

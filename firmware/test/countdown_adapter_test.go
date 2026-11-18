@@ -28,7 +28,7 @@ func TestProductionCountdown(t *testing.T) {
 	tick := extract(`(?s)  - interval: 1s\n    then:\n      - lambda: \|-\n(.*?)\n\nbutton:`)
 	sync := extract(`(?s)- id: sync_subscriptions\n.*?- lambda: \|-\n(.*?)\n  - id: wake_display`)
 	if !strings.Contains(string(raw), "id: countdown_ring\n        hidden: true\n        adjustable: false") ||
-		!strings.Contains(string(raw), "id(font_icon)->get_lv_font(), id(countdown_ring), id(font_battery)->get_lv_font(), id(font_countdown)->get_lv_font())") {
+		!strings.Contains(string(raw), "id(font_icon)->get_lv_font(), id(countdown_ring), id(font_battery)->get_lv_font(), id(font_countdown)->get_lv_font(), id(font_dial)->get_lv_font())") {
 		t.Fatal("the production UI must use the declared inert arc (enables LV_USE_ARC)")
 	}
 	checkAdapter(t, `#include "ui.h"
@@ -155,9 +155,9 @@ struct lv_obj_t {
  lv_obj_t *parent{nullptr};
  std::vector<lv_obj_t *> children;
  std::string text, kind{"box"};
- unsigned bg_color{0}, arc_color{0}, indicator_color{0};
+ unsigned bg_color{0}, arc_color{0}, indicator_color{0}, text_color{0}, border_color{0}, outline_color{0};
  const lv_font_t *font{nullptr};
- int start{0}, size{0}, direction{0}, radius{0}, arc_width{0};
+ int start{0}, size{0}, direction{0}, radius{0}, arc_width{0}, rotation{0}, border_width{0}, outline_width{0};
  int flags{3}, value{0}, x{0}, y{0}, width{0}, height{0};
 };
 constexpr int LV_OBJ_FLAG_CLICKABLE=1, LV_OBJ_FLAG_SCROLLABLE=2, LV_OBJ_FLAG_HIDDEN=4;
@@ -189,6 +189,13 @@ inline void lv_arclabel_set_dir(lv_obj_t *o, int v) { o->direction=v; }
 inline void lv_obj_set_style_bg_color(lv_obj_t *o, unsigned c, int) { o->bg_color=c; }
 inline void lv_obj_set_style_arc_color(lv_obj_t *o, unsigned c, int part) { if (part==LV_PART_MAIN) o->arc_color=c; else o->indicator_color=c; }
 inline void lv_obj_set_style_arc_width(lv_obj_t *o, int v, int part) { if (part==LV_PART_MAIN) o->arc_width=v; }
+inline void lv_obj_set_style_text_color(lv_obj_t *o, unsigned c, int) { o->text_color=c; }
+inline void lv_obj_set_style_border_color(lv_obj_t *o, unsigned c, int) { o->border_color=c; }
+inline void lv_obj_set_style_border_width(lv_obj_t *o, int v, int) { o->border_width=v; }
+inline void lv_obj_set_style_outline_color(lv_obj_t *o, unsigned c, int) { o->outline_color=c; }
+inline void lv_obj_set_style_outline_width(lv_obj_t *o, int v, int) { o->outline_width=v; }
+inline void lv_arc_set_rotation(lv_obj_t *o, int v) { o->rotation=v; }
+inline void lv_obj_set_style_radius(lv_obj_t *o, int v, int) { o->radius=v; }
 inline void lv_obj_set_style_text_font(lv_obj_t *o, const lv_font_t *f, int) { o->font=f; }
 inline void lv_arc_set_bg_angles(lv_obj_t *o, int start, int end) { o->start=start; o->size=end-start; }
 inline void lv_obj_remove_flag(lv_obj_t *o, int f) { o->flags &= ~f; }
@@ -209,11 +216,9 @@ inline unsigned lv_color_mix(unsigned a, unsigned, int) { return a; }
 LV_NOOP(lv_obj_remove_style_all)
 LV_NOOP(lv_obj_set_style_clip_corner)
 LV_NOOP(lv_obj_set_style_bg_opa)
-LV_NOOP(lv_obj_set_style_radius)
-LV_NOOP(lv_obj_set_style_text_color)
 LV_NOOP(lv_obj_set_style_text_align)
 LV_NOOP(lv_label_set_long_mode)
-LV_NOOP(lv_arc_set_rotation)
+LV_NOOP(lv_obj_set_style_outline_pad)
 LV_NOOP(lv_arc_set_range)
 LV_NOOP(lv_obj_set_style_arc_opa)
 LV_NOOP(lv_obj_set_style_arc_rounded)
