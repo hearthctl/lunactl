@@ -114,6 +114,22 @@ test("contrast markers clear straight quarter content in a centerless Pie", () =
   }
 });
 
+test("the contrast marker clears the wide Pie center label", () => {
+  const center = {label: "WWWWWWW", color: "#D69319", action: {action: "light.toggle"}};
+  const element = preview({schema: 1, pages: [{type: "pie", center, quarters: [null, null, null, null]}]});
+  element.hass = {states: {}, services: {light: {toggle: {}}}};
+  const markup = svg(element);
+  const label = markup.match(/<text x="233" y="(\d+)"[^>]*font-size="(\d+)"[^>]*>WWWWWWW<\/text>/);
+  const marker = markup.match(/data-hint-slot="4"[^>]*><title>[^<]+<\/title><circle cx="(\d+)" cy="(\d+)" r="(\d+)"/);
+  assert.ok(label);
+  assert.ok(marker);
+  const [, labelY, fontSize] = label.map(Number);
+  const [, markerX, markerY, radius] = marker.map(Number);
+  const edge = radius + 1; // Half of the 2px stroke.
+  assert.ok(markerY - edge >= labelY + fontSize, "Marker overlaps the center label");
+  assert.ok(Math.hypot(markerX - 233, markerY - 233) + edge <= 140, "Marker extends outside the center Item");
+});
+
 test("all hint kinds are present while the same draft is debounced and autosaved", async () => {
   let scheduled;
   const clock = {setTimeout(fn, delay) { assert.equal(delay, 1000); scheduled = fn; return 1; }, clearTimeout() {}};

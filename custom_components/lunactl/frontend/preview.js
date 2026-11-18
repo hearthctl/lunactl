@@ -105,7 +105,8 @@ export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0, e
         : [slot === 1 || slot === 2 ? C + 40 : C - 40, slot < 2 ? 48 : 418];
       body += hintMarker(pageHints, slot, x, y);
     }
-    body += hintMarker(pageHints, 4, 335, 155);
+    // Below the center label, countdown text and live value, inside the Item.
+    body += hintMarker(pageHints, 4, C, 348);
   }
   if (pages.length > 1) {
     const width = pages.length * 18 + 14, left = (466 - width) / 2;
