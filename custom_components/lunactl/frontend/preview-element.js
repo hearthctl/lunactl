@@ -53,11 +53,11 @@ class LunactlPreview extends LitElement {
   }
   update(changed) {
     const root = this.shadowRoot;
-    const focusedSlot = changed.has("selectedSlot") && !changed.has("page") && !changed.has("device")
+    const focusedSlot = !changed.has("page") && !changed.has("_page") && !changed.has("device")
       ? root?.activeElement?.closest("[data-slot][role='button']")
       : null;
     super.update(changed);
-    // The SVG is replaced when selection changes its aria-pressed attributes.
+    // Selection and live data updates can both replace the SVG.
     if (focusedSlot && !focusedSlot.isConnected && !root.activeElement) {
       root.querySelector(`[data-slot="${focusedSlot.dataset.slot}"][role="button"]`)?.focus({preventScroll: true});
     }
