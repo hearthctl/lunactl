@@ -14,8 +14,8 @@ to device flash. Every HA API connection fetches it, and the device's
 fetch or make the device appear connected to HA.
 
 The [JSON Schema](../../schema/manifest.v1.schema.json) accepts `schema: 1` and
-one to six pages. The first page is home. Swipe left/right to move between pages,
-or tap a page dot; swiping past either end stays on that page. A valid replacement
+one to six pages. The first page is home. Swipe left/right to move between pages.
+The white dot marks the active page. Swiping past either end stays on that page. A valid replacement
 Manifest starts at home.
 
 A `single` page has an `item`. A `pie` page has `quarters`: exactly four entries,
@@ -48,7 +48,7 @@ The optional `display` object controls idle sleep and brightness:
 milliseconds. Touches and key presses reset inactivity; holding either keeps
 the display awake until release. Sleep turns brightness off and returns to the
 first page. The first touch after sleep only wakes: its release cannot run an
-Item, swipe or select a page dot. The next touch works normally. Keys retain
+Item or change pages. The next touch works normally. Keys retain
 their gesture behavior when waking.
 
 `brightness` names an entity whose state is a percentage from 0 to 100, including

@@ -92,7 +92,7 @@ uvx esphome@2026.10.2 logs esphome/lunactl.yaml --no-states
 
 The initial Manifest with entity references makes one extra API reconnect so HA
 learns the subscriptions. After reconnect, Licht is home; swipe to Klima and
-Papa or tap the page dots. Saves automatically reload the Manifest after 10 seconds of inactivity;
+Papa. Saves automatically reload the Manifest after 10 seconds of inactivity;
 HA's **Manifest neu laden** button also fetches it manually. Labels, colours, actions and formatting apply without a
 reflash; a new entity/attribute reference needs a device restart, requested by
 the firmware automatically. A reboot always fetches again; no Manifest persists

@@ -104,10 +104,10 @@ Before starting:
   Taps on the clock hole, dividers or outside the circular page run no action.
 - [ ] Temporarily replace one Licht quarter with `null`, then all four with
   `null`: empty quarters are dark and inert; the clock and navigation work.
-- [ ] Swipe Licht → Klima → Papa and back, and tap every page dot. The active
+- [ ] Swipe Licht → Klima → Papa and back. The active
   dot tracks the page; swiping past either end stays there. Neither navigation
   nor a touch spanning a Manifest replacement runs an Item's action.
-- [ ] Apply the six-page variant: all pages/dots are reachable, including
+- [ ] Apply the six-page variant: all pages are reachable by swiping, including
   mixed Single and both Pie forms. With only Licht, no page dots appear. A valid
   replacement starts at home; a seventh page is rejected and preserves the old one.
 - [ ] On Papa, check Single's icon, label, colour, live value and press
@@ -176,7 +176,7 @@ Before starting:
   runs only its own action once.
 - [ ] Clock is readable in the top gap and updates. Tapping gaps between arcs,
   the annular gap outside the center, the clock and the countdown ring runs no
-  action. Swipes/dots still navigate without running Items.
+  action. Swipes still navigate without running Items.
 - [ ] Reload through Pie with center → plain Pie → Single and back: no stale
   labels, arcs, icons, values or ring remain; each form's touch areas still match.
 
@@ -201,7 +201,7 @@ Before starting:
 
 - [ ] With `display.timeout: 10`, navigate away from home and wait: display
   goes dark after about 10 idle seconds. First touch wakes onto Licht without
-  running an Item. Test wake with an Item tap, swipe and dot tap: each is consumed;
+  running an Item. Test wake with an Item tap and a swipe: each is consumed;
   the next touch performs its normal action/navigation.
 - [ ] Holding a touch or key prevents sleep; releasing starts a fresh timeout.
   Shorten timeout to `2.5` and measure it, then omit `display` and try `{}`:
