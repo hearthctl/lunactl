@@ -8,8 +8,9 @@ esphome:
     - -DLV_USE_ARCLABEL=1
     - -DLV_DRAW_SW_SUPPORT_A8=1
     - -DLV_USE_FLOAT=1
+    - -DLV_USE_SNAPSHOT=1
   # Copy the header, and include its type before ESPHome's static globals.
-  includes: [<core.h>, lunactl/core.h, lunactl/icons.h, lunactl/countdown.h, <ui.h>, lunactl/ui.h, <battery.h>, lunactl/battery.h]
+  includes: [<core.h>, lunactl/core.h, lunactl/icons.h, lunactl/countdown.h, <ui.h>, lunactl/ui.h, <pager.h>, lunactl/pager.h, <battery.h>, lunactl/battery.h]
   # Runs after the I2C bus (1000) and before the M5IOE1 setup (IO, 900).
   # Mirrors M5GFX's StopWatch power-on. Verified on device: on a battery cold
   # boot the M5IOE1 NACKs for ~50 ms (M5GFX allows up to 500 ms), and the
@@ -96,7 +97,7 @@ globals:
     restore_value: false
     initial_value: "0"
   - id: page_ui
-    type: lunactl::UI
+    type: lunactl::Pager
     restore_value: false
   - id: tapped_slot
     type: int
@@ -271,17 +272,11 @@ script:
       - lambda: |-
           auto &core = id(manifest_core);
           lv_label_set_text(id(manifest_status), core.status());
-          id(page_ui).init(lv_obj_get_parent(id(touch_surface)), id(font_item)->get_lv_font(), id(font_icon)->get_lv_font(), id(countdown_ring), id(font_battery)->get_lv_font(), id(font_countdown)->get_lv_font());
+          id(page_ui).init(id(touch_surface), id(font_item)->get_lv_font(), id(font_icon)->get_lv_font(), id(countdown_ring), id(font_battery)->get_lv_font(), id(font_countdown)->get_lv_font());
           id(page_ui).render(core);
-          // No state styles: pressing the input surface must not invalidate the screen.
-          lv_obj_remove_style_all(id(touch_surface));
-          lv_obj_set_size(id(touch_surface), 466, 466);
-          lv_obj_center(id(touch_surface));
-          lv_obj_remove_flag(id(touch_surface), LV_OBJ_FLAG_SCROLLABLE);
           lv_obj_move_foreground(id(battery_hint));
           lv_obj_move_foreground(id(battery_level_text));
           lv_obj_move_foreground(id(manifest_status));
-          lv_obj_move_foreground(id(touch_surface));
           if (core.tappable()) lv_obj_add_flag(id(manifest_status), LV_OBJ_FLAG_HIDDEN);
           else lv_obj_remove_flag(id(manifest_status), LV_OBJ_FLAG_HIDDEN);
           id(wake_display).execute();
@@ -477,8 +472,8 @@ lvgl:
         text: Keine Verbindung
         text_font: font_item
         text_color: 0xFFFFFF
-    # One input surface shares the core's geometry with host tests. A swipe,
-    # a dot, a divider, the clock hole or an empty quarter cannot run an Item.
+    # Pager fills this input surface with scrollable pages. Core keeps tap
+    # hit-testing and action selection; scrolling cancels the pending tap.
     - button:
         id: touch_surface
         align: center

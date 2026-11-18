@@ -57,6 +57,9 @@ int main() {
         if (!event["timestamp"].isNull()) core.set_timestamp(event["timestamp"].as<int64_t>(), event["valid"] | true);
       } else if (type == "page") core.show_page(event["index"].as<size_t>());
       else if (type == "press") core.press(event["x"], event["y"], now);
+      else if (type == "move") core.move(event["x"], event["y"]);
+      else if (type == "cancel_press") core.cancel_press();
+      else if (type == "cancel_touch") core.cancel_touch();
       else if (type == "release") tapped = core.release(event["x"], event["y"], now);
       else if (type == "tap") {
         int x = event["x"] | 233, y = event["y"] | 233;

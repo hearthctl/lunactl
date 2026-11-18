@@ -315,6 +315,7 @@ class Core {
     // destroy it, including after reconnect. Offline it is hidden and inert.
   }
   bool connected() const { return connected_; }
+  uint32_t revision() const { return revision_; }
   uint32_t begin_fetch() { return connected_ ? ++request_ : 0; }
   bool current(uint32_t request) const { return connected_ && request != 0 && request == request_; }
   bool accept(uint32_t request, JsonVariantConst root, std::string &error) {
@@ -468,6 +469,13 @@ class Core {
     press_x_ = x; press_y_ = y; press_revision_ = revision_; pressed_ = was_on && tappable();
     return pressed_;
   }
+  // Once a contact moved, returning to its origin must not turn it into a tap.
+  bool move(int x, int y) {
+    if (std::abs(x - press_x_) > 20 || std::abs(y - press_y_) > 20) cancel_press();
+    return pressed_;
+  }
+  void cancel_press() { pressed_ = false; }
+  void cancel_touch() { pressed_ = touch_down_ = false; }
   // Returns an Item slot only for a tap. Navigation never runs an action.
   int release(int x, int y) { return release(x, y, now_); }
   int release(int x, int y, uint32_t now) {
