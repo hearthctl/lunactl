@@ -40,7 +40,7 @@ export function manifestHints(manifest, states = {}, services = {}) {
     }
     const targets = binding.target?.entity_id;
     if (Array.isArray(targets)) targets.forEach((id, i) => entity(id, `${path}.target.entity_id[${i}]`, location));
-    else if (targets !== "all") entity(targets, `${path}.target.entity_id`, location);
+    else if (targets !== "all" && targets !== "none") entity(targets, `${path}.target.entity_id`, location);
   };
   for (const {item, path, page, slot} of items(manifest)) {
     const location = {page, slot};

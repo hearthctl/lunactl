@@ -46,10 +46,12 @@ for (const [manifest, path, where] of actions) {
   });
 }
 
-test("a Single action can target all entities without an entity warning", () => {
-  const manifest = single({action: {action: "light.turn_off", target: {entity_id: "all"}}});
-  assert.deepEqual(manifestHints(manifest, {}, {light: {turn_off: {}}}), []);
-});
+for (const entity_id of ["all", "none"]) {
+  test(`a Single action can target ${entity_id} without an entity warning`, () => {
+    const manifest = single({action: {action: "light.turn_off", target: {entity_id}}});
+    assert.deepEqual(manifestHints(manifest, {}, {light: {turn_off: {}}}), []);
+  });
+}
 
 test("only specified reference fields are inspected; all refs and target entities are visited", () => {
   const manifest = single({action: {...action, data: {entity_id: "sensor.data", bogus: "value"},
