@@ -65,18 +65,18 @@ test("entity selection prefills are editable and missing metadata stays optional
   assert.deepEqual(fromSimple({...defaults.ref, decimals: 3, decimal_comma: false, attribute: "temperature"}, "K"),
     {format: "{0} K", refs: [{entity: "sensor.room", decimals: 3, decimal_comma: false, attribute: "temperature"}]});
   assert.deepEqual(prefill("sensor.missing", states, {number_format: "none"}),
-    {ref: {entity: "sensor.missing", decimal_comma: false}, unit: ""});
+    {ref: {entity: "sensor.missing"}, unit: ""});
   for (const precision of [-1, 7, 1.5, "2", null]) {
-    assert.equal(prefill("sensor.test", {"sensor.test": {attributes: {display_precision: precision}}}).ref.decimals, undefined);
+    assert.equal(prefill("sensor.test", {"sensor.test": {state: "12.5", attributes: {display_precision: precision}}}).ref.decimals, undefined);
   }
 });
 
-test("expert ref edits preserve format and other refs; picking replaces prefills without stale precision", () => {
+test("expert ref edits preserve format and other refs; picking replaces prefills without stale numeric formatting", () => {
   const value = {format: "T: {0} / {1}", refs: [ref, {entity: "light.bed", map: {on: "An"}}]};
   const before = structuredClone(value);
   const selected = pickValueEntity(value, 0, "timer.cooling", states, {number_format: "none"}, false);
   assert.deepEqual(selected, {format: value.format, refs: [
-    {entity: "timer.cooling", attribute: "reading", decimal_comma: false, map: {unknown: "?"}}, value.refs[1],
+    {entity: "timer.cooling", attribute: "reading", map: {unknown: "?"}}, value.refs[1],
   ]});
   assert.deepEqual(setReference(value, 1, {entity: "sensor.room"}), {format: value.format, refs: [ref, {entity: "sensor.room"}]});
   assert.deepEqual(addReference(value), {...value, refs: [...value.refs, {entity: ""}]});

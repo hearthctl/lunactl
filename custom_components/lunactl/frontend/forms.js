@@ -1,5 +1,6 @@
 // Form transformations and HA catalogues; deliberately independent of Lit/DOM.
 import {icons} from "./icons.js";
+import {numericState, stateText} from "./value-format.js";
 
 export const palette = [
   ["amber", "#A66E0B"], ["orange", "#B65A1C"], ["rust", "#A63C28"],
@@ -88,20 +89,25 @@ export function decimalComma(locale = {}) {
       .formatToParts(1.1).some((part) => part.type === "decimal" && part.value === ",");
   } catch { return false; }
 }
-export function prefill(entity, states, locale) {
+export function prefill(entity, states, locale, attribute) {
   const attrs = states?.[entity]?.attributes || {};
-  const ref = {entity, decimal_comma: decimalComma(locale)};
-  if (Number.isInteger(attrs.display_precision) && attrs.display_precision >= 0 && attrs.display_precision <= 6)
-    ref.decimals = attrs.display_precision;
+  const ref = {entity};
+  if (Number.isFinite(numericState(stateText(states, {entity, attribute})))) {
+    ref.decimal_comma = decimalComma(locale);
+    if (Number.isInteger(attrs.display_precision) && attrs.display_precision >= 0 && attrs.display_precision <= 6)
+      ref.decimals = attrs.display_precision;
+  }
   return {ref, unit: typeof attrs.unit_of_measurement === "string" ? attrs.unit_of_measurement : ""};
 }
 export function setReference(value, index, ref) {
   return {...value, refs: value.refs.map((entry, i) => i === index ? ref : entry)};
 }
 export function pickValueEntity(value, index, entity, states, locale, simple) {
-  const defaults = prefill(entity, states, locale);
-  const ref = {...value.refs[index], ...defaults.ref};
+  const previous = value.refs[index];
+  const defaults = prefill(entity, states, locale, previous?.attribute);
+  const ref = {...previous, ...defaults.ref};
   if (defaults.ref.decimals === undefined) delete ref.decimals;
+  if (defaults.ref.decimal_comma === undefined) delete ref.decimal_comma;
   return simple ? fromSimple(ref, defaults.unit) : setReference(value, index, ref);
 }
 export function addReference(value) {

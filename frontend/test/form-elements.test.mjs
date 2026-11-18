@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {test} from "node:test";
 import {ManifestEditor} from "../../custom_components/lunactl/frontend/manifest-editor.js";
+import {formatValue} from "../../custom_components/lunactl/frontend/value-format.js";
 import {text} from "../../custom_components/lunactl/frontend/strings.js";
 
 // ADR 0005: exercise actual Lit render hooks and event handlers without a browser.
@@ -135,6 +136,15 @@ test("value form chooses simple/expert on open, prefills selection, and switches
   form.willUpdate();
   assert.equal(form._mode, "expert");
   assert.equal(bindings(form.render(), "?disabled=")[0], true, "no lossy simple conversion");
+});
+
+test("value form preserves a binary sensor state with decimal-comma formatting", () => {
+  const states = {...hass.states, "binary_sensor.door": {state: "on", attributes: {}}};
+  const initial = {format: "{0}", refs: [{entity: "sensor.room", decimals: 1, decimal_comma: true}]};
+  const form = make("lunactl-value-form", {hass: {...hass, states}, value: initial});
+  handler(form.render(), "form-change")({detail: "binary_sensor.door"});
+  assert.equal(formatValue(form.emitted, states), "on");
+  assert.deepEqual(form.emitted, {format: "{0}", refs: [{entity: "binary_sensor.door"}]});
 });
 
 test("value form map rows accept free states, edits, suggestions and removal", () => {
