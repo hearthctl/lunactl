@@ -8,6 +8,7 @@ import {palette, iconNames, entities, actions, actionDetails, targetDomains, ent
   from "../../custom_components/lunactl/frontend/forms.js";
 import {setItem} from "../../custom_components/lunactl/frontend/manifest-operations.js";
 import {ManifestEditor} from "../../custom_components/lunactl/frontend/manifest-editor.js";
+import {formatValue} from "../../custom_components/lunactl/frontend/value-format.js";
 
 const read = (name) => JSON.parse(readFileSync(new URL(name, import.meta.url), "utf8"));
 const states = {
@@ -79,8 +80,21 @@ test("expert ref edits preserve format and other refs; picking replaces prefills
   ]});
   assert.deepEqual(setReference(value, 1, {entity: "sensor.room"}), {format: value.format, refs: [ref, {entity: "sensor.room"}]});
   assert.deepEqual(addReference(value), {...value, refs: [...value.refs, {entity: ""}]});
-  assert.deepEqual(removeReference(value, 0), {format: value.format, refs: [value.refs[1]]});
   assert.deepEqual(value, before);
+});
+
+test("expert ref removal keeps surviving values under their original labels", () => {
+  const temperature = {entity: "sensor.temperature"};
+  const humidity = {entity: "sensor.humidity"};
+  const value = {format: "Temperature: {0} / Humidity: {1}", refs: [temperature, humidity]};
+  const updated = removeReference(value, 0);
+  assert.deepEqual(updated, {format: "Temperature: -- / Humidity: {0}", refs: [humidity]});
+  assert.equal(formatValue(updated, {"sensor.humidity": {state: "45"}}), "Temperature: -- / Humidity: 45");
+
+  const repeated = {format: "{0} {1} {2} {2} {1} {01} {3}", refs: [temperature, humidity, ref]};
+  assert.deepEqual(removeReference(repeated, 1), {
+    format: "{0} -- {1} {1} -- {01} {3}", refs: [temperature, ref],
+  });
 });
 
 test("map suggestions combine options, binary states and current state, allowing free entries", () => {

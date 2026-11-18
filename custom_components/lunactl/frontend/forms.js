@@ -108,7 +108,15 @@ export function addReference(value) {
   return {...value, refs: [...(Array.isArray(value.refs) ? value.refs : []), {entity: ""}]};
 }
 export function removeReference(value, index) {
-  return {...value, refs: value.refs.filter((_, i) => i !== index)};
+  const updated = {...value, refs: value.refs.filter((_, i) => i !== index)};
+  if (updated.refs.length === value.refs.length || typeof value.format !== "string") return updated;
+  updated.format = value.format.replace(/\{(0|[1-9]\d*)\}/g, (token, digits) => {
+    const refIndex = Number(digits);
+    if (refIndex === index) return "--";
+    if (refIndex > index && refIndex < value.refs.length) return `{${refIndex - 1}}`;
+    return token;
+  });
+  return updated;
 }
 export function mapSuggestions(ref, states = {}) {
   const state = states[ref?.entity];
