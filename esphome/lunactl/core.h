@@ -470,8 +470,9 @@ class Core {
     return pressed_;
   }
   // Once a contact moved, returning to its origin must not turn it into a tap.
-  void move(int x, int y) {
+  bool move(int x, int y) {
     if (std::abs(x - press_x_) > 20 || std::abs(y - press_y_) > 20) cancel_press();
+    return pressed_;
   }
   void cancel_press() { pressed_ = false; }
   void cancel_touch() { pressed_ = touch_down_ = false; }

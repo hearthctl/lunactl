@@ -69,6 +69,7 @@ int main() {
  // A real tap on the settled page remains actionable.
  input.state = LV_INDEV_STATE_PRESSED;
  assert(core.press(233,233)); pager.highlight(core,233,233);
+ tick_now += 120; poll();
  auto *item = surface->children[1]->children[0]->children[0];
  assert(item->bg_color != 0x654321); // Upstream press feedback survives Pager routing.
  input.state = LV_INDEV_STATE_RELEASED;
@@ -163,6 +164,7 @@ int main() {
 
  input.state = LV_INDEV_STATE_PRESSED;
  assert(core.press(233,233)); pager.highlight(core,233,233);
+ tick_now += 120; poll();
  auto *home_item = surface->children[0]->children[0]->children[0];
  assert(home_item->bg_color != 0x123456);
  emit(surface, LV_EVENT_SCROLL_BEGIN);
@@ -308,6 +310,124 @@ int main() {
 
 }
 `},
+		{name: "swipe before feedback delay", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+ poll(); poll();
+ assert(snapshot_count == 2);
+ assert(!(surface->children[0]->children[0]->flags & (1 << 20)));
+
+ auto *item = surface->children[0]->children[0]->children[0];
+ input.state = LV_INDEV_STATE_PRESSED;
+ core.press(233,233); pager.highlight(core,233,233);
+ tick_now = 60; poll(); assert(item->bg_color == 0x123456);
+ emit(surface, LV_EVENT_SCROLL_BEGIN);
+ tick_now = 200; poll(); assert(item->bg_color == 0x123456);
+ assert(core.release(233,233) == -1);
+
+}
+`},
+		{name: "held feedback removed on live swipe", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+ poll(); poll();
+ assert(snapshot_count == 2);
+ assert(!(surface->children[0]->children[0]->flags & (1 << 20)));
+
+ core.set_state({"sensor.value", ""}, "dirty"); pager.render(core);
+ auto *root = surface->children[0]->children[0];
+ auto *item = root->children[0];
+ input.state = LV_INDEV_STATE_PRESSED;
+ core.press(233,233); pager.highlight(core,233,233);
+ tick_now = 120; poll(); assert(item->bg_color != 0x123456);
+ emit(surface, LV_EVENT_SCROLL_BEGIN);
+ assert(!(root->flags & LV_OBJ_FLAG_HIDDEN));
+ assert(item->bg_color == 0x123456);
+ tick_now = 500; poll(); assert(item->bg_color == 0x123456);
+ assert(core.release(233,233) == -1);
+
+}
+`},
+		{name: "vertical movement cancels feedback permanently", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+ poll(); poll();
+ assert(snapshot_count == 2);
+ assert(!(surface->children[0]->children[0]->flags & (1 << 20)));
+
+ auto *item = surface->children[0]->children[0]->children[0];
+ input.state = LV_INDEV_STATE_PRESSED;
+ core.press(233,233); pager.highlight(core,233,233);
+ tick_now = 120; poll(); assert(item->bg_color != 0x123456);
+ input.point = {233,280}; emit(surface, LV_EVENT_PRESSING);
+ assert(item->bg_color == 0x123456);
+ input.point = {233,233}; emit(surface, LV_EVENT_PRESSING);
+ tick_now = 500; poll(); assert(item->bg_color == 0x123456);
+ assert(core.release(233,233) == -1);
+
+}
+`},
+		{name: "short tap acts without delayed flash", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+ poll(); poll();
+ assert(snapshot_count == 2);
+ assert(!(surface->children[0]->children[0]->flags & (1 << 20)));
+
+ auto *item = surface->children[0]->children[0]->children[0];
+ input.state = LV_INDEV_STATE_PRESSED;
+ core.press(233,233); pager.highlight(core,233,233);
+ tick_now = 50; input.state = LV_INDEV_STATE_RELEASED;
+ assert(core.release(233,233) == 0);
+ pager.render(core); poll(); tick_now = 200; poll();
+ assert(item->bg_color == 0x123456);
+
+}
+`},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			checkAdapter(t, tc.source, map[string]string{"lvgl.h": strings.Replace(countdownLVGLStub, "LV_NOOP(lv_obj_set_style_clip_corner)", `inline void lv_obj_set_style_clip_corner(lv_obj_t *o, bool clip, int) { if (clip) o->flags |= 1 << 20; else o->flags &= ~(1 << 20); }`, 1) + pagerLVGLStub})
@@ -326,6 +446,8 @@ constexpr int LV_COLOR_FORMAT_RGB565=0, LV_RESULT_OK=0;
 struct lv_point_t { int x{0},y{0}; };
 struct lv_indev_t { int state{0}; lv_point_t point; };
 inline lv_indev_t input;
+inline uint32_t tick_now=0;
+inline uint32_t lv_tick_get() { return tick_now; }
 struct lv_event_t { int code; void *user; };
 struct lv_timer_t { void (*callback)(lv_timer_t *); void *user; };
 struct lv_draw_buf_t {};

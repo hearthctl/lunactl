@@ -21,7 +21,11 @@ page changes only after release, no active scroll animation and an exact page
 offset. Touching a settling animation cannot trigger an action on the old page.
 Moving beyond the tap tolerance permanently cancels the contact's action, even
 when the finger returns to its starting position. Native scroll start also cancels
-it. A dark-screen touch only wakes the display.
+it. Press feedback waits 120 ms so the start of an ordinary swipe does not flash
+an Item. Movement beyond the tap tolerance or native scroll start cancels pending
+feedback and removes any visible press tint immediately, including live fallback.
+Shorter taps still dispatch normally without a delayed flash. A dark-screen touch
+only wakes the display.
 
 Snapshots are clipped to the circular page boundary with black corners. LVGL
 corner clipping is enabled during snapshot creation, so it does not add masking

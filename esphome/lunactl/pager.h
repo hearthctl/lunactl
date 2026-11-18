@@ -25,9 +25,10 @@ class Pager {
       if (lv_event_get_code(e) == LV_EVENT_PRESSING) {
         lv_point_t point;
         lv_indev_get_point(lv_indev_active(), &point);
-        self->core_->move(point.x, point.y);
+        if (!self->core_->move(point.x, point.y)) self->clear_feedback();
       } else if (lv_event_get_code(e) == LV_EVENT_SCROLL_BEGIN && self->contact_) {
         self->core_->cancel_press();
+        self->clear_feedback();
         bool cached = self->cache_ready();
         self->set_live_clip(!cached);
         self->set_cached(cached);
@@ -43,6 +44,7 @@ class Pager {
     if (!surface_) return;
     if (revision_ != core.revision()) {
       if (contact_) {
+        feedback_pending_ = false;
         core.cancel_touch();
         lv_indev_reset(nullptr, surface_);
         for (auto *input = lv_indev_get_next(nullptr); input; input = lv_indev_get_next(input))
@@ -70,10 +72,8 @@ class Pager {
     if (unsettled && core_) core_->cancel_press();
     contact_ = true;
     lv_obj_set_scroll_dir(surface_, active ? LV_DIR_HOR : LV_DIR_NONE);
-    if (active && !unsettled && core.page_index() < count_) {
-      pages_[core.page_index()].ui.highlight(core, x, y);
-      pages_[core.page_index()].highlighted = true;
-    }
+    feedback_pending_ = active && !unsettled && core.page_index() < count_;
+    feedback_x_ = x; feedback_y_ = y; feedback_since_ = lv_tick_get();
   }
 
  private:
@@ -89,7 +89,9 @@ class Pager {
   const lv_font_t *text_{nullptr}, *icons_{nullptr}, *clock_{nullptr}, *countdown_{nullptr};
   size_t count_{0};
   uint32_t revision_{0};
-  bool contact_{false}, cached_{false}, pending_{false};
+  bool contact_{false}, cached_{false}, pending_{false}, feedback_pending_{false};
+  int feedback_x_{0}, feedback_y_{0};
+  uint32_t feedback_since_{0};
 
   static bool pressed() {
     for (auto *input = lv_indev_get_next(nullptr); input; input = lv_indev_get_next(input))
@@ -101,6 +103,18 @@ class Pager {
     for (size_t i = 0; i < count_; ++i)
       if (!pages_[i].valid || pages_[i].dirty) return false;
     return count_ > 0;
+  }
+  void clear_feedback() {
+    feedback_pending_ = false;
+    for (size_t i = 0; i < count_; ++i) {
+      auto &page = pages_[i];
+      if (!page.highlighted) continue;
+      Core view = *core_;
+      view.show_page(i);
+      page.ui.render(view);
+      page.highlighted = false;
+      if (cached_) lv_obj_add_flag(page.ui.root(), LV_OBJ_FLAG_HIDDEN);
+    }
   }
   void set_live_clip(bool value) {
     for (size_t i = 0; i < count_; ++i)
@@ -189,7 +203,14 @@ class Pager {
   void poll() {
     if (!core_) return;
     if (contact_) {
+      if (feedback_pending_ && pressed() && !lv_obj_is_scrolling(surface_) &&
+          lv_tick_get() - feedback_since_ >= 120) {
+        pages_[core_->page_index()].ui.highlight(*core_, feedback_x_, feedback_y_);
+        pages_[core_->page_index()].highlighted = true;
+        feedback_pending_ = false;
+      }
       if (pressed() || lv_obj_is_scrolling(surface_)) return;
+      feedback_pending_ = false;
       int x = lv_obj_get_scroll_x(surface_);
       if (count_ > 0 && (x < 0 || x % 466 != 0 || x / 466 >= static_cast<int>(count_))) return;
       contact_ = false;
