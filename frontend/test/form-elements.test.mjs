@@ -222,6 +222,30 @@ test("value form map rows accept free states, edits, suggestions and removal", (
   assert.deepEqual(form.value.refs[0].map, {on: "on"});
 });
 
+test("editing a suggested live-value map key preserves its newline", () => {
+  const state = "Line 1\nLine 2";
+  const states = {...hass.states, "sensor.room": {state, attributes: {}}};
+  const form = make("lunactl-value-form", {hass: {...hass, states},
+    value: {format: "{0}", refs: [{entity: "sensor.room"}]}});
+  const suggestion = templates(form.render()).find((t) => t.values.includes(state));
+  handler(suggestion, "click")();
+  form.value = form.emitted;
+  form.willUpdate();
+  const field = templates(form.render()).find((t) => t.values.includes(text.mapState));
+  assert.match(field.strings[0], /<textarea aria-label=$/);
+  const [key] = bindings(field, ".value=");
+  assert.equal(key, state);
+
+  handler(field, "input")(input("Mapped"));
+  form.value = form.emitted;
+  form.willUpdate();
+  const editedField = templates(form.render()).find((t) => t.values.includes(text.mapState));
+  const renamed = key + "!";
+  handler(editedField, "change")(input(renamed));
+  assert.deepEqual(form.emitted.refs[0].map, {[renamed]: "Mapped"});
+  assert.equal(formatValue(form.emitted, {...states, "sensor.room": {state: renamed, attributes: {}}}), "Mapped");
+});
+
 test("panel Item handlers update label, palette/custom hex, optional icon and countdown", () => {
   const editor = new ManifestEditor({manifest: {schema: 1, pages: [{type: "single", item: {label: "Old", color: "#123456"}}]}},
     undefined, () => {}, {setTimeout() {}, clearTimeout() {}});
