@@ -249,25 +249,28 @@ test("editing a suggested live-value map key preserves its newline", () => {
 test("editing a live-value map key preserves CRLF alongside LF", () => {
   const key = "Line 1\r\nLine 2\nLine 3";
   const form = make("lunactl-value-form", {hass,
-    value: {format: "{0}", refs: [{entity: "sensor.room", map: {[key]: "Mapped"}}]}});
+    value: {format: "{0}", refs: [{entity: "sensor.room", map: {[key]: "First\rSecond\nThird"}}]}});
   const field = templates(form.render()).find((t) => t.values.includes(text.mapState));
+  handler(field, "input")(input("First\nSecond\nThird!"));
+  assert.deepEqual(form.emitted.refs[0].map, {[key]: "First\rSecond\nThird!"});
+  const display = form.value.refs[0].map[key];
   for (const renamed of [key + "!", "Start\n" + key, key + "\nEnd", "Line 1\r\nLine 3"]) {
     // The browser normalizes the textarea value before firing change.
     handler(field, "change")(input(renamed.replaceAll("\r\n", "\n")));
-    assert.deepEqual(form.emitted.refs[0].map, {[renamed]: "Mapped"});
-    assert.equal(formatValue(form.emitted, {"sensor.room": {state: renamed, attributes: {}}}), "Mapped");
+    assert.deepEqual(form.emitted.refs[0].map, {[renamed]: display});
+    assert.equal(formatValue(form.emitted, {"sensor.room": {state: renamed, attributes: {}}}), display);
   }
 });
 
 test("panel Item handlers update label, palette/custom hex, optional icon and countdown", () => {
-  const editor = new ManifestEditor({manifest: {schema: 1, pages: [{type: "single", item: {label: "Old", color: "#123456"}}]}},
+  const editor = new ManifestEditor({manifest: {schema: 1, pages: [{type: "single", item: {label: "Old\r\nLabel", color: "#123456"}}]}},
     undefined, () => {}, {setTimeout() {}, clearTimeout() {}});
   editor.selectSlot(0);
   const panel = make("lunactl-designer", {hass});
   const item = () => editor.manifest.pages[0].item;
   const render = () => panel._itemForm(editor, item());
-  handler(render(), "input")(input("Neu"));
-  assert.equal(item().label, "Neu");
+  handler(render(), "input")(input("New\nLabel"));
+  assert.equal(item().label, "New\r\nLabel");
   handler(render(), "click", 0)();
   assert.equal(item().color, "#A66E0B");
   handler(render(), "input", 1)(input("#aBcDeF"));
@@ -286,7 +289,7 @@ test("panel Item handlers update label, palette/custom hex, optional icon and co
 
 test("editing an Expert live-value format preserves its newline in autosave", async () => {
   const refs = [{entity: "sensor.room"}];
-  const initial = {format: "{0}\n°C", refs};
+  const initial = {format: "{0}\r\n°C", refs};
   const manifest = {schema: 1, pages: [{type: "single", item: {value: initial}}]};
   const requests = [];
   const editor = new ManifestEditor({manifest}, async (request) => {
@@ -303,11 +306,11 @@ test("editing an Expert live-value format preserves its newline in autosave", as
   assert.match(formatField.strings.join(""), /<textarea\b/);
   const [format] = bindings(formatField, ".value=");
   assert.equal(format, initial.format);
-  handler(formatField, "input")(input(format + "!"));
+  handler(formatField, "input")(input(format.replaceAll("\r\n", "\n") + "!"));
   handler(itemForm, "form-change", 2)({detail: form.emitted});
   await editor.flush();
   assert.deepEqual(requests.find((request) => request.type === "lunactl/manifest/save")
-    ?.manifest.pages[0].item.value, {format: "{0}\n°C!", refs});
+    ?.manifest.pages[0].item.value, {format: "{0}\r\n°C!", refs});
 });
 
 test("panel wires all four key pickers and only stores non-default display fields", () => {

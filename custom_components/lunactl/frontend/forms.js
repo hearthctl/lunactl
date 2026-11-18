@@ -80,6 +80,34 @@ export function simpleValue(value) {
   return {ref: value.refs[0], unit: match[1] || ""};
 }
 export const fromSimple = (ref, unit) => ({format: `{0}${unit ? ` ${unit}` : ""}`, refs: [ref]});
+export function restoreLineEndings(original, edited) {
+  if (!original.includes("\r")) return edited;
+  // The textarea exposes every line ending as LF. Keep the original endings
+  // in unchanged text, and pair them in order when the edit keeps the line count.
+  const normalized = original.replace(/\r\n?/g, "\n");
+  const endings = original.match(/\r\n|\r|\n/g);
+  const editedCount = (edited.match(/\n/g) ?? []).length;
+  if (endings.length === editedCount) {
+    let line = 0;
+    return edited.replace(/\n/g, () => endings[line++]);
+  }
+
+  const sharedLength = Math.min(normalized.length, edited.length);
+  let prefix = 0;
+  while (prefix < sharedLength && normalized[prefix] === edited[prefix]) prefix++;
+  let suffix = 0;
+  while (suffix < sharedLength - prefix &&
+      normalized[normalized.length - 1 - suffix] === edited[edited.length - 1 - suffix]) suffix++;
+
+  let line = 0;
+  return edited.replace(/\n/g, (ending, offset) => {
+    const index = line++;
+    if (offset < prefix) return endings[index];
+    if (offset >= edited.length - suffix) return endings[index + endings.length - editedCount];
+    return ending;
+  });
+}
+
 export function decimalComma(locale = {}) {
   const format = locale.number_format;
   if (format === "decimal_comma" || format === "space_comma") return true;

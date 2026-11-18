@@ -4,7 +4,7 @@ import "./preview-element.js";
 import {ManifestEditor, parseManifest} from "./manifest-editor.js";
 import {canEditManifest, slotItem, setItem} from "./manifest-operations.js";
 import {text, errorText} from "./strings.js";
-import {palette, iconNames, withField, setDisplay, setBinding, object} from "./forms.js";
+import {palette, iconNames, withField, setDisplay, setBinding, object, restoreLineEndings} from "./forms.js";
 import {icons} from "./icons.js";
 import {formStyles} from "./form-elements.js";
 
@@ -219,9 +219,10 @@ class LunactlDesigner extends LitElement {
   _itemForm(editor, item) {
     const change = (key, value) => editor.apply(setItem(editor.manifest, editor.page, editor.slot,
       withField(item, key, value)));
+    const label = typeof item.label === "string" ? item.label : "";
     return html`
-      <label>${text.label}<textarea .value=${typeof item.label === "string" ? item.label : ""}
-        @input=${(e) => change("label", e.target.value)}></textarea></label>
+      <label>${text.label}<textarea .value=${label}
+        @input=${(e) => change("label", restoreLineEndings(label, e.target.value))}></textarea></label>
       <p>${text.color}</p><div class="palette">
         ${palette.map(([name, color]) => html`<button style=${`background:${color}`}
           title=${text.paletteNames[name]} aria-label=${text.paletteNames[name]}

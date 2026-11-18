@@ -2,7 +2,7 @@ import {LitElement, html, css} from "./vendor/lit-all.min.js";
 import {text} from "./strings.js";
 import {entities, entityAllowed, actions, actionDetails, targetDomains, withField, withEntities,
   otherTargets, completeAction, tryAction, parseData, object, simpleValue, fromSimple,
-  setReference, pickValueEntity, addReference, removeReference, mapSuggestions} from "./forms.js";
+  setReference, pickValueEntity, addReference, removeReference, mapSuggestions, restoreLineEndings} from "./forms.js";
 
 export const formStyles = css`
   :host { display: block; min-width: 0; }
@@ -147,34 +147,6 @@ class ActionForm extends LitElement {
 }
 customElements.define("lunactl-action-form", ActionForm);
 
-function restoreMapKeyLineEndings(original, edited) {
-  if (!original.includes("\r")) return edited;
-  // The textarea exposes every line ending as LF. Keep the original endings
-  // in unchanged text, and pair them in order when the edit keeps the line count.
-  const normalized = original.replace(/\r\n?/g, "\n");
-  const endings = original.match(/\r\n|\r|\n/g);
-  const editedCount = (edited.match(/\n/g) ?? []).length;
-  if (endings.length === editedCount) {
-    let line = 0;
-    return edited.replace(/\n/g, () => endings[line++]);
-  }
-
-  const sharedLength = Math.min(normalized.length, edited.length);
-  let prefix = 0;
-  while (prefix < sharedLength && normalized[prefix] === edited[prefix]) prefix++;
-  let suffix = 0;
-  while (suffix < sharedLength - prefix &&
-      normalized[normalized.length - 1 - suffix] === edited[edited.length - 1 - suffix]) suffix++;
-
-  let line = 0;
-  return edited.replace(/\n/g, (ending, offset) => {
-    const index = line++;
-    if (offset < prefix) return endings[index];
-    if (offset >= edited.length - suffix) return endings[index + endings.length - editedCount];
-    return ending;
-  });
-}
-
 class ValueForm extends LitElement {
   static properties = {hass: {attribute: false}, value: {attribute: false}, _mode: {state: true}};
   static styles = formStyles;
@@ -211,15 +183,17 @@ class ValueForm extends LitElement {
       <p>${text.map}</p>
       ${rows.map(([state, display], i) => html`<div class="row">
         <textarea aria-label=${text.mapState} .value=${state} @change=${(e) => {
-          const name = restoreMapKeyLineEndings(state, e.target.value);
+          const name = restoreLineEndings(state, e.target.value);
           if (rows.some(([key], j) => j !== i && key === name)) {
             e.target.value = state;
             return;
           }
           map(rows.map((row, j) => j === i ? [name, display] : row));
         }}></textarea>
-        <span>→</span><textarea aria-label=${text.mapDisplay} .value=${valueText(display)} @input=${(e) =>
-          map(rows.map((row, j) => j === i ? [state, e.target.value] : row))}></textarea>
+        <span>→</span><textarea aria-label=${text.mapDisplay} .value=${valueText(display)} @input=${(e) => {
+          const edited = restoreLineEndings(valueText(display), e.target.value);
+          map(rows.map((row, j) => j === i ? [state, edited] : row));
+        }}></textarea>
         <button aria-label=${text.removeItem} @click=${() => map(rows.filter((_, j) => j !== i))}>×</button>
       </div>`)}
       <button ?disabled=${rows.some(([state]) => state === "")} @click=${() => map([...rows, ["", ""]])}>${text.addRow}</button>
@@ -238,7 +212,10 @@ class ValueForm extends LitElement {
       <button aria-pressed=${this._mode === "expert"} @click=${() => { this._mode = "expert"; }}>${text.expert}</button>
       ${!simple ? html`<p class="hint">${text.expertRequired}</p>` : ""}
       ${this._mode === "expert" ? html`<label>${text.format}<textarea .value=${valueText(this.value.format)}
-        @input=${(e) => this._change({...this.value, format: e.target.value})}></textarea></label>` : ""}
+        @input=${(e) => {
+          const format = restoreLineEndings(valueText(this.value.format), e.target.value);
+          this._change({...this.value, format});
+        }}></textarea></label>` : ""}
       ${(Array.isArray(this.value.refs) ? this.value.refs : []).map((ref, index) =>
         this._reference(object(ref) ? ref : {}, index))}
       ${this._mode === "expert" ? html`<button @click=${() => this._change(addReference(this.value))}>${text.addRef}</button>` : ""}
