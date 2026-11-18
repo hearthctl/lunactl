@@ -1,0 +1,651 @@
+{
+  "events": [
+    {
+      "type": "connect"
+    },
+    {
+      "type": "fetch"
+    },
+    {
+      "type": "manifest",
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "single",
+            "item": {
+              "label": "Home",
+              "color": "#123456",
+              "action": {
+                "action": "script.item"
+              }
+            }
+          },
+          {
+            "type": "single",
+            "item": {
+              "label": "Second",
+              "color": "#123456",
+              "action": {
+                "action": "script.item"
+              }
+            }
+          }
+        ],
+        "buttons": {
+          "a_short": {
+            "action": "script.a_short"
+          }
+        },
+        "display": {
+          "brightness": "input_number.brightness"
+        }
+      }
+    },
+    {
+      "type": "sync"
+    },
+    {
+      "type": "state",
+      "entity": "input_number.brightness",
+      "state": "35"
+    },
+    {
+      "type": "tick",
+      "now": 1000
+    },
+    {
+      "type": "disconnect"
+    },
+    {
+      "type": "press",
+      "x": 300,
+      "y": 233,
+      "now": 2000
+    },
+    {
+      "type": "release",
+      "x": 200,
+      "y": 233,
+      "now": 2000
+    },
+    {
+      "type": "tap",
+      "x": 233,
+      "y": 233,
+      "now": 3000
+    },
+    {
+      "type": "tick",
+      "now": 5999
+    },
+    {
+      "type": "tick",
+      "now": 6000
+    },
+    {
+      "type": "button",
+      "key": "b",
+      "pressed": true,
+      "now": 6500
+    },
+    {
+      "type": "button",
+      "key": "b",
+      "pressed": false,
+      "now": 6600
+    },
+    {
+      "type": "tick",
+      "now": 6600
+    },
+    {
+      "type": "button",
+      "key": "a",
+      "pressed": true,
+      "now": 7000
+    },
+    {
+      "type": "button",
+      "key": "a",
+      "pressed": false,
+      "now": 7100
+    },
+    {
+      "type": "tick",
+      "now": 9999
+    },
+    {
+      "type": "tick",
+      "now": 10000
+    },
+    {
+      "type": "tick",
+      "now": 600999
+    },
+    {
+      "type": "tick",
+      "now": 601000
+    },
+    {
+      "type": "connect"
+    },
+    {
+      "type": "tap",
+      "x": 233,
+      "y": 233,
+      "now": 602000
+    },
+    {
+      "type": "tap",
+      "x": 233,
+      "y": 233,
+      "now": 603000
+    }
+  ],
+  "display": true,
+  "want": {
+    "snapshots": [
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "Kein Manifest",
+        "tappable": false,
+        "request": 2,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 70,
+        "display_brightness": 179,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "connection_action": "reconnect",
+        "subscriptions": [
+          {
+            "entity": "input_number.brightness"
+          }
+        ],
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 70,
+        "display_brightness": 179,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Second",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "offline_icon": true,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Second",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "offline_icon": true,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Second",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Second",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "wake": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Second",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "wake": false,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Second",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Second",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "offline_icon": true,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "wake": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Second",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "offline_icon": true,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "wake": false,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Second",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "offline_icon": true,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Second",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Second",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "display_on": false,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 0,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "offline_icon": true,
+        "display_on": false,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 0,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "display_on": false,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 0,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        },
+        "call": {
+          "service": "lunactl.run",
+          "action": "script.item",
+          "data": "{\"target\":{},\"data\":{}}"
+        }
+      }
+    ]
+  }
+}

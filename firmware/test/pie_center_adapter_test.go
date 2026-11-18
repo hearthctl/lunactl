@@ -175,9 +175,10 @@ int main() {
  ui.render(core);
  assert(text(screen, "Papa rufen") && !text(screen, "Klima-Lauf") && !text(screen, "22,9 °C"));
  assert(!visible(ring) && !text(screen, "42 s") && !text(screen, "Kühlen"));
+ // Disconnected keeps the Pie, including its clock.
  core.set_connected(false);
  ui.render(core);
- assert(!text(screen, "Papa rufen") && !text(screen, "19:42"));
+ assert(text(screen, "Papa rufen") && text(screen, "19:42"));
 }
 `, map[string]string{"lvgl.h": countdownLVGLStub})
 }

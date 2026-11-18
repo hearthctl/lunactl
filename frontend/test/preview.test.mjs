@@ -16,7 +16,7 @@ for (const name of ["value-formatting", "value-placeholders", "value-pages", "va
     let manifest, states = {}, now = NaN, connected = false;
     events.forEach((event, index) => {
       if (event.type === "connect") connected = true;
-      if (event.type === "disconnect") { connected = false; states = {}; }
+      if (event.type === "disconnect") connected = false;  // Disconnected keeps states.
       if (event.type === "manifest" && !want.snapshots[index].error) manifest = event.manifest;
       if (event.type === "time") now = event.valid === false ? NaN : event.timestamp ?? now;
       if (event.type === "state" && connected) {
@@ -25,7 +25,7 @@ for (const name of ["value-formatting", "value-placeholders", "value-pages", "va
         else entity.state = event.state;
       }
       const snapshot = want.snapshots[index];
-      if (!snapshot.tappable || !manifest) return;
+      if (!snapshot.type || !manifest) return;  // Shown, also while Disconnected.
       const page = manifest.pages[snapshot.page];
       const pairs = page.type === "single" ? [[page.item, snapshot.item]] :
         [...page.quarters.map((item, i) => [item, snapshot.quarters[i]]), [page.center, snapshot.center]];

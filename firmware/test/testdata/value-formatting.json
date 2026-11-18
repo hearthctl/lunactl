@@ -456,16 +456,8 @@
         }
       },
       {
-        "status": "Keine Verbindung",
-        "tappable": false
-      },
-      {
-        "status": "Keine Verbindung",
-        "tappable": false
-      },
-      {
         "status": "",
-        "tappable": true,
+        "tappable": false,
         "page": 0,
         "home": true,
         "dots": [],
@@ -475,7 +467,22 @@
           "color": "#123456",
           "icon": "",
           "glyph": "",
-          "value": "-- °C · -- / -- {9}"
+          "value": "20,0 °C · cooling / 20,0 {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "",
+          "glyph": "",
+          "value": "20,0 °C · cooling / 20,0 {9}"
         }
       },
       {
@@ -490,13 +497,13 @@
           "color": "#123456",
           "icon": "",
           "glyph": "",
-          "value": "-- °C · -- / -- {9}"
-        },
-        "request": 5
+          "value": "20,0 °C · cooling / 20,0 {9}"
+        }
       },
       {
         "status": "",
         "tappable": true,
+        "request": 5,
         "page": 0,
         "home": true,
         "dots": [],
@@ -506,7 +513,7 @@
           "color": "#123456",
           "icon": "",
           "glyph": "",
-          "value": "-- °C · -- / -- {9}"
+          "value": "20,0 °C · cooling / 20,0 {9}"
         }
       },
       {
@@ -521,8 +528,12 @@
           "color": "#123456",
           "icon": "",
           "glyph": "",
-          "value": "-- °C · -- / -- {9}"
-        },
+          "value": "20,0 °C · cooling / 20,0 {9}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
         "connection_action": "none",
         "subscriptions": [
           {
@@ -532,7 +543,18 @@
             "entity": "climate.room",
             "attribute": "hvac_action"
           }
-        ]
+        ],
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Wert",
+          "color": "#123456",
+          "icon": "",
+          "glyph": "",
+          "value": "20,0 °C · cooling / 20,0 {9}"
+        }
       }
     ]
   }

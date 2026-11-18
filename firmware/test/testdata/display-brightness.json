@@ -845,16 +845,12 @@
         }
       },
       {
-        "status": "Keine Verbindung",
+        "status": "",
         "tappable": false,
         "display_on": true,
         "timeout_ms": 10000,
-        "brightness": 70,
-        "display_brightness": 179
-      },
-      {
-        "status": "",
-        "tappable": true,
+        "brightness": 35,
+        "display_brightness": 89,
         "page": 0,
         "home": true,
         "dots": [
@@ -867,15 +863,15 @@
           "color": "#123456",
           "icon": "",
           "glyph": ""
-        },
-        "display_on": true,
-        "timeout_ms": 10000,
-        "brightness": 70,
-        "display_brightness": 179
+        }
       },
       {
         "status": "",
         "tappable": true,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
         "page": 0,
         "home": true,
         "dots": [
@@ -888,16 +884,16 @@
           "color": "#123456",
           "icon": "",
           "glyph": ""
-        },
-        "display_on": true,
-        "timeout_ms": 10000,
-        "brightness": 70,
-        "display_brightness": 179,
-        "request": 5
+        }
       },
       {
         "status": "",
         "tappable": true,
+        "request": 5,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
         "page": 0,
         "home": true,
         "dots": [
@@ -910,15 +906,15 @@
           "color": "#123456",
           "icon": "",
           "glyph": ""
-        },
-        "display_on": true,
-        "timeout_ms": 10000,
-        "brightness": 70,
-        "display_brightness": 179
+        }
       },
       {
         "status": "",
         "tappable": true,
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
         "page": 0,
         "home": true,
         "dots": [
@@ -931,17 +927,34 @@
           "color": "#123456",
           "icon": "",
           "glyph": ""
-        },
-        "display_on": true,
-        "timeout_ms": 10000,
-        "brightness": 70,
-        "display_brightness": 179,
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
         "connection_action": "none",
         "subscriptions": [
           {
             "entity": "input_number.brightness"
           }
-        ]
+        ],
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 35,
+        "display_brightness": 89,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Home",
+          "color": "#123456",
+          "icon": "",
+          "glyph": ""
+        }
       },
       {
         "status": "",

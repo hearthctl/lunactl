@@ -118,8 +118,9 @@ Manifest variants cover behaviours that the everyday three-page example does
 not exercise. The integration and contract are exercised in a disposable
 HA by `make verify`; see [testing.md](testing.md).
 
-If the panel shows **Keine Verbindung**, check Wi-Fi, HA's ESPHome connection
-and the API encryption key. **Kein Manifest** after connecting means no valid
+If the panel shows **Keine Verbindung** or the `wifi-off` icon, check Wi-Fi, HA's
+ESPHome connection and the API encryption key. The icon means the device is
+Disconnected: it still shows the last Manifest and values, but runs no actions. **Kein Manifest** after connecting means no valid
 Manifest was fetched: check integration installation, action permission, the device registry
 MAC and rejection/error logs. An invalid replacement keeps the previous
 valid Manifest. Missing values show `--`; a hidden countdown can mean an inactive

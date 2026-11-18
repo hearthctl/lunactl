@@ -898,12 +898,81 @@
         }
       },
       {
-        "status": "Keine Verbindung",
-        "tappable": false
+        "status": "",
+        "tappable": false,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
       },
       {
-        "status": "Keine Verbindung",
-        "tappable": false
+        "status": "",
+        "tappable": false,
+        "offline_icon": true,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Papa rufen",
+          "color": "#BB1260"
+        },
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ]
       }
     ]
   }

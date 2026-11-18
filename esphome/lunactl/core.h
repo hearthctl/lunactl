@@ -62,6 +62,10 @@ struct Item : Action {
 
 enum class Key : uint8_t { A, B };
 constexpr uint32_t LONG_PRESS_MS = 1000;
+// Disconnected: an attempted action flashes the offline icon; after the
+// stale period it stays until the connection returns.
+constexpr uint32_t OFFLINE_HINT_MS = 3000;
+constexpr uint32_t OFFLINE_STALE_MS = 10 * 60 * 1000;
 constexpr std::array<const char *, 4> BUTTON_NAMES{{"a_short", "a_long", "b_short", "b_long"}};
 
 struct ButtonEvent {
@@ -308,11 +312,13 @@ class Core {
     // An interrupted key press must not dispatch after a reconnect.
     if (!connected) {
       for (auto &button : buttons_) button.actions = {};
-      states_.assign(subscriptions_.size(), "");
+      disconnected_at_ = now_;  // tick() advances now_ every 10 ms.
     }
+    attempted_ = false;
     ++request_;  // Invalidates replies from an earlier connection.
-    // Keep the last valid Manifest in RAM; an invalid replacement must not
-    // destroy it, including after reconnect. Offline it is hidden and inert.
+    // Keep the last valid Manifest and states in RAM; an invalid replacement
+    // must not destroy them. Disconnected they stay visible but inert; HA
+    // resends every subscribed state on reconnect.
   }
   bool connected() const { return connected_; }
   uint32_t revision() const { return revision_; }
@@ -363,10 +369,17 @@ class Core {
     if (result) { error = "Invalid JSON"; return false; }
     return accept(request, doc.as<JsonVariantConst>(), error);
   }
+  // Shown: the Manifest is on screen, also while Disconnected.
+  // Tappable: it can run actions, which needs the connection.
+  bool shown() const { return has_manifest_; }
   bool tappable() const { return connected_ && has_manifest_; }
+  bool offline_icon() const {
+    return shown() && !connected_ &&
+           (now_ - disconnected_at_ >= OFFLINE_STALE_MS || (attempted_ && now_ - attempted_at_ < OFFLINE_HINT_MS));
+  }
   const Item &item(size_t slot = 0) const { return manifest_.pages[page_].items[slot]; }
   bool slot_tappable(size_t slot) const {
-    return tappable() && slot < (pie() ? 5u : 1u) && !item(slot).action.empty();
+    return shown() && slot < (pie() ? 5u : 1u) && !item(slot).action.empty();
   }
   bool pie() const { return has_manifest_ && manifest_.pages[page_].pie; }
   bool center() const { return pie() && !item(CENTER_SLOT).action.empty(); }
@@ -375,7 +388,7 @@ class Core {
   size_t page_count() const { return manifest_.pages.size(); }
   size_t page_index() const { return page_; }
   bool show_page(size_t index) {
-    if (!tappable() || index >= manifest_.pages.size()) return false;
+    if (!shown() || index >= manifest_.pages.size()) return false;
     page_ = index;
     ++revision_;
     return true;
@@ -392,7 +405,7 @@ class Core {
     if (found != subscriptions_.end()) states_[found - subscriptions_.begin()] = state;
   }
   std::string value(size_t slot = 0) const {
-    if (!tappable() || slot >= (pie() ? 5u : 1u)) return "";
+    if (!shown() || slot >= (pie() ? 5u : 1u)) return "";
     const auto &value = item(slot).value;
     std::vector<std::string> replacements;
     for (const auto &ref : value.refs) {
@@ -430,7 +443,7 @@ class Core {
   const std::string &clock() const { return clock_; }
   void set_timestamp(int64_t now, bool valid = true) { timestamp_ = now; time_valid_ = valid; }
   Countdown countdown() const {
-    if (!tappable() || (pie() && !center()) || item(main_slot()).countdown.empty()) return {};
+    if (!shown() || (pie() && !center()) || item(main_slot()).countdown.empty()) return {};
     auto state = [&](const char *attribute) -> std::string {
       Reference ref{item(main_slot()).countdown, attribute};
       auto found = std::find(subscriptions_.begin(), subscriptions_.end(), ref);
@@ -440,7 +453,7 @@ class Core {
   }
   // Shared display geometry for the host and LVGL UI.
   int hit(int x, int y) const {
-    if (!tappable() || x < 0 || x >= 466 || y < 0 || y >= 466) return -1;
+    if (!shown() || x < 0 || x >= 466 || y < 0 || y >= 466) return -1;
     int dx = x - 233, dy = y - 233;
     if (dx * dx + dy * dy > 233 * 233) return -1;
     if (page_count() > 1 && y >= 437 && y < 465 &&
@@ -462,11 +475,12 @@ class Core {
   int dots_width() const { return static_cast<int>(page_count()) * 18 + 12; }
   int dots_left() const { return (466 - dots_width()) / 2; }
   bool press(int x, int y) { return press(x, y, now_); }
+  // False for a wake touch: it neither navigates nor runs an Item.
   bool press(int x, int y, uint32_t now) {
     bool was_on = display_on_;
     wake(now);
     touch_down_ = true;
-    press_x_ = x; press_y_ = y; press_revision_ = revision_; pressed_ = was_on && tappable();
+    press_x_ = x; press_y_ = y; press_revision_ = revision_; pressed_ = was_on && shown();
     return pressed_;
   }
   // Once a contact moved, returning to its origin must not turn it into a tap.
@@ -483,7 +497,7 @@ class Core {
     touch_down_ = false;
     if (!pressed_) return -1;
     pressed_ = false;
-    if (!tappable() || press_revision_ != revision_) return -1;
+    if (!shown() || press_revision_ != revision_) return -1;
     int dx = x - press_x_, dy = y - press_y_;
     if (std::abs(dx) >= 60 && std::abs(dx) > std::abs(dy)) {
       if (dx < 0 && page_ + 1 < page_count()) show_page(page_ + 1);
@@ -492,7 +506,12 @@ class Core {
     }
     if (std::abs(dx) > 20 || std::abs(dy) > 20) return -1;
     int slot = hit(x, y);
-    return slot >= 0 && hit(press_x_, press_y_) == slot ? slot : -1;
+    if (slot < 0 || hit(press_x_, press_y_) != slot) return -1;
+    if (!connected_) {
+      attempt(now);
+      return -1;
+    }
+    return slot;
   }
   uint32_t timeout_ms() const { return manifest_.display.timeout_ms; }
   bool display_on() const { return display_on_; }
@@ -500,7 +519,7 @@ class Core {
   double brightness() const {
     Reference ref{manifest_.display.brightness_entity, ""};
     auto found = std::find(subscriptions_.begin(), subscriptions_.end(), ref);
-    if (!connected_ || ref.entity.empty() || found == subscriptions_.end()) return 70;
+    if (ref.entity.empty() || found == subscriptions_.end()) return 70;
     const auto &state = states_[found - subscriptions_.begin()];
     char *end = nullptr;
     errno = 0;
@@ -524,14 +543,17 @@ class Core {
   }
   // Unsigned subtraction keeps idle timing correct across millis() wraparound.
   // Held touches/keys keep the display awake through their release.
+  // Also reports a change of the offline icon, which needs a render.
   bool tick(uint32_t now) {
     now_ = now;
+    bool icon_changed = offline_icon() != icon_;
+    icon_ = offline_icon();
     if (touch_down_ || buttons_[0].pressed || buttons_[1].pressed) last_activity_ = now;
-    if (!display_on_ || now - last_activity_ < timeout_ms()) return false;
+    if (!display_on_ || now - last_activity_ < timeout_ms()) return icon_changed;
     sleep();
     return true;
   }
-  const char *status() const { return !connected_ ? "Keine Verbindung" : has_manifest_ ? "" : "Kein Manifest"; }
+  const char *status() const { return has_manifest_ ? "" : connected_ ? "Kein Manifest" : "Keine Verbindung"; }
 
   // Call with debounced key levels on edges and/or while polling. Unsigned
   // subtraction preserves the threshold across the millis() wraparound.
@@ -549,6 +571,9 @@ class Core {
       if (tappable()) {
         state.actions[0] = manifest_.buttons[index * 2];
         state.actions[1] = manifest_.buttons[index * 2 + 1];
+      } else if (shown() && (!manifest_.buttons[index * 2].action.empty() ||
+                             !manifest_.buttons[index * 2 + 1].action.empty())) {
+        attempt(now);
       }
       wake(now);
       event.wake = true;
@@ -569,6 +594,10 @@ class Core {
   }
 
  private:
+  void attempt(uint32_t now) {
+    attempted_ = true;
+    attempted_at_ = now;
+  }
   bool connected_{false};
   bool has_manifest_{false};
   bool subscriptions_initialized_{false};
@@ -589,6 +618,9 @@ class Core {
   bool touch_down_{false};
   bool display_on_{true};
   uint32_t now_{0}, last_activity_{0};
+  uint32_t disconnected_at_{0}, attempted_at_{0};
+  bool attempted_{false};
+  bool icon_{false};
   struct ButtonState {
     bool pressed{false};
     bool long_fired{false};

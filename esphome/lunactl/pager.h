@@ -66,13 +66,14 @@ class Pager {
   // Called by the existing press adapter after Core has consumed a wake touch.
   void highlight(const Core &core, int x, int y) {
     if (!surface_) return;
-    bool active = x >= 0 && y >= 0 && core.tappable();
+    // Disconnected pages still swipe, but give no Item feedback.
+    bool active = x >= 0 && y >= 0 && core.shown();
     bool unsettled = lv_obj_is_scrolling(surface_) ||
         lv_obj_get_scroll_x(surface_) != static_cast<int>(core.page_index() * 466);
     if (unsettled && core_) core_->cancel_press();
     contact_ = true;
     lv_obj_set_scroll_dir(surface_, active ? LV_DIR_HOR : LV_DIR_NONE);
-    feedback_pending_ = active && !unsettled && core.page_index() < count_;
+    feedback_pending_ = active && core.tappable() && !unsettled && core.page_index() < count_;
     feedback_x_ = x; feedback_y_ = y; feedback_since_ = lv_tick_get();
   }
 
@@ -153,7 +154,7 @@ class Pager {
     set_cached(false);
     set_live_clip(false);
     pending_ = false;
-    count_ = core_->tappable() ? core_->page_count() : 0;
+    count_ = core_->shown() ? core_->page_count() : 0;
     Core view = *core_;
     for (size_t i = 0; i < 6; ++i) {
       auto &page = pages_[i];

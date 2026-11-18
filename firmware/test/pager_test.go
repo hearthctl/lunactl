@@ -126,11 +126,11 @@ int main() {
  poll(); poll();
  assert(snapshot_count == 2);
  assert(!(surface->children[0]->children[0]->flags & (1 << 20)));
- // Disconnect during a gesture removes pages and invalidates actions/caches.
+ // Disconnect during a gesture cancels it; Disconnected keeps the pages.
  input.state = LV_INDEV_STATE_PRESSED;
  core.press(233,233); pager.highlight(core,233,233);
  core.set_connected(false); pager.render(core);
- assert(core.release(233,233) == -1 && destroyed >= 2);
+ assert(core.release(233,233) == -1 && wait_release_count == 1 && destroyed == 0);
  input.state = LV_INDEV_STATE_RELEASED; poll();
  // Reconnect reconstructs cache, and a dark-screen touch only wakes.
  core.set_connected(true); pager.render(core); poll(); poll();
@@ -142,6 +142,46 @@ int main() {
  input.state = LV_INDEV_STATE_RELEASED;
  assert(core.release(233,233) == -1); pager.render(core); poll();
  assert(scroll_dir == LV_DIR_HOR);
+}
+`},
+		{name: "disconnected swipes without feedback", source: `#include "pager.h"
+#include <cassert>
+int main() {
+ auto *surface = lv_obj_create(nullptr);
+ lv_font_t font;
+ lunactl::Core core;
+ lunactl::Pager pager;
+ pager.init(surface, &font, &font, nullptr, &font, &font);
+ core.set_connected(true);
+ std::string error;
+ const char *manifest = R"({"schema":1,"pages":[{"type":"single","item":{"label":"First","color":"#123456","action":{"action":"script.first"},"value":{"format":"{0}","refs":[{"entity":"sensor.value"}]}}},{"type":"single","item":{"label":"Second","color":"#654321","action":{"action":"script.second"}}}]})";
+ assert(core.accept_json(core.begin_fetch(), manifest, error));
+ core.set_state({"sensor.value", ""}, "before");
+ pager.render(core);
+ poll(); poll();
+ core.set_connected(false); pager.render(core); poll();
+ // Pages, values and caches stay; a held touch shows no Item feedback.
+ auto *item = surface->children[0]->children[0]->children[0];
+ assert(!(surface->children[0]->flags & LV_OBJ_FLAG_HIDDEN) && !(surface->children[1]->flags & LV_OBJ_FLAG_HIDDEN));
+ assert(snapshot_count == 2 && destroyed == 0);
+ input.state = LV_INDEV_STATE_PRESSED;
+ assert(core.press(233,233)); pager.highlight(core,233,233);
+ assert(scroll_dir == LV_DIR_HOR);
+ tick_now += 120; poll();
+ assert(item->bg_color == 0x123456);
+ input.state = LV_INDEV_STATE_RELEASED;
+ assert(core.release(233,233) == -1 && core.offline_icon());
+ pager.render(core); poll();
+ // A swipe still selects the next page.
+ input.state = LV_INDEV_STATE_PRESSED;
+ assert(core.press(400,233)); pager.highlight(core,400,233);
+ input.point = {300,233}; emit(surface, LV_EVENT_PRESSING);
+ emit(surface, LV_EVENT_SCROLL_BEGIN);
+ scrolling = true; scroll_x = 300;
+ input.state = LV_INDEV_STATE_RELEASED;
+ assert(core.release(300,233) == -1);
+ scroll_x = 466; scrolling = false; poll(); poll();
+ assert(core.page_index() == 1 && snapshot_count == 2);
 }
 `},
 		{name: "swipe then sleep restores departure color", source: `#include "pager.h"
