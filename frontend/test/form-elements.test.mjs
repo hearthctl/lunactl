@@ -199,9 +199,9 @@ test("panel wires all four key pickers and only stores non-default display field
     handler(render(), "form-change", i)({detail: {action: `script.${key}`}});
     assert.equal(editor.manifest.buttons[key].action, `script.${key}`);
   }
-  handler(render(), "input")(input("12.5"));
+  handler(render(), "change", 4)({target: {value: "12.5", validity: {badInput: false}}});
   assert.deepEqual(editor.manifest.display, {timeout: 12.5});
-  handler(render(), "input")(input("10"));
+  handler(render(), "change", 4)({target: {value: "10", validity: {badInput: false}}});
   assert.equal(Object.hasOwn(editor.manifest, "display"), false);
   handler(render(), "form-change", 4)({detail: "sensor.room"});
   assert.deepEqual(editor.manifest.display, {brightness: "sensor.room"});
@@ -209,4 +209,31 @@ test("panel wires all four key pickers and only stores non-default display field
   assert.equal(Object.hasOwn(editor.manifest, "display"), false);
   for (let i = 0; i < 4; i++) handler(render(), "change", i)({target: {checked: false}});
   assert.equal(Object.hasOwn(editor.manifest, "buttons"), false);
+});
+
+test("panel preserves the display timeout draft until the input commits", () => {
+  const editor = new ManifestEditor({manifest: {schema: 1, display: {timeout: 25},
+    pages: [{type: "pie", quarters: [null, null, null, null]}]}},
+    undefined, () => {}, {setTimeout() {}, clearTimeout() {}});
+  const panel = make("lunactl-designer", {hass});
+  const timeout = () => templates(panel._settings(editor)).find((t) => t.values.includes(text.timeout));
+  const field = {value: "", validity: {badInput: false}};
+  for (const onInput of bindings(timeout(), "@input=")) onInput({target: field});
+  assert.equal(editor.manifest.display.timeout, 25);
+  assert.equal(bindings(timeout(), ".value=")[0], "25", "the Lit binding stays unchanged during editing");
+  field.value = "12.5";
+  for (const onInput of bindings(timeout(), "@input=")) onInput({target: field});
+  assert.equal(editor.manifest.display.timeout, 25);
+  handler(timeout(), "change", 4)({target: field});
+  assert.equal(editor.manifest.display.timeout, 12.5);
+  field.value = "";
+  field.validity.badInput = true;
+  handler(timeout(), "change", 4)({target: field});
+  assert.equal(editor.manifest.display.timeout, 12.5);
+  assert.equal(field.value, "12.5");
+  field.value = "";
+  field.validity.badInput = false;
+  handler(timeout(), "change", 4)({target: field});
+  assert.equal(editor.manifest.display, undefined);
+  assert.equal(field.value, "10");
 });

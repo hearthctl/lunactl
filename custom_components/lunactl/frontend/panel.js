@@ -259,8 +259,12 @@ class LunactlDesigner extends LitElement {
       </section>
       <section class="card"><h3>${text.display}</h3>
         <label>${text.timeout} (${text.seconds})<input type="number" min="0.001" max="4294967.295" step="0.001"
-          .value=${String(manifest?.display?.timeout ?? 10)} @input=${(e) => editor.apply(setDisplay(editor.manifest,
-            "timeout", e.target.value === "" ? undefined : Number(e.target.value)))}></label>
+          .value=${String(manifest?.display?.timeout ?? 10)} @change=${({target}) => {
+            if (!target.validity.badInput) {
+              editor.apply(setDisplay(editor.manifest, "timeout", target.value === "" ? undefined : Number(target.value)));
+            }
+            target.value = String(editor.manifest?.display?.timeout ?? 10);
+          }}></label>
         <lunactl-entity-picker .hass=${this.hass} .value=${manifest?.display?.brightness || ""}
           .domains=${["input_number", "number", "sensor"]} .label=${text.brightness}
           @form-change=${(e) => editor.apply(setDisplay(editor.manifest, "brightness", e.detail))}></lunactl-entity-picker>
