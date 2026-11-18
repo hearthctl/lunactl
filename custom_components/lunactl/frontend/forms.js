@@ -91,13 +91,18 @@ export function decimalComma(locale = {}) {
 }
 export function prefill(entity, states, locale, attribute) {
   const attrs = states?.[entity]?.attributes || {};
+  const unit = typeof attrs.unit_of_measurement === "string" ? attrs.unit_of_measurement : "";
+  const precision = attrs.display_precision;
+  const validPrecision = Number.isInteger(precision) && precision >= 0 && precision <= 6;
+  const reading = stateText(states, {entity, attribute});
+  const missingNumericReading = !attribute && (reading === "unavailable" || reading === "unknown") &&
+    entity.startsWith("sensor.") && (unit.trim() !== "" || validPrecision);
   const ref = {entity};
-  if (Number.isFinite(numericState(stateText(states, {entity, attribute})))) {
+  if (Number.isFinite(numericState(reading)) || missingNumericReading) {
     ref.decimal_comma = decimalComma(locale);
-    if (Number.isInteger(attrs.display_precision) && attrs.display_precision >= 0 && attrs.display_precision <= 6)
-      ref.decimals = attrs.display_precision;
+    if (validPrecision) ref.decimals = precision;
   }
-  return {ref, unit: typeof attrs.unit_of_measurement === "string" ? attrs.unit_of_measurement : ""};
+  return {ref, unit};
 }
 export function setReference(value, index, ref) {
   return {...value, refs: value.refs.map((entry, i) => i === index ? ref : entry)};

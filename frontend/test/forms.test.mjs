@@ -71,6 +71,14 @@ test("entity selection prefills are editable and missing metadata stays optional
   }
 });
 
+test("simple selection saves numeric formatting for an unavailable sensor", () => {
+  const entity = "sensor.room";
+  const unavailable = {[entity]: {...states[entity], state: "unavailable"}};
+  const value = pickValueEntity(fromSimple({entity: ""}, ""), 0, entity, unavailable,
+    {number_format: "decimal_comma"}, true);
+  assert.equal(formatValue(value, {[entity]: {...states[entity], state: "22.54"}}), "22,5 °C");
+});
+
 test("expert ref edits preserve format and other refs; picking replaces prefills without stale numeric formatting", () => {
   const value = {format: "T: {0} / {1}", refs: [ref, {entity: "light.bed", map: {on: "An"}}]};
   const before = structuredClone(value);
