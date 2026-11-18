@@ -66,7 +66,7 @@ const base = {
   schema_version: 1, highest_schema: 1, required_firmware: "1.0", will_restart: false,
 };
 
-for (const scenario of read("cases.json")) {
+for (const scenario of [...read("cases.json"), ...read("frame-cases.json")]) {
   test(scenario.name, async () => {
     const clock = new Clock();
     const record = {...copy(base), ...scenario.record};
@@ -76,6 +76,8 @@ for (const scenario of read("cases.json")) {
     function snapshot(step) {
       snapshots.push({step, status: editor.status, state: editor.saveText(), error: editor.error,
         revision: editor.record.revision, source: editor.source,
+        ...(scenario.frame ? {frame: {page: editor.page, slot: editor.slot, view: editor.view,
+          pendingSwitch: editor.pendingSwitch, canUndo: editor.history.canUndo, canRedo: editor.history.canRedo}} : {}),
         calls: copy(server.calls)});
     }
     snapshot("initial");
@@ -91,6 +93,10 @@ for (const scenario of read("cases.json")) {
         case "hold": server.holds.push({kind: step.kind}); break;
         case "release": server.holds.find((item) => item.release)?.release(); break;
         case "close": editor.close(); break;
+        case "undo": case "redo": case "addPage": case "removePage": case "reorderPage":
+        case "selectPage": case "selectSlot": case "addItem": case "removeItem":
+        case "requestPageType": case "confirmPageType": case "cancelPageType": case "setView":
+          editor[step.do](step.value); break;
         default: throw new Error(`Unknown step ${step.do}`);
       }
       await settle();
@@ -153,3 +159,83 @@ test("device list and headers: German names, deterministic order and version dri
 for (const row of read("errors.json")) {
   test(`German validation: ${row.name}`, () => assert.equal(errorText(row.input), row.output));
 }
+
+test("Slot/page selection, ordering and view changes do not edit the Manifest", () => {
+  const server = new Server(base);
+  const editor = new ManifestEditor(copy(base), (message) => server.call(message), () => {}, new Clock());
+  const source = editor.source;
+  for (const slot of [0, 1, 2, 3, 4]) {
+    editor.selectSlot(slot);
+    assert.equal(editor.slot, slot);
+  }
+  for (const slot of [-1, 5, null]) editor.selectSlot(slot);
+  assert.equal(editor.slot, 4);
+  assert.equal(editor.source, source);
+  assert.equal(editor.history.canUndo, false);
+  assert.deepEqual(server.calls, []);
+  editor.addPage("single");
+  assert.equal(editor.page, 1);
+  editor.selectSlot(0);
+  editor.reorderPage(-1);
+  assert.equal(editor.page, 0);
+  assert.equal(editor.slot, 0);
+  assert.equal(editor.manifest.pages[0].type, "single");
+  editor.reorderPage(-1);
+  assert.equal(editor.page, 0);
+  editor.selectPage(1);
+  assert.equal(editor.slot, null);
+  editor.removePage();
+  assert.equal(editor.page, 0);
+  assert.equal(editor.manifest.pages.length, 1);
+  editor.removePage();
+  assert.equal(editor.manifest.pages.length, 1);
+  editor.setView("json");
+  editor.edit("{");
+  assert.equal(editor.setView("visual"), false);
+  assert.equal(editor.view, "json");
+  editor.undo();
+  assert.equal(editor.setView("visual"), true);
+  // History may restore an invalid raw draft from visual mode; expose its errors
+  // and text so the user can repair it without being trapped in the preview.
+  editor.redo();
+  assert.equal(editor.view, "json");
+  editor.close();
+});
+
+test("edits cancel pending destructive conversion", () => {
+  const item = {label: "A", color: "#4378AA", action: {action: "script.a"}};
+  const record = {...copy(base), manifest: {schema: 1, pages: [
+    {type: "pie", quarters: [item, item, null, null]}, ...base.manifest.pages,
+  ]}};
+  const editor = new ManifestEditor(record, async () => {}, () => {}, new Clock());
+  editor.requestPageType("single");
+  assert.equal(editor.pendingSwitch.dropped.length, 1);
+  assert.equal(editor.history.canUndo, false);
+  editor.selectPage(1);
+  assert.equal(editor.pendingSwitch, null);
+  editor.selectPage(0);
+  editor.requestPageType("single");
+  editor.edit(JSON.stringify(base.manifest));
+  assert.equal(editor.pendingSwitch, null);
+  editor.confirmPageType();
+  assert.deepEqual(editor.manifest, base.manifest);
+  editor.close();
+});
+
+test("preview page selection survives raw edits to a structurally invalid draft", () => {
+  const editor = new ManifestEditor(copy(base), async () => {}, () => {}, new Clock());
+  editor.setView("json");
+  const draft = {schema: 1, pages: [
+    {type: "pie", quarters: []},
+    {type: "single", item: {label: "Before"}},
+  ]};
+  editor.edit(JSON.stringify(draft));
+  editor.selectPage(1);
+  draft.pages[1].item.label = "After";
+  editor.edit(JSON.stringify(draft));
+  assert.equal(editor.page, 1);
+  assert.equal(editor.manifest.pages[editor.page].item.label, "After");
+  editor.addPage("single");
+  assert.deepEqual(editor.manifest, draft);
+  editor.close();
+});

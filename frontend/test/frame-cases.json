@@ -1,0 +1,312 @@
+[
+  {
+    "name": "undo-redo-autosaves",
+    "frame": true,
+    "steps": [
+      {
+        "do": "edit",
+        "value": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                null,
+                null,
+                null,
+                null
+              ]
+            }
+          ],
+          "display": {
+            "timeout": 30
+          }
+        }
+      },
+      {
+        "do": "tick",
+        "ms": 1000
+      },
+      {
+        "do": "undo",
+        "check": "undo enters the same debounce path as an edit"
+      },
+      {
+        "do": "tick",
+        "ms": 999,
+        "check": "undo not saved before one second"
+      },
+      {
+        "do": "tick",
+        "ms": 1,
+        "check": "undo autosaved using current revision"
+      },
+      {
+        "do": "redo"
+      },
+      {
+        "do": "tick",
+        "ms": 1000,
+        "check": "redo autosaved using next revision"
+      }
+    ]
+  },
+  {
+    "name": "type-switch-confirmation",
+    "frame": true,
+    "record": {
+      "manifest": {
+        "schema": 1,
+        "pages": [
+          {
+            "type": "pie",
+            "quarters": [
+              {
+                "label": "A",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              },
+              null,
+              {
+                "label": "B",
+                "color": "#4378AA",
+                "action": {
+                  "action": "script.a"
+                }
+              },
+              null
+            ],
+            "center": {
+              "label": "C",
+              "color": "#4378AA",
+              "action": {
+                "action": "script.a"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "steps": [
+      {
+        "do": "selectSlot",
+        "value": 2
+      },
+      {
+        "do": "requestPageType",
+        "value": "single",
+        "check": "two dropped Items announced without editing"
+      },
+      {
+        "do": "tick",
+        "ms": 10000,
+        "check": "no save before confirmation"
+      },
+      {
+        "do": "cancelPageType",
+        "check": "cancel leaves all Items intact"
+      },
+      {
+        "do": "requestPageType",
+        "value": "single"
+      },
+      {
+        "do": "confirmPageType"
+      },
+      {
+        "do": "tick",
+        "ms": 1000,
+        "check": "confirmed conversion keeps center and autosaves"
+      },
+      {
+        "do": "undo"
+      },
+      {
+        "do": "tick",
+        "ms": 1000,
+        "check": "undo recovers and autosaves all dropped Items"
+      },
+      {
+        "do": "redo"
+      },
+      {
+        "do": "tick",
+        "ms": 1000,
+        "check": "redo autosaves conversion"
+      }
+    ]
+  },
+  {
+    "name": "item-draft-and-undo",
+    "frame": true,
+    "steps": [
+      {
+        "do": "selectSlot",
+        "value": 1
+      },
+      {
+        "do": "addItem"
+      },
+      {
+        "do": "fail",
+        "kind": "validate",
+        "error": {
+          "code": "invalid_manifest",
+          "message": "'action' is a required property"
+        }
+      },
+      {
+        "do": "tick",
+        "ms": 1000,
+        "check": "Item without action stays in browser with errors"
+      },
+      {
+        "do": "setView",
+        "value": "json",
+        "check": "schema-invalid draft can be edited in JSON"
+      },
+      {
+        "do": "undo"
+      },
+      {
+        "do": "tick",
+        "ms": 1000,
+        "check": "undo draft autosaves valid empty Slot"
+      },
+      {
+        "do": "redo"
+      },
+      {
+        "do": "fail",
+        "kind": "validate",
+        "error": {
+          "code": "invalid_manifest",
+          "message": "'action' is a required property"
+        }
+      },
+      {
+        "do": "tick",
+        "ms": 1000,
+        "check": "redo draft validates and refuses invalid save"
+      },
+      {
+        "do": "removeItem"
+      },
+      {
+        "do": "tick",
+        "ms": 1000,
+        "check": "quarter removal writes null and autosaves"
+      }
+    ]
+  },
+  {
+    "name": "undo-during-save",
+    "frame": true,
+    "steps": [
+      {
+        "do": "hold",
+        "kind": "save"
+      },
+      {
+        "do": "edit",
+        "value": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                null,
+                null,
+                null,
+                null
+              ]
+            }
+          ],
+          "display": {
+            "timeout": 30
+          }
+        }
+      },
+      {
+        "do": "tick",
+        "ms": 1000
+      },
+      {
+        "do": "undo"
+      },
+      {
+        "do": "tick",
+        "ms": 1000
+      },
+      {
+        "do": "release",
+        "check": "in-flight save cannot overwrite undo and queued undo uses returned revision"
+      },
+      {
+        "do": "redo"
+      },
+      {
+        "do": "tick",
+        "ms": 1000,
+        "check": "redo remains available after both saves"
+      }
+    ]
+  },
+  {
+    "name": "conflict-stops-undo-autosave",
+    "frame": true,
+    "steps": [
+      {
+        "do": "remote",
+        "value": {
+          "revision": 3
+        }
+      },
+      {
+        "do": "edit",
+        "value": {
+          "schema": 1,
+          "pages": [
+            {
+              "type": "pie",
+              "quarters": [
+                null,
+                null,
+                null,
+                null
+              ]
+            }
+          ],
+          "display": {
+            "timeout": 30
+          }
+        }
+      },
+      {
+        "do": "tick",
+        "ms": 1000
+      },
+      {
+        "do": "undo"
+      },
+      {
+        "do": "tick",
+        "ms": 10000
+      },
+      {
+        "do": "redo"
+      },
+      {
+        "do": "tick",
+        "ms": 10000,
+        "check": "history navigation preserves draft and conflict without further saves"
+      },
+      {
+        "do": "reload",
+        "check": "reload adopts remote revision and clears history"
+      }
+    ]
+  }
+]

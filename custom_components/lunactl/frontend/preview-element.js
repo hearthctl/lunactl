@@ -19,13 +19,19 @@ function loadFonts() {
 }
 
 class LunactlPreview extends LitElement {
-  static properties = {source: {}, hass: {attribute: false}, device: {}, _page: {state: true}, _now: {state: true}};
+  static properties = {source: {}, hass: {attribute: false}, device: {}, page: {type: Number},
+    interactive: {type: Boolean}, selectedSlot: {attribute: false}, _page: {state: true}, _now: {state: true}};
   static styles = css`
     :host { display: block; width: 100%; max-width: 466px; margin: auto; }
     svg { display: block; width: 100%; height: auto; }
     [data-page] { cursor: pointer; }
     [data-page]:focus { outline: none; }
     [data-page]:focus circle:last-child { stroke: white; stroke-width: 2; }
+    [data-slot][role="button"] { cursor: pointer; }
+    [data-slot][role="button"]:focus { outline: none; }
+    [data-slot][data-empty="true"] > :first-child { stroke: #999; stroke-width: 2; stroke-dasharray: 8 6; }
+    [data-slot][aria-pressed="true"] > :first-child,
+    [data-slot][role="button"]:focus > :first-child { stroke: #80c8ff; stroke-width: 5; stroke-dasharray: none; }
     p { color: var(--secondary-text-color); }
   `;
   constructor() { super(); this._page = 0; this._now = Date.now(); }
@@ -37,22 +43,42 @@ class LunactlPreview extends LitElement {
   }
   disconnectedCallback() { super.disconnectedCallback(); clearInterval(this._tick); }
   willUpdate(changed) {
-    if (changed.has("device")) this._page = 0;
+    if (changed.has("device") || changed.has("page") || changed.has("source")) {
+      if (Number.isInteger(this.page)) this._page = this.page;
+      else if (changed.has("device")) this._page = 0;
+    }
     const {manifest} = parseManifest(this.source);
     const count = Array.isArray(manifest?.pages) ? Math.min(6, manifest.pages.length) : 0;
     this._page = Math.max(0, Math.min(this._page, count - 1));
   }
+  update(changed) {
+    const root = this.shadowRoot;
+    const focusedSlot = !changed.has("page") && !changed.has("_page") && !changed.has("device")
+      ? root?.activeElement?.closest("[data-slot][role='button']")
+      : null;
+    super.update(changed);
+    // Selection and live data updates can both replace the SVG.
+    if (focusedSlot && !focusedSlot.isConnected && !root.activeElement) {
+      root.querySelector(`[data-slot="${focusedSlot.dataset.slot}"][role="button"]`)?.focus({preventScroll: true});
+    }
+  }
   _navigate(event) {
     if (event.type === "keydown" && !["Enter", " "].includes(event.key)) return;
-    const target = event.target.closest?.("[data-page]");
+    const target = event.target.closest?.("[data-page], [data-slot][role='button']");
     if (!target) return;
     event.preventDefault();
-    this._page = Number(target.dataset.page);
+    if (target.hasAttribute("data-page")) {
+      this._page = Number(target.dataset.page);
+      this.dispatchEvent(new CustomEvent("page-select", {detail: this._page}));
+    } else if (this.interactive) {
+      this.dispatchEvent(new CustomEvent("slot-select", {detail: Number(target.dataset.slot)}));
+    }
   }
   render() {
     const {manifest} = parseManifest(this.source);
     const svg = renderPreview(manifest, this.hass?.states,
-      previewTime(this._now, this.hass?.config?.time_zone), this._page);
+      previewTime(this._now, this.hass?.config?.time_zone), this._page,
+      this.interactive ? {selectedSlot: this.selectedSlot} : null);
     // Only the escaped, locally generated SVG reaches unsafeHTML.
     return html`<div @click=${this._navigate} @keydown=${this._navigate}>${unsafeHTML(svg)}</div>
       <p>${text.previewApproximation}</p>

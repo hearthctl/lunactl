@@ -120,3 +120,32 @@ async def test_designer_validation_errors_preserve_saved_manifest(
         "manifest": manifest, "revision": 1,
     }
     assert store.pending[device.id] is pending_reload
+
+
+@pytest.mark.parametrize("slot", ["single", "quarter", "center"])
+async def test_actionless_item_drafts_never_replace_saved_manifest(
+    hass, setup, manifest, hass_ws_client, slot
+):
+    store, device, _ = setup
+    await store.async_save(device.id, manifest, 0)
+    pending_reload = store.pending[device.id]
+    item = {"label": "Neues Item", "color": "#4378AA"}
+    page = {"type": "single", "item": item} if slot == "single" else {
+        "type": "pie", "quarters": [item if slot == "quarter" else None, None, None, None],
+    }
+    if slot == "center":
+        page["center"] = item
+    draft = {"schema": 1, "pages": [page]}
+    client = await hass_ws_client(hass)
+    for number, command in enumerate(("get", "save"), 1):
+        request = {"id": number, "type": f"lunactl/manifest/{command}",
+                   "device_id": device.id, "manifest": draft}
+        if command == "save":
+            request["revision"] = 1
+        await client.send_json(request)
+        result = await client.receive_json()
+        assert not result["success"]
+        assert result["error"]["code"] == "invalid_manifest"
+        assert store.read(device.id)["manifest"] == manifest
+        assert store.read(device.id)["revision"] == 1
+        assert store.pending[device.id] is pending_reload
