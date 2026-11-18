@@ -107,6 +107,31 @@ test("action search keeps partial text out of the binding until submission", () 
   assert.equal(bindings(form.render(), ".value=")[0], "light.turn_on");
 });
 
+test("action form blocks Try while the action text differs from the binding", async () => {
+  const calls = [];
+  const binding = {action: "light.turn_on", target: {entity_id: "light.bed"}};
+  const form = make("lunactl-action-form", {hass: {...hass, callService: async (...args) => calls.push(args)}, binding});
+  const disabled = () => bindings(form.render(), "?disabled=").at(-1);
+  const tryClick = () => bindings(form.render(), "@click=").at(-1)();
+  handler(form.render(), "focus")();
+  assert.equal(disabled(), false);
+  handler(form.render(), "input")(input("light."));
+  await tryClick();
+  assert.deepEqual(calls, []);
+  assert.equal(disabled(), true);
+  handler(form.render(), "input")(input("light.turn_off"));
+  assert.equal(disabled(), true);
+  handler(form.render(), "keydown")(enter("light.turn_off"));
+  await tryClick();
+  assert.deepEqual(calls, []);
+  form.binding = form.emitted;
+  form.willUpdate();
+  assert.equal(disabled(), false);
+  await tryClick();
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0][2].action, "light.turn_off");
+});
+
 test("action form runs current unsaved action and preserves JSON-only targets", async () => {
   const calls = [];
   const binding = {action: "script.old", target: {area_id: "room", entity_id: "light.bed"}, data: {old: 1}};

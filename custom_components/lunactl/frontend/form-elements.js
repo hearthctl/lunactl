@@ -93,10 +93,15 @@ class ActionForm extends LitElement {
   _choose(action) {
     const binding = withField(this.binding, "action", action);
     if (!completeAction(binding)) return;
-    this._query = null;
+    this._query = action === this.binding?.action ? null : action;
     this._change(binding);
   }
+  _canTry() {
+    const action = this.binding?.action;
+    return completeAction(this.binding) && (this._query === null || this._query === action);
+  }
   async _try() {
+    if (!this._canTry()) return;
     this._notice = "";
     try {
       if (await tryAction(this.hass, this.binding)) this._notice = text.actionSucceeded;
@@ -136,7 +141,7 @@ class ActionForm extends LitElement {
       ${Object.entries(details.fields || {}).map(([name, field]) => html`<p class="hint"><code>${name}</code>
         ${field.description || field.name || ""}
         ${field.example !== undefined ? html` · ${text.example}: <code>${valueText(field.example)}</code>` : ""}</p>`)}
-      <button ?disabled=${!completeAction(binding)} @click=${() => this._try()}>${text.tryAction}</button>
+      <button ?disabled=${!this._canTry()} @click=${() => this._try()}>${text.tryAction}</button>
       <p role="status">${this._notice}</p>`;
   }
 }
