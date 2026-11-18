@@ -7,3 +7,4 @@ Sketches from the design session, drawn at the real 466 px display size. They sh
 - `single.png`: `single` page.
 - `single-countdown.png`: `single` with value and countdown ring.
 - `icons.png`: the compiled-in icon list.
+- `klima-thermostat.png`: proposed climate page (Thermostat), states Kühlen, Heizen and Aus.
