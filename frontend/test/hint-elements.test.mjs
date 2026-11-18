@@ -96,6 +96,24 @@ test("a missing target marker clears the curved quarter label", () => {
   assert.ok(markerOuterEdge <= 200 - 14, `Marker extends to radius ${markerOuterEdge}`);
 });
 
+test("contrast markers clear straight quarter content in a centerless Pie", () => {
+  const quarter = {label: "Living Room Lights", color: "#D69319"};
+  const element = preview({schema: 1, pages: [{type: "pie", quarters: Array(4).fill(quarter)}]});
+  const markup = svg(element);
+  assert.equal([...markup.matchAll(/>Living Room Lights<\/text>/g)].length, 4);
+  const markers = [...markup.matchAll(/data-hint-slot="([0-3])"[^>]*><title>[^<]+<\/title><circle cx="([\d.]+)" cy="([\d.]+)" r="([\d.]+)"/g)];
+  assert.equal(markers.length, 4);
+  for (const marker of markers) {
+    const [, slot, x, y, radius] = marker.map(Number);
+    const edge = radius + 1; // Include the stroke.
+    // Top icons start at y=80. Bottom live values start at y=372 and use 28px text.
+    assert.ok(slot < 2 ? y + edge < 80 : y - edge > 400, `Marker overlaps content rows in quarter ${slot}`);
+    assert.ok(slot === 1 || slot === 2 ? x - edge > 236 : x + edge < 230, `Marker crosses the divider in quarter ${slot}`);
+    assert.ok(Math.hypot(x - 233, y - 233) + edge < 233, `Marker is clipped in quarter ${slot}`);
+    assert.ok(y + edge < 437, `Marker overlaps the page controls in quarter ${slot}`);
+  }
+});
+
 test("all hint kinds are present while the same draft is debounced and autosaved", async () => {
   let scheduled;
   const clock = {setTimeout(fn, delay) { assert.equal(delay, 1000); scheduled = fn; return 1; }, clearTimeout() {}};

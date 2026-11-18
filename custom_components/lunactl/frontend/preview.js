@@ -53,11 +53,11 @@ export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0, e
   const pages = Array.isArray(manifest?.pages) ? manifest.pages.slice(0, 6) : [];
   const index = Math.max(0, Math.min(pages.length - 1, Number.isInteger(pageIndex) ? pageIndex : 0));
   const page = pages[index];
+  const center = page?.center && typeof page.center === "object";
   const pageHints = hints.filter((hint) => hint.page === index);
   let body = "";
   if (page?.type === "single") body = mainSlot(page.item, states, time.timestamp, false, editor);
   else if (page?.type === "pie") {
-    const center = page.center && typeof page.center === "object";
     const quarters = Array.isArray(page.quarters) ? page.quarters : [];
     for (let slot = 0; slot < 4; slot++) {
       const item = quarters[slot];
@@ -98,8 +98,11 @@ export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0, e
   if (page?.type === "single") body += hintMarker(pageHints, 0, 335, 155);
   else if (page?.type === "pie") {
     for (let slot = 0; slot < 4; slot++) {
-      // Keep the marker inside the curved label path and clear of the center countdown ring.
-      const [x, y] = point(page.center ? CENTER_HOLE + 4 : 168, ANGLES[slot]).split(" ").map(Number);
+      const [x, y] = center
+        // Between the center countdown ring and the curved label.
+        ? point(CENTER_HOLE + 4, ANGLES[slot]).split(" ").map(Number)
+        // Above the upper icons or below the lower live values, inside the display.
+        : [slot === 1 || slot === 2 ? C + 40 : C - 40, slot < 2 ? 48 : 418];
       body += hintMarker(pageHints, slot, x, y);
     }
     body += hintMarker(pageHints, 4, 335, 155);
