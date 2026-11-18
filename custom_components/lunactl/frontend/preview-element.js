@@ -51,6 +51,17 @@ class LunactlPreview extends LitElement {
     const count = Array.isArray(manifest?.pages) ? Math.min(6, manifest.pages.length) : 0;
     this._page = Math.max(0, Math.min(this._page, count - 1));
   }
+  update(changed) {
+    const root = this.shadowRoot;
+    const focusedSlot = changed.has("selectedSlot") && !changed.has("page") && !changed.has("device")
+      ? root?.activeElement?.closest("[data-slot][role='button']")
+      : null;
+    super.update(changed);
+    // The SVG is replaced when selection changes its aria-pressed attributes.
+    if (focusedSlot && !focusedSlot.isConnected && !root.activeElement) {
+      root.querySelector(`[data-slot="${focusedSlot.dataset.slot}"][role="button"]`)?.focus({preventScroll: true});
+    }
+  }
   _navigate(event) {
     if (event.type === "keydown" && !["Enter", " "].includes(event.key)) return;
     const target = event.target.closest?.("[data-page], [data-slot][role='button']");
