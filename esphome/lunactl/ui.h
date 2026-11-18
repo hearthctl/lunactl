@@ -2,6 +2,7 @@
 
 #include "core.h"
 #include "lvgl.h"
+#include <cstring>
 
 namespace lunactl {
 
@@ -14,7 +15,7 @@ class UI {
     text_font_ = text;
     clock_font_ = clock_font ? clock_font : text;
     root_ = box(parent, 0, 0, 466, 466, 0x000000, 233);
-    lv_obj_set_style_clip_corner(root_, true, 0);
+    // The round panel masks the corners without an LVGL clipping layer.
     single_ = box(root_, 93, 93, 280, 280, 0, 140);
     single_icon_ = label(single_, icons, 0, 45, 280);
     single_label_ = label(single_, text, 20, 120, 240);
@@ -49,11 +50,16 @@ class UI {
       quarter_icons_[slot] = label(quarters_[slot], icons, cx - 80, cy - 54, 160);
       quarter_labels_[slot] = label(quarters_[slot], text, cx - 80, cy + 4, 160);
       quarter_values_[slot] = label(quarters_[slot], text, cx - 80, cy + 38, 160);
-      auto *arc = quarter_arcs_[slot] = lv_arc_create(root_);
+      // Clip each full-circle arc to its quadrant, including invalidation.
+      int arc_x = slot == 1 || slot == 2 ? 233 : 0;
+      int arc_y = slot >= 2 ? 233 : 0;
+      auto *clip = box(root_, arc_x, arc_y, 233, 233, 0, 0);
+      lv_obj_set_style_bg_opa(clip, LV_OPA_TRANSP, 0);
+      auto *arc = quarter_arcs_[slot] = lv_arc_create(clip);
       lv_obj_remove_style_all(arc);
       lv_obj_remove_flag(arc, LV_OBJ_FLAG_CLICKABLE);
       lv_obj_remove_flag(arc, LV_OBJ_FLAG_SCROLLABLE);
-      lv_obj_set_pos(arc, 0, 0);
+      lv_obj_set_pos(arc, -arc_x, -arc_y);
       lv_obj_set_size(arc, 466, 466);
       lv_arc_set_rotation(arc, 0);
       lv_obj_set_style_arc_opa(arc, LV_OPA_TRANSP, LV_PART_INDICATOR);
@@ -147,7 +153,7 @@ class UI {
   }
 
   void update_clock(const Core &core) {
-    if (clock_) lv_label_set_text(clock_, core.clock().c_str());
+    if (clock_) set_text(clock_, core.clock().c_str());
   }
 
   void update_time(const Core &core) {
@@ -155,16 +161,23 @@ class UI {
     if (!ring_) return;
     auto countdown = core.countdown();
     visible(ring_, countdown.remaining > 0);
-    lv_label_set_text(single_countdown_, !core.pie() ? countdown.text.c_str() : "");
-    lv_label_set_text(center_countdown_, core.center() ? countdown.text.c_str() : "");
+    set_text(single_countdown_, !core.pie() ? countdown.text.c_str() : "");
+    set_text(center_countdown_, core.center() ? countdown.text.c_str() : "");
     if (countdown.remaining == 0) return;
     auto color = lv_color_hex(core.item(core.main_slot()).rgb);
-    lv_obj_set_style_arc_color(ring_, lv_color_mix(color, lv_color_hex(0), 80), LV_PART_MAIN);
-    lv_obj_set_style_arc_color(ring_, lv_color_mix(lv_color_hex(0xFFFFFF), color, 160), LV_PART_INDICATOR);
+    auto background = lv_color_mix(color, lv_color_hex(0), 80);
+    auto foreground = lv_color_mix(lv_color_hex(0xFFFFFF), color, 160);
+    if (!lv_color_eq(lv_obj_get_style_arc_color(ring_, LV_PART_MAIN), background))
+      lv_obj_set_style_arc_color(ring_, background, LV_PART_MAIN);
+    if (!lv_color_eq(lv_obj_get_style_arc_color(ring_, LV_PART_INDICATOR), foreground))
+      lv_obj_set_style_arc_color(ring_, foreground, LV_PART_INDICATOR);
     lv_arc_set_value(ring_, countdown.ring);
   }
 
  private:
+  static void set_text(lv_obj_t *obj, const char *text) {
+    if (std::strcmp(lv_label_get_text(obj), text) != 0) lv_label_set_text(obj, text);
+  }
   static void visible(lv_obj_t *obj, bool show) {
     if (show) lv_obj_remove_flag(obj, LV_OBJ_FLAG_HIDDEN);
     else lv_obj_add_flag(obj, LV_OBJ_FLAG_HIDDEN);

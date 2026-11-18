@@ -126,7 +126,13 @@ int main() {
    if (labels == 3) assert(child->text.empty());
    ++labels;
   }
-  if (child->kind == "arc" && child != ring) {
+  if (child->kind == "box" && child->children.size() == 1 && child->children[0]->kind == "arc") {
+   auto clip = child;
+   child = clip->children[0];
+   assert(clip->width == 233 && clip->height == 233);
+   assert(clip->x == (arcs == 1 || arcs == 2 ? 233 : 0));
+   assert(clip->y == (arcs >= 2 ? 233 : 0));
+   assert(child->x + clip->x == 0 && child->y + clip->y == 0);
    assert(child->width == 466 && child->height == 466 && child->arc_width == 65);
    assert(child->size == 74 && !(child->flags & LV_OBJ_FLAG_CLICKABLE));
    if (arcs == 0) assert(child->arc_color == 0x2049D8);

@@ -232,8 +232,11 @@ script:
   - id: render_battery
     then:
       - lambda: |-
-          lv_label_set_text(id(battery_level_text), id(battery).text().c_str());
-          lv_label_set_text(id(battery_hint), id(battery).hint());
+          auto text = id(battery).text();
+          if (std::strcmp(lv_label_get_text(id(battery_level_text)), text.c_str()) != 0)
+            lv_label_set_text(id(battery_level_text), text.c_str());
+          if (std::strcmp(lv_label_get_text(id(battery_hint)), id(battery).hint()) != 0)
+            lv_label_set_text(id(battery_hint), id(battery).hint());
   - id: manifest_on_connect
     mode: restart
     then:
@@ -270,6 +273,10 @@ script:
           lv_label_set_text(id(manifest_status), core.status());
           id(page_ui).init(lv_obj_get_parent(id(touch_surface)), id(font_item)->get_lv_font(), id(font_icon)->get_lv_font(), id(countdown_ring), id(font_battery)->get_lv_font(), id(font_countdown)->get_lv_font());
           id(page_ui).render(core);
+          // No state styles: pressing the input surface must not invalidate the screen.
+          lv_obj_remove_style_all(id(touch_surface));
+          lv_obj_set_size(id(touch_surface), 466, 466);
+          lv_obj_center(id(touch_surface));
           lv_obj_remove_flag(id(touch_surface), LV_OBJ_FLAG_SCROLLABLE);
           lv_obj_move_foreground(id(battery_hint));
           lv_obj_move_foreground(id(battery_level_text));
@@ -354,6 +361,7 @@ display:
     model: CO5300
     brightness: 179  # 70% of the CO5300's 0–255 range.
     bus_mode: quad
+    data_rate: 80MHz
     color_order: rgb
     cs_pin: GPIO39
     reset_pin:
@@ -481,8 +489,6 @@ lvgl:
         border_width: 0
         shadow_width: 0
         pad_all: 0
-        pressed:
-          bg_opa: TRANSP
         # ESPHome 2026.10.2 supplies widget-relative `lv_point_t point` to
         # both triggers (components/lvgl/trigger.py:add_trigger).
         on_press:
