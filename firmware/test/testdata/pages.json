@@ -1462,143 +1462,65 @@
       {
         "status": "",
         "tappable": true,
-        "page": 0,
-        "home": true,
-        "dots": [
-          true,
-          false,
-          false,
-          false,
-          false,
-          false
-        ],
-        "type": "pie",
-        "clock": "--:--",
-        "hole_radius": 56,
-        "quarters": [
-          {
-            "tappable": true,
-            "label": "Hell",
-            "color": "#F7C844",
-            "icon": "mdi:white-balance-sunny",
-            "glyph": "󰖨"
-          },
-          {
-            "tappable": true,
-            "label": "Lesen",
-            "color": "#107C78",
-            "icon": "mdi:book-open-variant",
-            "glyph": "󱓷"
-          },
-          {
-            "tappable": true,
-            "label": "Schlafen gehen",
-            "color": "#3B2DA0",
-            "icon": "mdi:weather-night",
-            "glyph": "󰖔"
-          },
-          {
-            "tappable": true,
-            "label": "Gemütlich",
-            "color": "#BB390A",
-            "icon": "mdi:sofa",
-            "glyph": "󰒹"
-          }
-        ]
-      },
-      {
-        "status": "",
-        "tappable": true,
-        "page": 4,
+        "page": 5,
         "home": false,
         "dots": [
           false,
           false,
           false,
           false,
-          true,
-          false
+          false,
+          true
         ],
-        "type": "pie",
-        "clock": "--:--",
-        "hole_radius": 56,
-        "quarters": [
-          {
-            "tappable": true,
-            "label": "Hell",
-            "color": "#F7C844",
-            "icon": "mdi:white-balance-sunny",
-            "glyph": "󰖨"
-          },
-          {
-            "tappable": true,
-            "label": "Lesen",
-            "color": "#107C78",
-            "icon": "mdi:book-open-variant",
-            "glyph": "󱓷"
-          },
-          {
-            "tappable": true,
-            "label": "Schlafen gehen",
-            "color": "#3B2DA0",
-            "icon": "mdi:weather-night",
-            "glyph": "󰖔"
-          },
-          {
-            "tappable": true,
-            "label": "Gemütlich",
-            "color": "#BB390A",
-            "icon": "mdi:sofa",
-            "glyph": "󰒹"
-          }
-        ]
+        "type": "single",
+        "item": {
+          "label": "Page 5",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
       },
       {
         "status": "",
         "tappable": true,
-        "page": 4,
+        "page": 5,
         "home": false,
         "dots": [
           false,
           false,
           false,
           false,
-          true,
-          false
+          false,
+          true
         ],
-        "type": "pie",
-        "clock": "--:--",
-        "hole_radius": 56,
-        "quarters": [
-          {
-            "tappable": true,
-            "label": "Hell",
-            "color": "#F7C844",
-            "icon": "mdi:white-balance-sunny",
-            "glyph": "󰖨"
-          },
-          {
-            "tappable": true,
-            "label": "Lesen",
-            "color": "#107C78",
-            "icon": "mdi:book-open-variant",
-            "glyph": "󱓷"
-          },
-          {
-            "tappable": true,
-            "label": "Schlafen gehen",
-            "color": "#3B2DA0",
-            "icon": "mdi:weather-night",
-            "glyph": "󰖔"
-          },
-          {
-            "tappable": true,
-            "label": "Gemütlich",
-            "color": "#BB390A",
-            "icon": "mdi:sofa",
-            "glyph": "󰒹"
-          }
-        ]
+        "type": "single",
+        "item": {
+          "label": "Page 5",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 5,
+        "home": false,
+        "dots": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 5",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
       },
       {
         "status": "",

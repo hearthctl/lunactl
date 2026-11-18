@@ -179,11 +179,14 @@ int main() {
  press({233, 233});
  release({233, 233});
  if (tapped_slot != 0 || manifest_core.item(tapped_slot).action != "script.second") return 8;
- // A dot selects home without running an Item.
+ // The home dot is inert. Swiping from it still navigates.
  lv_point_t dot{manifest_core.dots_left() + 15, 451};
  press(dot);
  release(dot);
- if (tapped_slot != -1 || manifest_core.page_index() != 0) return 9;
+ if (tapped_slot != -1 || manifest_core.page_index() != 1) return 9;
+ press(dot);
+ release({dot.x + 65, dot.y});
+ if (tapped_slot != -1 || manifest_core.page_index() != 0) return 18;
  // A touch spanning a replacement must not run the new Manifest's action.
  press({130, 130});
  if (!manifest_core.accept_json(manifest_core.begin_fetch(), manifest, error)) return 10;

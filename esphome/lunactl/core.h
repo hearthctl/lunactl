@@ -483,11 +483,6 @@ class Core {
       return -1;
     }
     if (std::abs(dx) > 20 || std::abs(dy) > 20) return -1;
-    if (page_count() > 1 && y >= 437 && y < 465 && press_y_ >= 437 && press_y_ < 465 &&
-        x >= dots_left() + 6 && x < dots_left() + 6 + static_cast<int>(page_count()) * 18) {
-      show_page((x - dots_left() - 6) / 18);
-      return -1;
-    }
     int slot = hit(x, y);
     return slot >= 0 && hit(press_x_, press_y_) == slot ? slot : -1;
   }

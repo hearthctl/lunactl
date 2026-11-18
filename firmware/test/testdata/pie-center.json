@@ -203,8 +203,13 @@
       "type": "tap"
     },
     {
-      "type": "tap",
+      "type": "press",
       "x": 218,
+      "y": 451
+    },
+    {
+      "type": "release",
+      "x": 283,
       "y": 451
     },
     {
@@ -1227,6 +1232,23 @@
           "service": "lunactl.run",
           "action": "script.single",
           "data": "{\"target\":{},\"data\":{}}"
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "",
+          "glyph": ""
         }
       },
       {
