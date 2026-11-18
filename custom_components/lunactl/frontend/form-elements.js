@@ -190,8 +190,8 @@ class ValueForm extends LitElement {
           }
           map(rows.map((row, j) => j === i ? [name, display] : row));
         }}>
-        <span>→</span><input aria-label=${text.mapDisplay} .value=${valueText(display)} @input=${(e) =>
-          map(rows.map((row, j) => j === i ? [state, e.target.value] : row))}>
+        <span>→</span><textarea aria-label=${text.mapDisplay} .value=${valueText(display)} @input=${(e) =>
+          map(rows.map((row, j) => j === i ? [state, e.target.value] : row))}></textarea>
         <button aria-label=${text.removeItem} @click=${() => map(rows.filter((_, j) => j !== i))}>×</button>
       </div>`)}
       <button ?disabled=${rows.some(([state]) => state === "")} @click=${() => map([...rows, ["", ""]])}>${text.addRow}</button>
