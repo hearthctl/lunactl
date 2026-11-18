@@ -43,9 +43,13 @@ int main() {
  // A real tap on the settled page remains actionable.
  input.state = LV_INDEV_STATE_PRESSED;
  assert(core.press(233,233)); pager.highlight(core,233,233);
+ auto *item = surface->children[1]->children[0]->children[0];
+ assert(item->bg_color != 0x654321); // Upstream press feedback survives Pager routing.
  input.state = LV_INDEV_STATE_RELEASED;
  assert(core.release(233,233) == 0 && core.item().action == "script.second");
  pager.render(core); poll();
+ assert(item->bg_color == 0x654321 && snapshot_count == 3);
+ // The press color is restored without replacing the clean cached image.
  // Tapping while an earlier swipe is settling must not run the old page's action.
  scrolling = true; scroll_x = 300; input.state = LV_INDEV_STATE_PRESSED;
  core.press(233,233); pager.highlight(core,233,233);
