@@ -33,6 +33,11 @@ function ring(item, states, now) {
 function slotGroup(slot, type, item, editor) {
   return `<g data-slot="${slot}"${editor ? ` role="button" tabindex="0" aria-label="${esc(text.slot(type, slot))}${item == null ? `: ${esc(text.addItem)}` : ""}" aria-pressed="${editor.selectedSlot === slot}" data-empty="${item == null}"` : ""}>`;
 }
+function hintMarker(hints, slot, x, y) {
+  const affected = hints.filter((hint) => hint.slot === slot);
+  if (!affected.length) return "";
+  return `<g data-hint-slot="${slot}" pointer-events="none"><title>${esc(affected.map((hint) => text.hintMessages[hint.kind](hint)).join(" · "))}</title><circle cx="${x}" cy="${y}" r="12" fill="#FFB52E" stroke="#000000" stroke-width="2"/><text x="${x}" y="${y + 5}" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="bold" fill="#000000">!</text></g>`;
+}
 function mainSlot(item, states, now, center, editor) {
   const countdown = ring(item, states, now);
   return slotGroup(center ? 4 : 0, center ? "pie" : "single", item, editor) + `<circle cx="233" cy="233" r="${ITEM_R}" fill="${color(item)}"/>` +
@@ -44,10 +49,11 @@ function mainSlot(item, states, now, center, editor) {
 
 // Accept partial JSON drafts without throwing. This does not validate or save.
 // time = {timestamp: Unix seconds, clock: HH:MM in HA's configured timezone}.
-export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0, editor = null) {
+export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0, editor = null, hints = []) {
   const pages = Array.isArray(manifest?.pages) ? manifest.pages.slice(0, 6) : [];
   const index = Math.max(0, Math.min(pages.length - 1, Number.isInteger(pageIndex) ? pageIndex : 0));
   const page = pages[index];
+  const pageHints = hints.filter((hint) => hint.page === index);
   let body = "";
   if (page?.type === "single") body = mainSlot(page.item, states, time.timestamp, false, editor);
   else if (page?.type === "pie") {
@@ -88,6 +94,14 @@ export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0, e
     }
     body += label(/^\d{2}:\d{2}$/.test(time.clock) ? time.clock : "--:--", C, center ? 3 : 215, center ? 20 : 28);
     if (!center && editor) body += label("+", C, 247, 24) + "</g>";
+  }
+  if (page?.type === "single") body += hintMarker(pageHints, 0, 335, 155);
+  else if (page?.type === "pie") {
+    for (let slot = 0; slot < 4; slot++) {
+      const [x, y] = point(page.center ? 208 : 168, ANGLES[slot]).split(" ").map(Number);
+      body += hintMarker(pageHints, slot, x, y);
+    }
+    body += hintMarker(pageHints, 4, 335, 155);
   }
   if (pages.length > 1) {
     const width = pages.length * 18 + 14, left = (466 - width) / 2;

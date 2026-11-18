@@ -1,0 +1,135 @@
+[
+  {
+    "kind": "action-missing",
+    "path": "pages[0].quarters[0].action.action",
+    "page": 0,
+    "slot": 0,
+    "action": "scene.turn_on"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[0].quarters[0].action.target.entity_id",
+    "page": 0,
+    "slot": 0,
+    "entity": "scene.kinderzimmer_hell"
+  },
+  {
+    "kind": "contrast",
+    "path": "pages[0].quarters[0].color",
+    "page": 0,
+    "slot": 0
+  },
+  {
+    "kind": "action-missing",
+    "path": "pages[0].quarters[1].action.action",
+    "page": 0,
+    "slot": 1,
+    "action": "scene.turn_on"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[0].quarters[1].action.target.entity_id",
+    "page": 0,
+    "slot": 1,
+    "entity": "scene.kinderzimmer_lesen"
+  },
+  {
+    "kind": "action-missing",
+    "path": "pages[0].quarters[2].action.action",
+    "page": 0,
+    "slot": 2,
+    "action": "scene.turn_on"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[0].quarters[2].action.target.entity_id",
+    "page": 0,
+    "slot": 2,
+    "entity": "scene.kinderzimmer_gemuetlich"
+  },
+  {
+    "kind": "action-missing",
+    "path": "pages[0].quarters[3].action.action",
+    "page": 0,
+    "slot": 3,
+    "action": "scene.turn_on"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[0].quarters[3].action.target.entity_id",
+    "page": 0,
+    "slot": 3,
+    "entity": "scene.kinderzimmer_schlafen_gehen"
+  },
+  {
+    "kind": "action-missing",
+    "path": "pages[1].quarters[0].action.action",
+    "page": 1,
+    "slot": 0,
+    "action": "script.lunactl_kuehlen"
+  },
+  {
+    "kind": "action-missing",
+    "path": "pages[1].quarters[1].action.action",
+    "page": 1,
+    "slot": 1,
+    "action": "script.lunactl_heizen"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[1].center.value.refs[0].entity",
+    "page": 1,
+    "slot": 4,
+    "entity": "sensor.kinderzimmer_temperatur"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[1].center.value.refs[1].entity",
+    "page": 1,
+    "slot": 4,
+    "entity": "climate.kinderzimmer"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[1].center.countdown",
+    "page": 1,
+    "slot": 4,
+    "entity": "timer.kinderzimmer_klima_lauf"
+  },
+  {
+    "kind": "action-missing",
+    "path": "pages[1].center.action.action",
+    "page": 1,
+    "slot": 4,
+    "action": "script.lunactl_klima_aus"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[2].item.value.refs[0].entity",
+    "page": 2,
+    "slot": 0,
+    "entity": "input_boolean.lunactl_papa_kommt"
+  },
+  {
+    "kind": "action-missing",
+    "path": "pages[2].item.action.action",
+    "page": 2,
+    "slot": 0,
+    "action": "script.lunactl_papa_rufen"
+  },
+  {
+    "kind": "action-missing",
+    "path": "buttons.a_short.action",
+    "action": "script.lunactl_taste_a"
+  },
+  {
+    "kind": "action-missing",
+    "path": "buttons.b_long.action",
+    "action": "script.lunactl_papa_rufen"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "display.brightness",
+    "entity": "input_number.lunactl_brightness"
+  }
+]
