@@ -45,7 +45,7 @@ check fit on the real round display; [mockups](mockups/README.md) show intent.
 | --- | --- | --- |
 | `label` | Yes | Nonempty string. |
 | `color` | Yes | Six-digit `#RRGGBB` string; quote it in YAML. |
-| `action` | Yes | Full action object below; an Item is always tappable. |
+| `action` | Yes | Full action object below; an Item is tappable, except Dial minus/plus while inactive. |
 | `icon` | No | HA MDI name from the schema enum (listed below); omission shows no icon, unknown names reject the Manifest. |
 | `value` | No | Live value object below. |
 | `countdown` | No | HA entity ID matching `timer.object_id`; rendered only in Single or Pie center. |

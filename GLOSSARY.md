@@ -70,7 +70,7 @@ Der Page type zum Einstellen eines Werts: groß in der Mitte ein Live-Wert mit M
 _Avoid_: Thermostat, Stepper, Klima-Seite
 
 **Aktiv**:
-Ein Item ist aktiv, wenn ein Zustand in Home Assistant zu ihm passt, etwa Kühlen, während die Klimaanlage kühlt. Das Gerät zeigt es nur an; was aktiv bedeutet, legt das Manifest fest.
+Ein Item ist aktiv, wenn ein Zustand in Home Assistant zu ihm passt, etwa Kühlen, während die Klimaanlage kühlt. Das Gerät zeigt es an und blendet bei einer Dial ein inaktives Minus oder Plus aus; was aktiv bedeutet, legt das Manifest fest.
 _Avoid_: ausgewählt, selected, an
 
 **Slot**:
@@ -78,7 +78,7 @@ Eine Position in einem Page type, die das Manifest befüllt.
 _Avoid_: Platz, Position, Cell
 
 **Item**:
-Der Inhalt eines Slots. Ein Item ist immer antippbar und löst dann eine Home-Assistant-Aktion aus. Es kann Text, Symbol, Farbe, einen Live-Wert, eine Restzeit und einen Aktiv-Zustand mitbringen; der Page type zeigt davon, was in den Slot passt.
+Der Inhalt eines Slots. Ein Item ist antippbar und löst dann eine Home-Assistant-Aktion aus; nur Minus und Plus einer Dial verschwinden, solange sie nicht aktiv sind, und lösen dann nichts aus. Es kann Text, Symbol, Farbe, einen Live-Wert, eine Restzeit und einen Aktiv-Zustand mitbringen; der Page type zeigt davon, was in den Slot passt.
 _Avoid_: Kachel, Tile, Widget, Entry, Control
 
 **Disconnected**:
