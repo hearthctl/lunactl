@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import {test} from "node:test";
 import {addPage, removePage, reorderPage, switchPageType, addItem, removeItem,
-  draftItem, canEditManifest, slotsFor, slotItem} from "../../custom_components/lunactl/frontend/manifest-operations.js";
+  draftItem, canEditManifest, slotsFor, slotItem, setItem} from "../../custom_components/lunactl/frontend/manifest-operations.js";
 import {History} from "../../custom_components/lunactl/frontend/history.js";
 import {text} from "../../custom_components/lunactl/frontend/strings.js";
 
@@ -17,6 +17,9 @@ const manifest = (...pages) => ({schema: 1, pages, buttons: {a_short: a.action},
 const cases = [
   ["append Single draft", manifest(pie), (m) => addPage(m, "single"), manifest(pie, {type: "single", item: draftItem()})],
   ["append Pie", manifest(single), (m) => addPage(m, "pie"), manifest(single, empty)],
+  ["edit Single Item", manifest(single, pie), (m) => setItem(m, 0, 0, b), manifest({type: "single", item: b}, pie)],
+  ["edit quarter Item", manifest(single, pie), (m) => setItem(m, 1, 2, c), manifest(single, {...pie, quarters: [a, null, c, null]})],
+  ["edit center Item", manifest({...pie, center: c}, single), (m) => setItem(m, 0, 4, b), manifest({...pie, center: b}, single)],
   ["remove first page", manifest(single, pie), (m) => removePage(m, 0), manifest(pie)],
   ["remove last page", manifest(pie, single), (m) => removePage(m, 1), manifest(pie)],
   ["keep sole page", manifest(pie), (m) => removePage(m, 0), manifest(pie)],
@@ -69,10 +72,12 @@ test("invalid operation arguments leave the Manifest untouched", () => {
     assert.equal(switchPageType(input, index, "single").manifest, input);
     assert.equal(addItem(input, index, 0), input);
     assert.equal(removeItem(input, index, 0), input);
+    assert.equal(setItem(input, index, 0, b), input);
   }
   for (const slot of [-1, 5, null, "0"]) {
     assert.equal(addItem(input, 0, slot), input);
     assert.equal(removeItem(input, 0, slot), input);
+    assert.equal(setItem(input, 0, slot, b), input);
   }
   assert.equal(addPage(input, "unknown"), input);
   assert.equal(switchPageType(input, 0, "unknown").manifest, input);

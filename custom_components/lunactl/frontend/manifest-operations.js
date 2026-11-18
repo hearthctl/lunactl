@@ -89,3 +89,13 @@ export function removeItem(manifest, index, slot) {
   else next.quarters = page.quarters.map((value, i) => i === slot ? null : value);
   return replacePage(manifest, index, next);
 }
+
+// Replace just the selected Item, retaining all other pages/settings verbatim.
+export function setItem(manifest, index, slot, item) {
+  if (!validPage(manifest, index)) return manifest;
+  const page = manifest.pages[index];
+  if (!slotsFor(page).includes(slot)) return manifest;
+  const next = page.type === "single" ? {...page, item} : slot === 4 ? {...page, center: item} :
+    {...page, quarters: page.quarters.map((value, i) => i === slot ? item : value)};
+  return replacePage(manifest, index, next);
+}

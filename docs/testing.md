@@ -33,6 +33,15 @@ placeholder substitution, timestamp offsets and timer lifecycle states. Tests
 also check live state/time changes, partial JSON drafts, XML escaping and all
 44 icon glyphs against the firmware. The SVG geometry points to `ui.h`/`core.h`.
 HA tests check the admin-only panel, versioned static modules and fonts, and unload/reload.
+
+Issue [#61](https://github.com/hearthctl/lunactl/issues/61) adds tables for
+simple/expert value detection and lossless round trips, HA prefills and map
+suggestions, picker searches/domain filters, schema icon coverage, palette
+contrast and omission of default display fields. A whole-Manifest golden covers
+Item/key/display edits, undo/redo and all five trial-action envelopes. Node tests
+exercise the actual Lit form event handlers without attaching a DOM, including
+invalid/unsaved actions through `lunactl.run`, JSON-only target preservation,
+map edits and all four key rows. All run in `make verify`.
 These checks run in `make verify` and CI with Node only, without browser tests.
 
 The contract runner creates its own local HA and test user, installs the actual
