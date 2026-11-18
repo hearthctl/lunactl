@@ -9,6 +9,9 @@ esphome:
     - -DLV_DRAW_SW_SUPPORT_A8=1
     - -DLV_USE_FLOAT=1
     - -DLV_USE_SNAPSHOT=1
+    # ESPHome parses action responses with ArduinoJson's default nesting limit
+    # (10), too shallow for Manifests with scene.apply color lists.
+    - -DARDUINOJSON_DEFAULT_NESTING_LIMIT=32
   # Copy the header, and include its type before ESPHome's static globals.
   includes: [<core.h>, lunactl/core.h, lunactl/icons.h, lunactl/countdown.h, <ui.h>, lunactl/ui.h, <pager.h>, lunactl/pager.h, <battery.h>, lunactl/battery.h]
   # Runs after the I2C bus (1000) and before the M5IOE1 setup (IO, 900).
