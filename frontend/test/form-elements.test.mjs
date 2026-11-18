@@ -246,6 +246,19 @@ test("editing a suggested live-value map key preserves its newline", () => {
   assert.equal(formatValue(form.emitted, {...states, "sensor.room": {state: renamed, attributes: {}}}), "Mapped");
 });
 
+test("editing a live-value map key preserves CRLF alongside LF", () => {
+  const key = "Line 1\r\nLine 2\nLine 3";
+  const form = make("lunactl-value-form", {hass,
+    value: {format: "{0}", refs: [{entity: "sensor.room", map: {[key]: "Mapped"}}]}});
+  const field = templates(form.render()).find((t) => t.values.includes(text.mapState));
+  for (const renamed of [key + "!", "Start\n" + key, key + "\nEnd", "Line 1\r\nLine 3"]) {
+    // The browser normalizes the textarea value before firing change.
+    handler(field, "change")(input(renamed.replaceAll("\r\n", "\n")));
+    assert.deepEqual(form.emitted.refs[0].map, {[renamed]: "Mapped"});
+    assert.equal(formatValue(form.emitted, {"sensor.room": {state: renamed, attributes: {}}}), "Mapped");
+  }
+});
+
 test("panel Item handlers update label, palette/custom hex, optional icon and countdown", () => {
   const editor = new ManifestEditor({manifest: {schema: 1, pages: [{type: "single", item: {label: "Old", color: "#123456"}}]}},
     undefined, () => {}, {setTimeout() {}, clearTimeout() {}});
