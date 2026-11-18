@@ -157,8 +157,14 @@ class ValueForm extends LitElement {
         this._ref(index, withField(ref, "decimal_comma", e.target.checked))}> ${text.decimalComma}</label>
       <p>${text.map}</p>
       ${rows.map(([state, display], i) => html`<div class="row">
-        <input aria-label=${text.mapState} .value=${state} @change=${(e) => map(rows.map((row, j) =>
-          j === i ? [e.target.value, display] : row))}>
+        <input aria-label=${text.mapState} .value=${state} @change=${(e) => {
+          const name = e.target.value;
+          if (rows.some(([key], j) => j !== i && key === name)) {
+            e.target.value = state;
+            return;
+          }
+          map(rows.map((row, j) => j === i ? [name, display] : row));
+        }}>
         <span>→</span><input aria-label=${text.mapDisplay} .value=${valueText(display)} @input=${(e) =>
           map(rows.map((row, j) => j === i ? [state, e.target.value] : row))}>
         <button aria-label=${text.removeItem} @click=${() => map(rows.filter((_, j) => j !== i))}>×</button>

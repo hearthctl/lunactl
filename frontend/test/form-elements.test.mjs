@@ -148,6 +148,14 @@ test("value form map rows accept free states, edits, suggestions and removal", (
   assert.deepEqual(form.value.refs[0].map, {custom: "Frei"});
   handler(form.render(), "click", 4)(); update(); // suggestion "on"
   assert.deepEqual(form.value.refs[0].map, {custom: "Frei", on: "on"});
+  const rename = handler(form.render(), "change", 2);
+  const collision = input("on");
+  form.emitted = undefined;
+  rename(collision);
+  assert.equal(form.emitted, undefined, "duplicate state names must not emit an update");
+  assert.equal(collision.target.value, "custom");
+  rename(input("unique")); update();
+  assert.deepEqual(form.value.refs[0].map, {unique: "Frei", on: "on"});
   handler(form.render(), "click", 2)(); update(); // remove first row
   assert.deepEqual(form.value.refs[0].map, {on: "on"});
 });
