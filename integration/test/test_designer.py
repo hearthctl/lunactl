@@ -1,18 +1,90 @@
 """Designer registration, real HTTP modules and the admin websocket boundary."""
 
 import json
+import re
+import shutil
+import threading
 from copy import deepcopy
 from pathlib import Path
+from unittest.mock import AsyncMock
 
 import pytest
 from homeassistant.components.frontend import DATA_PANELS
 from homeassistant.helpers import device_registry as dr
 
+from custom_components.lunactl import designer
+
 pytestmark = pytest.mark.asyncio
 ROOT = Path(__file__).resolve().parents[2]
+FRONTEND = ROOT / "custom_components/lunactl/frontend"
 
 
-async def test_admin_panel_and_versioned_modules(hass, setup, hass_ws_client, hass_client):
+@pytest.mark.parametrize("relative", sorted(
+    path.relative_to(FRONTEND).as_posix()
+    for path in FRONTEND.rglob("*") if path.is_file() and not path.name.endswith(".gz")
+))
+async def test_frontend_hash_tracks_every_file(hass, tmp_path, relative):
+    root = tmp_path / "frontend"
+    shutil.copytree(FRONTEND, root)
+    original = await hass.async_add_executor_job(designer._frontend_hash, root)
+    path = root / relative
+    content = path.read_bytes()
+    path.write_bytes(content + b"\0changed")
+    assert await hass.async_add_executor_job(designer._frontend_hash, root) != original
+    path.write_bytes(content)
+    assert await hass.async_add_executor_job(designer._frontend_hash, root) == original
+    path.rename(path.with_name(path.name + ".renamed"))
+    assert await hass.async_add_executor_job(designer._frontend_hash, root) != original
+
+
+async def test_frontend_hash_is_sorted_and_ignores_gzip(hass, tmp_path):
+    files = {"panel.js": b"import './vendor/module.js';", "vendor/module.js": b"module"}
+    roots = [tmp_path / "first", tmp_path / "second"]
+    for root, paths in zip(roots, (files, reversed(files))):
+        for name in paths:
+            path = root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(files[name])
+    original = await hass.async_add_executor_job(designer._frontend_hash, roots[0])
+    assert await hass.async_add_executor_job(designer._frontend_hash, roots[1]) == original
+    for name in ("panel.js.gz", "vendor/module.js.gz", "vendor/orphan.gz", ".gz"):
+        compressed = roots[0] / name
+        compressed.write_bytes(b"compressed copy")
+        assert await hass.async_add_executor_job(designer._frontend_hash, roots[0]) == original
+        compressed.write_bytes(b"updated compressed copy")
+        assert await hass.async_add_executor_job(designer._frontend_hash, roots[0]) == original
+        compressed.unlink()
+        assert await hass.async_add_executor_job(designer._frontend_hash, roots[0]) == original
+    added = roots[0] / "extra.txt"
+    added.write_bytes(b"")
+    assert await hass.async_add_executor_job(designer._frontend_hash, roots[0]) != original
+    added.unlink()
+    assert await hass.async_add_executor_job(designer._frontend_hash, roots[0]) == original
+    (roots[0] / "vendor/module.js").unlink()
+    assert await hass.async_add_executor_job(designer._frontend_hash, roots[0]) != original
+
+
+async def test_registration_hashes_once_in_executor_and_reuses_static_path(hass, setup, monkeypatch):
+    entry = hass.config_entries.async_entries("lunactl")[0]
+    assert await hass.config_entries.async_unload(entry.entry_id)
+    loop_thread = threading.get_ident()
+    original_hash = designer._frontend_hash
+    hash_calls = []
+
+    def checked_hash(path):
+        assert threading.get_ident() != loop_thread
+        hash_calls.append(path)
+        return original_hash(path)
+
+    static_spy = AsyncMock(wraps=hass.http.async_register_static_paths)
+    monkeypatch.setattr(designer, "_frontend_hash", checked_hash)
+    monkeypatch.setattr(hass.http, "async_register_static_paths", static_spy)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    assert hash_calls == [FRONTEND]
+    static_spy.assert_not_awaited()
+
+
+async def test_admin_panel_and_hashed_modules(hass, setup, hass_ws_client, hass_client):
     store, device, _ = setup
     client = await hass_ws_client(hass)
     await client.send_json({"id": 1, "type": "get_panels"})
@@ -22,13 +94,19 @@ async def test_admin_panel_and_versioned_modules(hass, setup, hass_ws_client, ha
     config = panel["config"]["_panel_custom"]
     assert config["name"] == "lunactl-designer"
     version = json.loads((ROOT / "custom_components/lunactl/manifest.json").read_text())["version"]
-    prefix = f"/lunactl/frontend/{version}"
+    prefix = config["module_url"].removesuffix("/panel.js")
+    assert re.fullmatch(r"/lunactl/frontend/[0-9a-f]{12}", prefix)
     assert config["module_url"] == f"{prefix}/panel.js"
     http = await hass_client()
+    legacy = await http.get(f"/lunactl/frontend/{version}/panel.js")
+    # HA's Designer catch-all falls back to HTML; it must not serve the module.
+    assert legacy.content_type == "text/html"
+    assert await legacy.read() != (FRONTEND / "panel.js").read_bytes()
     for path in (ROOT / "custom_components/lunactl/frontend").rglob("*.js"):
         relative = path.relative_to(ROOT / "custom_components/lunactl/frontend")
         response = await http.get(f"{prefix}/{relative}")
         assert response.status == 200
+        assert "max-age=" in response.headers["Cache-Control"]
         assert response.content_type in ("text/javascript", "application/javascript")
         assert await response.read() == path.read_bytes()
     for filename in ("nunito-800.ttf", "materialdesignicons-webfont.woff2"):
