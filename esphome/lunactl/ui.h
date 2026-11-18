@@ -145,7 +145,9 @@ class UI {
   void highlight(const Core &core, int x, int y) {
     int slot = core.hit(x, y);
     if (slot < 0 || !root_) return;
-    auto color = lv_color_mix(lv_color_hex(0xFFFFFF), lv_color_hex(core.item(slot).rgb), 40);
+    auto rgb = core.item(slot).rgb;
+    unsigned brightness = (299 * ((rgb >> 16) & 255) + 587 * ((rgb >> 8) & 255) + 114 * (rgb & 255)) / 1000;
+    auto color = lv_color_mix(lv_color_hex(brightness >= 128 ? 0x000000 : 0xFFFFFF), lv_color_hex(rgb), 128);
     if (core.center() && slot != static_cast<int>(CENTER_SLOT))
       lv_obj_set_style_arc_color(quarter_arcs_[slot], color, LV_PART_MAIN);
     else {
