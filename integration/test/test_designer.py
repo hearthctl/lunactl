@@ -227,3 +227,42 @@ async def test_actionless_item_drafts_never_replace_saved_manifest(
         assert store.read(device.id)["manifest"] == manifest
         assert store.read(device.id)["revision"] == 1
         assert store.pending[device.id] is pending_reload
+
+
+async def test_soft_hints_never_reject_valid_manifest(hass, setup, hass_ws_client):
+    """Missing references/actions, unavailable states, contrast and wide text save."""
+    store, device, _ = setup
+    hass.states.async_set("sensor.unavailable", "unavailable")
+    candidate = {
+        "schema": 1,
+        "pages": [{
+            "type": "single",
+            "item": {
+                "label": "Breiter Text " * 20,
+                "color": "#FFFFFF",
+                "action": {
+                    "action": "script.does_not_exist",
+                    "target": {"entity_id": ["light.missing", "sensor.unavailable"]},
+                    "data": {"arbitrary": "not checked against action fields"},
+                },
+                "value": {"format": "{0} {1}", "refs": [
+                    {"entity": "sensor.missing"}, {"entity": "sensor.unavailable"},
+                ]},
+                "countdown": "timer.missing",
+            },
+        }],
+        "buttons": {"a_short": {"action": "script.also_missing"}},
+        "display": {"brightness": "sensor.brightness_missing"},
+    }
+    client = await hass_ws_client(hass)
+    for number, command in enumerate(("get", "save"), 1):
+        request = {"id": number, "type": f"lunactl/manifest/{command}",
+                   "device_id": device.id, "manifest": candidate}
+        if command == "save":
+            request["revision"] = 0
+        await client.send_json(request)
+        result = await client.receive_json()
+        assert result["success"], result
+    assert result["result"]["revision"] == 1
+    assert store.read(device.id)["manifest"] == candidate
+    assert (await store.storage.async_load())[device.id]["manifest"] == candidate
