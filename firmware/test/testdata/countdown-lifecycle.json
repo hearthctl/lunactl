@@ -394,16 +394,8 @@
         }
       },
       {
-        "status": "Keine Verbindung",
-        "tappable": false
-      },
-      {
-        "status": "Keine Verbindung",
-        "tappable": false
-      },
-      {
         "status": "",
-        "tappable": true,
+        "tappable": false,
         "page": 0,
         "home": true,
         "dots": [],
@@ -414,7 +406,31 @@
           "icon": "mdi:bell-ring",
           "glyph": "󰂞",
           "value": "--",
-          "countdown": null
+          "countdown": {
+            "remaining": 60,
+            "text": "1:00",
+            "ring": 1000
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 60,
+            "text": "1:00",
+            "ring": 1000
+          }
         }
       },
       {
@@ -430,13 +446,17 @@
           "icon": "mdi:bell-ring",
           "glyph": "󰂞",
           "value": "--",
-          "countdown": null
-        },
-        "request": 5
+          "countdown": {
+            "remaining": 60,
+            "text": "1:00",
+            "ring": 1000
+          }
+        }
       },
       {
         "status": "",
         "tappable": true,
+        "request": 5,
         "page": 0,
         "home": true,
         "dots": [],
@@ -447,7 +467,11 @@
           "icon": "mdi:bell-ring",
           "glyph": "󰂞",
           "value": "--",
-          "countdown": null
+          "countdown": {
+            "remaining": 60,
+            "text": "1:00",
+            "ring": 1000
+          }
         }
       },
       {
@@ -463,8 +487,16 @@
           "icon": "mdi:bell-ring",
           "glyph": "󰂞",
           "value": "--",
-          "countdown": null
-        },
+          "countdown": {
+            "remaining": 60,
+            "text": "1:00",
+            "ring": 1000
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
         "connection_action": "none",
         "subscriptions": [
           {
@@ -481,11 +513,7 @@
             "entity": "timer.example",
             "attribute": "duration"
           }
-        ]
-      },
-      {
-        "status": "",
-        "tappable": true,
+        ],
         "page": 0,
         "home": true,
         "dots": [],
@@ -496,7 +524,11 @@
           "icon": "mdi:bell-ring",
           "glyph": "󰂞",
           "value": "--",
-          "countdown": null
+          "countdown": {
+            "remaining": 60,
+            "text": "1:00",
+            "ring": 1000
+          }
         }
       },
       {
@@ -512,7 +544,31 @@
           "icon": "mdi:bell-ring",
           "glyph": "󰂞",
           "value": "--",
-          "countdown": null
+          "countdown": {
+            "remaining": 60,
+            "text": "1:00",
+            "ring": 1000
+          }
+        }
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Papa rufen",
+          "color": "#BB1260",
+          "icon": "mdi:bell-ring",
+          "glyph": "󰂞",
+          "value": "--",
+          "countdown": {
+            "remaining": 60,
+            "text": "1:00",
+            "ring": 1000
+          }
         }
       },
       {

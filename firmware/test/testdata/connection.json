@@ -169,17 +169,49 @@
         "type": "single"
       },
       {
-        "status": "Keine Verbindung",
-        "tappable": false
-      },
-      {
-        "status": "Keine Verbindung",
-        "tappable": false
-      },
-      {
-        "status": "Keine Verbindung",
+        "status": "",
         "tappable": false,
-        "error": "Stale Manifest response"
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "offline_icon": true,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360",
+          "icon": "",
+          "glyph": ""
+        }
+      },
+      {
+        "status": "",
+        "tappable": false,
+        "offline_icon": true,
+        "error": "Stale Manifest response",
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360",
+          "icon": "",
+          "glyph": ""
+        }
       },
       {
         "status": "",

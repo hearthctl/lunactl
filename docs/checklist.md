@@ -83,8 +83,8 @@ Before starting:
   previous revision and Item, and its tap still runs the previous action.
   Firmware rejection of malformed or unsupported schemas is covered by the
   host tests; the integration prevents storing those through the normal API.
-- [ ] Disconnect HA while the log viewer remains open. **Keine Verbindung**
-  replaces the Item, and touch cannot run it. Reconnect fetches again.
+- [ ] Disconnect HA while the log viewer remains open. The Item stays visible
+  (Disconnected), and touch cannot run it. Reconnect fetches again.
 - [ ] In the test HA, remove and re-add the ESPHome device, then reboot it. Its
   deleted Manifest yields **Kein Manifest**; no action can be tapped. Save the
   room Manifest for the re-added device to recover. A missing/failed `lunactl.manifest` call also logs its error and
@@ -141,8 +141,9 @@ Before starting:
   previously unused attribute to `value.refs` with a matching placeholder:
   reload requests a restart, then fetches and receives its state. Measure the
   delay until usable and record it. Repeated fetches then remain stable.
-- [ ] Disconnect HA: values clear behind **Keine Verbindung**. Reconnect fetches
-  again and displays fresh states, not stale values from the old connection.
+- [ ] Disconnect HA: the last values stay visible. Change a referenced state
+  while disconnected, then reconnect: the device fetches again and shows the
+  fresh state.
 
 ## Countdown on Single and Pie center (#6)
 
@@ -163,7 +164,8 @@ Before starting:
   unsynced time show no countdown. Restore timer state/time after these tests.
 - [ ] Put `countdown` on a plain Pie quarter: it remains tappable, without
   countdown text/ring. Reconnect while a timer runs: fresh state restores the
-  correct remaining time. No stale ring remains after disconnect/cancel.
+  correct remaining time. A disconnect keeps the ring counting down; no stale
+  ring remains after cancel.
 
 ## Pie with center and curved labels (#7)
 
@@ -206,14 +208,14 @@ Before starting:
 - [ ] Holding a touch or key prevents sleep; releasing starts a fresh timeout.
   Shorten timeout to `2.5` and measure it, then omit `display` and try `{}`:
   defaults are 10 seconds and 70% brightness. Keys still wake and dispatch as
-  checked above, including on **Keine Verbindung** (wake only).
+  checked above, including on **Keine Verbindung** and Disconnected (wake only).
 - [ ] Change `input_number.lunactl_brightness` to 25, 70, 100 and a fractional
   percentage: brightness changes while awake. At 0 the display is dark even
   though awake; restore the helper from HA. Update brightness while asleep:
   it stays off and uses the latest value on wake.
 - [ ] Temporarily reference a test sensor for brightness and try missing/empty,
   `unknown`, `unavailable`, nonnumeric and out-of-range states: fallback is 70%.
-  Disconnect also resets to 70%; reconnect restores the live percentage. Removing
+  Disconnect keeps the last percentage; reconnect restores the live one. Removing
   the brightness reference restores 70%. A new brightness reference restarts as
   in the subscription checks. Restore the original helper and timeout.
 
@@ -232,6 +234,22 @@ Before starting:
   shows **Akku -- %**, HA shows an unknown level, and no stale hint remains.
   A successful read restores the level and appropriate hint. If reliable PMIC
   readings cannot be achieved, record the failures for the human running #13.
+
+## Disconnected (ADR 0006)
+
+- [ ] With a Manifest shown, switch off the Wi-Fi access point (or block the
+  device). After the API keepalive notices it (up to 150 s), the page, values,
+  brightness and a running countdown stay; swipes still navigate.
+  No `wifi-off` icon is visible yet.
+- [ ] Tap an Item and press a bound key: nothing runs, no Item highlights, and
+  `wifi-off` appears at the top center for about 3 s. An unbound key only wakes.
+  On a Pie with center the icon covers the clock while visible.
+- [ ] Stay disconnected for 10 minutes: `wifi-off` stays visible. After another
+  20 minutes the device has not rebooted (uptime continues, Manifest still shown).
+- [ ] Restore Wi-Fi: the icon disappears, fresh states arrive, the Manifest is
+  fetched again and Items run actions. No action from the disconnected period is
+  sent afterwards.
+- [ ] Reboot without HA: **Keine Verbindung**, as before.
 
 ## Completion and coverage (#11)
 

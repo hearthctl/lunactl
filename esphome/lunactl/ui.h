@@ -94,8 +94,8 @@ class UI {
   lv_obj_t *root() const { return root_; }
 
   void render(const Core &core) {
-    visible(root_, core.tappable());
-    if (!core.tappable()) return;
+    visible(root_, core.shown());
+    if (!core.shown()) return;
     visible(single_, !core.pie());
     visible(center_, core.center());
     visible(hole_, core.pie() && !core.center());

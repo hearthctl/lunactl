@@ -681,8 +681,22 @@
         }
       },
       {
-        "status": "Keine Verbindung",
-        "tappable": false
+        "status": "",
+        "tappable": false,
+        "page": 0,
+        "home": true,
+        "dots": [
+          true,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Single",
+          "color": "#654321",
+          "icon": "",
+          "glyph": ""
+        }
       },
       {
         "status": "",

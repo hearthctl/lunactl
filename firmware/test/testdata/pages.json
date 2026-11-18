@@ -2265,12 +2265,47 @@
         }
       },
       {
-        "status": "Keine Verbindung",
-        "tappable": false
+        "status": "",
+        "tappable": false,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
       },
       {
-        "status": "Keine Verbindung",
-        "tappable": false
+        "status": "",
+        "tappable": false,
+        "offline_icon": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "type": "single",
+        "item": {
+          "label": "Page 1",
+          "color": "#F7C844",
+          "icon": "mdi:white-balance-sunny",
+          "glyph": "󰖨"
+        }
       },
       {
         "status": "",

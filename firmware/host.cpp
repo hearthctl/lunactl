@@ -87,6 +87,7 @@ int main() {
       auto snapshot = snapshots.add<JsonObject>();
       snapshot["status"] = core.status();
       snapshot["tappable"] = core.tappable();
+      if (core.offline_icon()) snapshot["offline_icon"] = true;
       if (battery_seen) {
         snapshot["battery"]["level"] = battery.level();
         snapshot["battery"]["text"] = battery.text();
@@ -114,7 +115,7 @@ int main() {
       if (type == "button") snapshot["wake"] = button_event.wake;
       const lunactl::Action *action = nullptr;
       if (!button_event.action.action.empty()) action = &button_event.action;
-      if (core.tappable()) {
+      if (core.shown()) {
         snapshot["page"] = core.page_index();
         snapshot["home"] = core.page_index() == 0;
         auto dots = snapshot["dots"].to<JsonArray>();

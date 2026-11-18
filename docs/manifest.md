@@ -122,8 +122,8 @@ Holding a touch or key keeps the display awake. On sleep, brightness becomes
 zero and the page returns home. The first touch only wakes the display. The next
 touch behaves normally. Keys keep their actions when waking. Brightness updates apply immediately while
 awake, or on the next wake while asleep. Missing/empty/unknown/unavailable,
-nonnumeric, nonfinite or out-of-range brightness states use 70%. Disconnect
-clears cached brightness. See the [contract](contracts/README.md) for details.
+nonnumeric, nonfinite or out-of-range brightness states use 70%. Disconnected
+keeps the last brightness. See the [contract](contracts/README.md) for details.
 
 ## Compiled-in icons
 

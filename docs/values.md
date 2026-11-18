@@ -41,7 +41,8 @@ Formatting options do not create additional subscriptions. The initial Manifest
 registers them in RAM and closes the API sockets once, letting HA reconnect and
 learn the subscriptions. A Manifest without references needs no extra connection.
 Each subsequent HA connection fetches the Manifest again. State callbacks refresh
-the visible values; a disconnect clears cached states and hides the Manifest.
+the visible values. Disconnected keeps the Manifest and the last states visible
+until HA reconnects and resends them (ADR 0006).
 
 A replacement that only changes formatting or uses a subset of the registered
 subscriptions applies immediately. Removed subscriptions remain registered until

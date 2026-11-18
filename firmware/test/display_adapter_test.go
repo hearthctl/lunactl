@@ -30,8 +30,9 @@ func TestProductionDisplayAdapter(t *testing.T) {
 	}
 	if !regexp.MustCompile(`(?s)interval: 10ms.*?script.execute: update_display\n\n  - interval: 1s`).Match(raw) ||
 		!regexp.MustCompile(`(?s)  - id: render_manifest\n.*?id\(wake_display\).execute\(\);`).Match(raw) ||
+		!regexp.MustCompile(`(?s)  - id: render_manifest\n.*?if \(core.offline_icon\(\)\) lv_obj_remove_flag\(id\(offline_icon\), LV_OBJ_FLAG_HIDDEN\);\n\s+else lv_obj_add_flag\(id\(offline_icon\), LV_OBJ_FLAG_HIDDEN\);`).Match(raw) ||
 		!regexp.MustCompile(`(?s)model: CO5300\n    brightness: 179`).Match(raw) {
-		t.Fatal("display polling, render brightness sync or initial 70% missing")
+		t.Fatal("display polling, render brightness sync, offline icon or initial 70% missing")
 	}
 	checkAdapter(t, `#include "core.h"
 #define id(name) name
@@ -85,10 +86,21 @@ int main() {
  if (amoled.brightness != 204) return 14;
  manifest_core.set_connected(false);
  render_manifest.execute();
- if (amoled.brightness != 179) return 15;
+ if (amoled.brightness != 204) return 15; // Disconnected keeps the last brightness.
  now = 14003; update();
  now = 14004; press({233,233}); release({233,233});
- if (tapped_slot != -1 || amoled.brightness != 179 || manifest_ui.paused) return 16;
+ if (tapped_slot != -1 || amoled.brightness != 204 || manifest_ui.paused) return 16;
+ // Disconnected: a tap never runs an Item; it flashes the offline icon,
+ // and polling renders when that icon appears or expires.
+ now = 14005; press({233,233}); release({233,233});
+ if (tapped_slot != -1 || !manifest_core.offline_icon()) return 18;
+ now = 17005; update();
+ int renders = render_manifest.calls;
+ if (manifest_core.offline_icon()) return 19;
+ now = 12003 + lunactl::OFFLINE_STALE_MS - 1; update();
+ if (manifest_core.offline_icon() || render_manifest.calls != renders) return 20;
+ now = 12003 + lunactl::OFFLINE_STALE_MS; update();
+ if (!manifest_core.offline_icon() || render_manifest.calls != renders + 1) return 21;
 }
 `)
 }

@@ -192,10 +192,11 @@ int main() {
  if (!manifest_core.accept_json(manifest_core.begin_fetch(), manifest, error)) return 10;
  release({130, 130});
  if (tapped_slot != -1) return 11;
+ // Disconnected runs nothing; Pager suppresses the Item feedback.
  manifest_core.set_connected(false);
  press({130, 130});
  release({130, 130});
- if (page_ui.slot != -1 || tapped_slot != -1) return 12;
+ if (tapped_slot != -1 || !manifest_core.offline_icon()) return 12;
  manifest_core.set_connected(true);
  if (!manifest_core.accept_json(manifest_core.begin_fetch(), R"({"schema":1,"pages":[{"type":"pie","quarters":[{"label":"Quarter","color":"#123456","action":{"action":"script.quarter"}},null,null,null],"center":{"label":"Center","color":"#111827","action":{"action":"script.center"}}}]})", error)) return 13;
  press({233, 233});

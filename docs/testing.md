@@ -73,6 +73,7 @@ current base branch. It must be green before a merge.
 
 Golden cases cover a single Item and tap, UTF-8/nested action data, missing
 target/data, reload success, invalid replacement, initial errors, disconnect,
+Disconnected navigation with its offline icon timing (`disconnected`),
 and stale replies from old connections or overlapping reloads. Size cases
 exercise the 32 KiB boundary. Schema cases cover missing/unknown fields, types,
 version, page count, colour, actions and targets. Pie golden cases cover all four
@@ -99,7 +100,7 @@ quarter labels and colour without icons or values, the large center's label,
 live value and countdown, clock formatting in the top gap, empty quarters,
 inert gaps/ring/outside touches, navigation, replacement cancellation and
 subscription deduplication across hidden centers. Countdown cases cover local
-ticking, restart, pause, cancel, expiry, unsynced time and disconnect clearing.
+ticking, restart, pause, cancel, expiry, unsynced time and ticking while Disconnected.
 Schema/core agreement reuses the Item, value and countdown validation cases for
 `center`, accepting an omitted center and rejecting null or malformed Items.
 Production adapter checks exercise center touch/action dispatch and the actual
@@ -133,7 +134,8 @@ reconnect, removal and invalid/stale replacements. Subscription cases check the
 initial reconnect and restart for a new brightness entity; the production
 subscription adapter also checks deduplication with Item references. Display
 adapter tests compile the actual YAML polling, touch and brightness lambdas,
-checking wake consumption, live rendering, fallback on disconnect, the initial
+checking wake consumption, live rendering, kept brightness while Disconnected,
+the offline icon render, the initial
 70% setting and suppression of unchanged display commands. Schema/core agreement
 covers display types, bounds, entity names and unknown fields. All run in
 `make verify`, including the ESPHome configuration and ESP32-S3 compile.
@@ -143,7 +145,7 @@ cases for the [value contract](values.md): repeated/reordered and multi-digit
 placeholders, entity states and attributes, decimals, decimal comma, exact maps,
 UTF-8, missing/unavailable and invalid numeric states, and live updates across
 Single and Pie pages. Subscription goldens verify deduplication across hidden
-pages, the single boot reconnect, cache clearing on disconnect, retained
+pages, the single boot reconnect, retained states while Disconnected, retained
 subscriptions on removal, and restart for new entities or attributes. Invalid
 replacements preserve the Manifest and subscriptions. Schema/core agreement
 checks the optional value fields and their invalid forms on both Page types.

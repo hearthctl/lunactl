@@ -968,12 +968,98 @@
         ]
       },
       {
-        "status": "Keine Verbindung",
-        "tappable": false
+        "status": "",
+        "tappable": false,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "11:02",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Kühlen",
+          "color": "#111827",
+          "value": "22,9 °C → 20 °C",
+          "countdown": {
+            "remaining": 120,
+            "text": "2:00",
+            "ring": 1000
+          }
+        },
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Kühlen",
+            "color": "#2049D8",
+            "curved": true
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": true,
+            "label": "+30 min",
+            "color": "#374151",
+            "curved": true
+          },
+          {
+            "tappable": true,
+            "label": "Aus",
+            "color": "#4B5563",
+            "curved": true
+          }
+        ]
       },
       {
-        "status": "Keine Verbindung",
-        "tappable": false
+        "status": "",
+        "tappable": false,
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "pie",
+        "clock": "11:02",
+        "hole_radius": 168,
+        "clock_position": "top-gap",
+        "center": {
+          "label": "Kühlen",
+          "color": "#111827",
+          "value": "22,9 °C → 20 °C",
+          "countdown": {
+            "remaining": 120,
+            "text": "2:00",
+            "ring": 1000
+          }
+        },
+        "quarters": [
+          {
+            "tappable": true,
+            "label": "Kühlen",
+            "color": "#2049D8",
+            "curved": true
+          },
+          {
+            "tappable": true,
+            "label": "Heizen",
+            "color": "#B71C1C",
+            "curved": true
+          },
+          {
+            "tappable": true,
+            "label": "+30 min",
+            "color": "#374151",
+            "curved": true
+          },
+          {
+            "tappable": true,
+            "label": "Aus",
+            "color": "#4B5563",
+            "curved": true
+          }
+        ]
       },
       {
         "status": "",
@@ -988,8 +1074,12 @@
         "center": {
           "label": "Kühlen",
           "color": "#111827",
-          "value": "-- °C → 20 °C",
-          "countdown": null
+          "value": "22,9 °C → 20 °C",
+          "countdown": {
+            "remaining": 120,
+            "text": "2:00",
+            "ring": 1000
+          }
         },
         "quarters": [
           {

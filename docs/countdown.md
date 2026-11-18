@@ -36,5 +36,5 @@ Timezone offsets are applied independently of the displayed local clock.
 
 Idle, paused, unknown, unavailable, missing or unexpected states show no
 countdown text or ring. Neither do expired timers, invalid/missing attributes,
-nonpositive durations or an unsynced clock. Disconnect clears cached timer
-states with the live values, so reconnect waits for fresh attributes.
+nonpositive durations or an unsynced clock. Disconnected keeps the timer
+states and counts down locally; reconnect refreshes them.

@@ -703,12 +703,22 @@
         "type": "single"
       },
       {
-        "status": "Keine Verbindung",
+        "status": "",
         "tappable": false,
         "battery": {
           "level": 19,
           "text": "Akku 19 %",
           "hint": "Zurück an die Halterung"
+        },
+        "page": 0,
+        "home": true,
+        "dots": [],
+        "type": "single",
+        "item": {
+          "label": "Beispiel",
+          "color": "#B91360",
+          "icon": "",
+          "glyph": ""
         }
       }
     ]

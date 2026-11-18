@@ -73,6 +73,10 @@ _Avoid_: Platz, Position, Cell
 Der Inhalt eines Slots. Ein Item ist immer antippbar und löst dann eine Home-Assistant-Aktion aus. Es kann Text, Symbol, Farbe, einen Live-Wert und eine Restzeit mitbringen; der Page type zeigt davon, was in den Slot passt.
 _Avoid_: Kachel, Tile, Widget, Entry, Control
 
+**Disconnected**:
+Das Gerät hat die Verbindung zu Home Assistant verloren und zeigt weiter das letzte Manifest mit den letzten Werten. Aktionen löst es in dieser Zeit nicht aus.
+_Avoid_: Offline-Modus, Verbindungsaussetzer, Cache
+
 ## Tasten
 
 **Taste A**:

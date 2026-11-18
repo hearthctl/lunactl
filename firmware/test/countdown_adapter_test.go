@@ -134,11 +134,10 @@ int main() {
  tick();
  if (!(ring->flags & LV_OBJ_FLAG_HIDDEN) || has_text(screen, "1:00")) return 16;
  manifest_core.set_connected(false);
- state.callback({"active"}); // Cannot refill the cleared offline cache.
- manifest_core.set_connected(true);
  ha_time.current.valid = true;
  tick();
- if (!(ring->flags & LV_OBJ_FLAG_HIDDEN) || has_text(screen, "1:00")) return 17;
+ if (ring->flags & LV_OBJ_FLAG_HIDDEN) return 17; // Disconnected keeps counting down.
+ manifest_core.set_connected(true);
  sync();
  if (server.subscriptions.size() != 4 || server.clients[0]->drops != 1 || App.reboots) return 18;
 }
