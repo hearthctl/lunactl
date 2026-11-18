@@ -1,6 +1,9 @@
 package test
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestPagerLifecycle(t *testing.T) {
 	checkAdapter(t, `#include "pager.h"
@@ -19,6 +22,7 @@ int main() {
  pager.render(core);
  poll(); poll();
  assert(snapshot_count == 2);
+ assert(!(surface->children[0]->children[0]->flags & (1 << 20)));
  // Unchanged updates do not repeatedly render snapshots.
  pager.update_time(core); poll();
  assert(snapshot_count == 2);
@@ -76,7 +80,7 @@ int main() {
  assert(core.release(233,233) == -1); pager.render(core); poll();
  assert(scroll_dir == LV_DIR_HOR);
 }
-`, map[string]string{"lvgl.h": countdownLVGLStub + pagerLVGLStub})
+`, map[string]string{"lvgl.h": strings.Replace(countdownLVGLStub, "LV_NOOP(lv_obj_set_style_clip_corner)", `inline void lv_obj_set_style_clip_corner(lv_obj_t *o, bool clip, int) { if (clip) o->flags |= 1 << 20; else o->flags &= ~(1 << 20); }`, 1) + pagerLVGLStub})
 }
 
 const pagerLVGLStub = `
@@ -122,8 +126,8 @@ inline void lv_obj_update_layout(lv_obj_t *) {}
 inline void lv_obj_set_style_bg_image_src(lv_obj_t *,const void *,int) {}
 inline void lv_draw_buf_destroy(lv_draw_buf_t *p) { ++destroyed; delete p; }
 inline void collect(lv_obj_t *o) { snapshot_text+=o->text; for(auto *child:o->children) collect(child); }
-inline lv_draw_buf_t *lv_snapshot_take(lv_obj_t *o,int) { ++snapshot_count; snapshot_text.clear(); collect(o); return new lv_draw_buf_t; }
-inline int lv_snapshot_take_to_draw_buf(lv_obj_t *o,int,lv_draw_buf_t *) { ++snapshot_count; snapshot_text.clear(); collect(o); return LV_RESULT_OK; }
+inline lv_draw_buf_t *lv_snapshot_take(lv_obj_t *o,int) { assert(o->flags & (1 << 20)); ++snapshot_count; snapshot_text.clear(); collect(o); return new lv_draw_buf_t; }
+inline int lv_snapshot_take_to_draw_buf(lv_obj_t *o,int,lv_draw_buf_t *) { assert(o->flags & (1 << 20)); ++snapshot_count; snapshot_text.clear(); collect(o); return LV_RESULT_OK; }
 inline void poll() { for(auto *timer:timers) timer->callback(timer); }
 inline void emit(lv_obj_t *o,int code) { auto entry=callbacks.at(o); lv_event_t event{code,entry.second}; entry.first(&event); }
 `

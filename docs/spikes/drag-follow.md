@@ -20,6 +20,10 @@ Moving beyond the tap tolerance permanently cancels the contact's action, even
 when the finger returns to its starting position. Native scroll start also cancels
 it. A dark-screen touch only wakes the display.
 
+Snapshots are clipped to the circular page boundary with black corners. LVGL
+corner clipping is enabled only during snapshot creation, so it does not add
+masking work to each cached swipe frame.
+
 Snapshots are invalidated by changes in rendered page content. Unchanged HA
 updates do not rebuild them. One dirty page is captured per idle timer turn;
 no captures or live-content updates occur during a contact/scroll. When all

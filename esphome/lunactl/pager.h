@@ -200,12 +200,16 @@ class Pager {
       auto &page = pages_[i];
       if (!page.dirty) continue;
       page.dirty = false;
+      // Clip children to the root's circular radius only while building the image.
+      // Live rendering keeps the hardware-mask fast path; scrolling reuses the result.
+      lv_obj_set_style_clip_corner(page.ui.root(), true, 0);
       if (!page.snapshot) page.snapshot = lv_snapshot_take(page.ui.root(), LV_COLOR_FORMAT_RGB565);
       else if (lv_snapshot_take_to_draw_buf(page.ui.root(), LV_COLOR_FORMAT_RGB565, page.snapshot) != LV_RESULT_OK) {
         lv_obj_set_style_bg_image_src(page.image, nullptr, 0);
         lv_draw_buf_destroy(page.snapshot);
         page.snapshot = nullptr;
       }
+      lv_obj_set_style_clip_corner(page.ui.root(), false, 0);
       page.valid = page.snapshot != nullptr;
       if (page.valid) lv_obj_set_style_bg_image_src(page.image, page.snapshot, 0);
       // Allocation failure keeps live scrolling usable; a content update retries.
