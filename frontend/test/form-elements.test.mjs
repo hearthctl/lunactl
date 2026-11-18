@@ -93,11 +93,26 @@ test("entity search survives HA refreshes with an equivalent target list", () =>
   assert.equal(picker._query, "ceiling");
 });
 
+test("action search keeps partial text out of the binding until submission", () => {
+  const binding = {action: "light.turn_on"};
+  const form = make("lunactl-action-form", {hass, binding});
+  const field = input("light.turn_");
+  handler(form.render(), "input")(field);
+  bindings(form.render(), "@change=")[0]?.(field);
+  bindings(form.render(), "@blur=")[0]?.(field);
+  assert.equal(form.emitted, undefined);
+  assert.equal(bindings(form.render(), ".value=")[0], "light.turn_");
+  handler(form.render(), "click")();
+  assert.deepEqual(form.emitted, binding);
+  assert.equal(bindings(form.render(), ".value=")[0], "light.turn_on");
+});
+
 test("action form runs current unsaved action and preserves JSON-only targets", async () => {
   const calls = [];
   const binding = {action: "script.old", target: {area_id: "room", entity_id: "light.bed"}, data: {old: 1}};
   const form = make("lunactl-action-form", {hass: {...hass, callService: async (...args) => calls.push(args)}, binding});
   handler(form.render(), "input")(input("light.turn_on"));
+  handler(form.render(), "keydown")(enter("light.turn_on"));
   assert.equal(form.emitted.action, "light.turn_on");
   assert.deepEqual(form.emitted.target, binding.target);
   form.binding = form.emitted;

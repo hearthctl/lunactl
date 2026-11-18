@@ -78,6 +78,11 @@ class ActionForm extends LitElement {
   static styles = formStyles;
   constructor() { super(); this._query = null; this._notice = ""; this._data = ""; }
   willUpdate() {
+    const action = this.binding?.action;
+    if (action !== this._lastAction) {
+      this._lastAction = action;
+      this._query = null;
+    }
     const serialized = JSON.stringify(this.binding?.data);
     if (serialized !== this._lastData) {
       this._lastData = serialized;
@@ -85,6 +90,12 @@ class ActionForm extends LitElement {
     }
   }
   _change(binding) { this._notice = ""; send(this, binding); }
+  _choose(action) {
+    const binding = withField(this.binding, "action", action);
+    if (!completeAction(binding)) return;
+    this._query = null;
+    this._change(binding);
+  }
   async _try() {
     this._notice = "";
     try {
@@ -96,13 +107,18 @@ class ActionForm extends LitElement {
     const details = actionDetails(this.hass?.services, binding.action);
     const extra = otherTargets(binding);
     return html`<label>${text.action}
-      <input aria-label=${text.actionSearch} placeholder=${text.actionSearch} .value=${valueText(binding.action)}
-        @focus=${() => { this._query = ""; }}
-        @input=${(e) => { this._query = e.target.value; this._change(withField(binding, "action", e.target.value)); }}></label>
+      <input aria-label=${text.actionSearch} placeholder=${text.actionSearch}
+        .value=${this._query ?? valueText(binding.action)}
+        @focus=${() => { this._query = valueText(binding.action); }}
+        @input=${(e) => { this._query = e.target.value; }}
+        @keydown=${(e) => {
+          if (e.key !== "Enter" || e.isComposing) return;
+          e.preventDefault();
+          this._choose(e.target.value.trim());
+        }}></label>
       ${this._query !== null ? html`<div class="results">
-        ${actions(this.hass?.services, this._query).map((entry) => html`<button @click=${() => {
-          this._query = null; this._change(withField(binding, "action", entry.id));
-        }}><code>${entry.id}</code> · ${entry.name || ""}<small>${entry.description || ""}</small></button>`)}
+        ${actions(this.hass?.services, this._query).map((entry) => html`<button @click=${() => this._choose(entry.id)}>
+          <code>${entry.id}</code> · ${entry.name || ""}<small>${entry.description || ""}</small></button>`)}
         ${!actions(this.hass?.services, this._query).length ? html`<p>${text.noMatches}</p>` : ""}
       </div>` : ""}
       <lunactl-entity-picker .hass=${this.hass} .value=${binding.target?.entity_id || []}
