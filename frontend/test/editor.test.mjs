@@ -221,3 +221,21 @@ test("edits cancel pending destructive conversion", () => {
   assert.deepEqual(editor.manifest, base.manifest);
   editor.close();
 });
+
+test("preview page selection survives raw edits to a structurally invalid draft", () => {
+  const editor = new ManifestEditor(copy(base), async () => {}, () => {}, new Clock());
+  editor.setView("json");
+  const draft = {schema: 1, pages: [
+    {type: "pie", quarters: []},
+    {type: "single", item: {label: "Before"}},
+  ]};
+  editor.edit(JSON.stringify(draft));
+  editor.selectPage(1);
+  draft.pages[1].item.label = "After";
+  editor.edit(JSON.stringify(draft));
+  assert.equal(editor.page, 1);
+  assert.equal(editor.manifest.pages[editor.page].item.label, "After");
+  editor.addPage("single");
+  assert.deepEqual(editor.manifest, draft);
+  editor.close();
+});

@@ -113,8 +113,9 @@ export class ManifestEditor {
   }
 
   selectPage(page) {
-    if (!canEditManifest(this.manifest) || !Number.isInteger(page) ||
-        page < 0 || page >= this.manifest.pages.length) return;
+    const pages = this.manifest?.pages;
+    if (!Array.isArray(pages) || !Number.isInteger(page) ||
+        page < 0 || page >= Math.min(6, pages.length)) return;
     this.page = page;
     this.slot = null;
     this.pendingSwitch = null;
