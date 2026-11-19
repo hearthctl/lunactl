@@ -56,6 +56,7 @@ export function manifestHints(manifest, states = {}, services = {}) {
     if (ratio !== null && ratio < 3) hints.push({kind: "contrast", path: `${path}.color`, ...location});
   }
   (Array.isArray(manifest?.pages) ? manifest.pages : []).forEach((page, index) => {
+    if (page?.type === "ac") entity(page.entity, `pages[${index}].entity`, {page: index});
     if (page?.type !== "dial") return;
     for (const field of ["status", "value", "caption"]) {
       if (Array.isArray(page[field]?.refs)) page[field].refs.forEach((ref, i) =>

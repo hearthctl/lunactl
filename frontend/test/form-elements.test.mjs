@@ -382,3 +382,15 @@ test("Dial page form edits live values and countdown; active form edits an Item 
   assert.deepEqual(form.emitted.states, ["cool", "heat"]);
   editor.close();
 });
+
+test("managed AC form edits settings instead of individual Slots", () => {
+  const page = {type: "ac", id: "ac-page", entity: "climate.room", minutes: 30, minimum: 18, maximum: 26};
+  const editor = new ManifestEditor({manifest: {schema: 1, pages: [page]}, revision: 1}, async () => ({}), () => {},
+    {setTimeout() {}, clearTimeout() {}});
+  const panel = make("lunactl-designer", {hass});
+  handler(panel._slotPanel(editor), "form-change")({detail: "climate.other"});
+  handler(panel._slotPanel(editor), "change")(input("60"));
+  assert.deepEqual(editor.manifest.pages[0], {...page, entity: "climate.other", minutes: 60});
+  assert.deepEqual(bindings(panel._slotPanel(editor), "@click="), []);
+  editor.close();
+});

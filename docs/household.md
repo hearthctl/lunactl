@@ -10,7 +10,30 @@ reference](manifest.md), [contract](contracts/README.md) and
 The firmware requires the lunactl Home Assistant integration
 ([ADR 0003](adr/0003-manifeste-aus-dem-designer-in-ha.md)). Manifests live in
 HA's integration storage, one per device. Household scripts still implement
-room logic; the integration supplies the firmware contract.
+room logic; the integration supplies the firmware contract and managed AC-Dials.
+
+## Managed AC-Dial
+
+In the Designer, choose **AC-Dial hinzufügen**, select a climate entity and set
+the duration and temperature limits. The page remains an AC configuration;
+its individual Dial slots cannot be edited. No household scripts, template
+sensors or timer automation are needed for this page.
+
+Each page has its own settings. Pages and devices targeting the same climate
+show one shared active run. Starting cooling or heating replaces its deadline
+using the starting page's settings. The setpoint is clamped to that page's
+limits and the climate's supported range. Minus/plus change it by one degree
+within the active run's limits without extending the deadline. Off stops the
+appliance regardless of how it was started.
+
+The integration stores the deadline in HA. After a restart it resumes the
+remaining time, or switches off if the deadline has passed. A failed shutdown
+is retried every minute. Deleting the page does not cancel a pending shutdown.
+The climate must support the selected mode and expose a numeric target
+temperature; unavailable devices reject start and temperature actions.
+
+The scripts and helper entities below are for the ordinary, manually configured
+Dial in the example JSON. Managed AC-Dials replace that setup.
 
 ## 1. Prepare the household actions and entities
 

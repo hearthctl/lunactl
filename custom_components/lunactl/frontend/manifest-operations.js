@@ -6,7 +6,7 @@ import {text} from "./strings.js";
 
 const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 export const draftItem = () => ({label: text.newItem, color: "#4378AA"});
-const pageFor = (type) => type === "single" ? {type, item: draftItem()} :
+const pageFor = (type) => type === "ac" ? {type, id: crypto.randomUUID(), entity: "", minutes: 30, minimum: 18, maximum: 26} : type === "single" ? {type, item: draftItem()} :
   type === "dial" ? {type, value: {format: "{0}", refs: [{entity: ""}]}, minus: draftItem(), plus: draftItem(), items: [null, null, null]} :
   {type, quarters: [null, null, null, null]};
 
@@ -15,7 +15,7 @@ const pageFor = (type) => type === "single" ? {type, item: draftItem()} :
 export function canEditManifest(manifest) {
   return object(manifest) && Array.isArray(manifest.pages) &&
     manifest.pages.length >= 1 && manifest.pages.length <= 6 &&
-    manifest.pages.every((page) => object(page) && (page.type === "single" ||
+    manifest.pages.every((page) => object(page) && (page.type === "single" || page.type === "ac" ||
       (page.type === "pie" && Array.isArray(page.quarters) && page.quarters.length === 4) ||
       (page.type === "dial" && Array.isArray(page.items) && page.items.length === 3)));
 }
@@ -36,7 +36,7 @@ function replacePage(manifest, index, page) {
 }
 const validPage = (manifest, index) => canEditManifest(manifest) && Number.isInteger(index) &&
   index >= 0 && index < manifest.pages.length;
-const validType = (type) => ["single", "pie", "dial"].includes(type);
+const validType = (type) => ["single", "pie", "dial", "ac"].includes(type);
 
 export function addPage(manifest, type) {
   if (!canEditManifest(manifest) || !validType(type) || manifest.pages.length === 6) return manifest;
@@ -62,6 +62,7 @@ export function switchPageType(manifest, index, type) {
   if (!validPage(manifest, index) || !validType(type) || manifest.pages[index].type === type)
     return {manifest, dropped: []};
   const old = manifest.pages[index];
+  if (old.type === "ac" || type === "ac") return {manifest, dropped: []};
   const items = (old.type === "single" ? [old.item] : old.type === "pie" ? [old.center, ...old.quarters] :
     [old.minus, old.plus, ...old.items]).filter((item) => item != null);
   const page = pageFor(type);
@@ -114,5 +115,11 @@ export function setItem(manifest, index, slot, item) {
 export function setDialField(manifest, index, field, value) {
   if (!validPage(manifest, index) || manifest.pages[index].type !== "dial" ||
       !["status", "value", "caption", "countdown"].includes(field)) return manifest;
+  return replacePage(manifest, index, withField(manifest.pages[index], field, value));
+}
+
+export function setACField(manifest, index, field, value) {
+  if (!validPage(manifest, index) || manifest.pages[index].type !== "ac" ||
+      !["entity", "minutes", "minimum", "maximum"].includes(field)) return manifest;
   return replacePage(manifest, index, withField(manifest.pages[index], field, value));
 }

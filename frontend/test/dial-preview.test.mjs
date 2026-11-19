@@ -48,3 +48,14 @@ test("Dial hints cover page values, active references and unsupported glyphs", a
   assert.deepEqual(textFitHints(manifest, {"sensor.room": {state: "20"}}, () => 10),
     [{kind: "dial-glyphs", path: "pages[0].value", page: 0}]);
 });
+
+test("AC preview uses the shared live run without exposing editable Slots", () => {
+  const page = {type: "ac", id: "a", entity: "climate.room", minutes: 30, minimum: 18, maximum: 26};
+  const states = {"climate.room": {state: "cool"},
+    "sensor.shared_value": {state: "22°", attributes: {lunactl_ac: "climate.room", field: "value"}},
+    "sensor.shared_status": {state: "Kühlt", attributes: {lunactl_ac: "climate.room", field: "status"}}};
+  const svg = renderPreview({pages: [page]}, states, {}, 0, {selectedSlot: 0});
+  assert.match(svg, />22°</);
+  assert.match(svg, />Kühlt</);
+  assert.doesNotMatch(svg, /data-slot="\d" role="button"/);
+});

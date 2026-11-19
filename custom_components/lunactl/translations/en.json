@@ -41,6 +41,24 @@
           "description": "JSON text with target and data objects."
         }
       }
+    },
+    "ac": {
+      "name": "AC action",
+      "description": "Run an action of a managed AC-Dial page.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "lunactl device ID."
+        },
+        "page_id": {
+          "name": "AC page",
+          "description": "Stored AC page ID."
+        },
+        "command": {
+          "name": "Action",
+          "description": "Cool, heat, off, minus or plus."
+        }
+      }
     }
   },
   "exceptions": {

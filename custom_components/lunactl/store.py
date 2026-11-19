@@ -28,6 +28,8 @@ from homeassistant.helpers import (
 from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.storage import Store
 
+from .ac import ACManager, ac_pages, compile_manifest
+
 from .manifest import (
     ManifestError,
     firmware_schema,
@@ -54,6 +56,7 @@ class ManifestStore:
         self.pending = {}
         self.delivered = {}
         self.unsub = []
+        self.ac = ACManager(hass, self)
 
     async def async_load(self):
         self.schemas = await self.hass.async_add_executor_job(load_schemas)
@@ -79,6 +82,7 @@ class ManifestStore:
         self.unsub.append(
             self.hass.bus.async_listen("state_changed", self.async_states_changed)
         )
+        await self.ac.load()
         self.check_references()
 
     def close(self):
@@ -114,15 +118,28 @@ class ManifestStore:
             for entity in self.entities(device_id)
         )
 
+    def validate_document(self, document, device):
+        wire = validate(
+            compile_manifest(document, device.id),
+            firmware_schema(device.sw_version),
+            self.schemas,
+        )
+        result = deepcopy(document)
+        result["schema"] = wire["schema"]
+        return result
+
+    def wire(self, device_id, document):
+        return compile_manifest(document, device_id)
+
     def read(self, device_id, candidate=None):
         device = self.device(device_id)
         if candidate is not None:
-            candidate = validate(
-                candidate, firmware_schema(device.sw_version), self.schemas
-            )
+            candidate = self.validate_document(candidate, device)
         record = self.records.get(device_id, {"revision": 0, "manifest": {}})
         manifest = record["manifest"]
-        baseline = self.delivered.get(device_id, subscriptions(manifest))
+        baseline = self.delivered.get(
+            device_id, subscriptions(self.wire(device_id, manifest))
+        )
         return {
             "device_id": device_id,
             "name": device.name_by_user or device.name,
@@ -133,7 +150,9 @@ class ManifestStore:
             "schema_version": firmware_schema(device.sw_version),
             "highest_schema": max(self.schemas),
             "required_firmware": f"{manifest['schema']}.0" if manifest else None,
-            "will_restart": bool(candidate and subscriptions(candidate) - baseline),
+            "will_restart": bool(
+                candidate and subscriptions(self.wire(device_id, candidate)) - baseline
+            ),
         }
 
     def fetch(self, mac):
@@ -143,7 +162,7 @@ class ManifestStore:
                 continue
             if (dr.CONNECTION_NETWORK_MAC, address) in device.connections:
                 manifest = self.records.get(device.id, {}).get("manifest", {})
-                required = subscriptions(manifest)
+                required = subscriptions(self.wire(device.id, manifest))
                 accepted = firmware_schema(device.sw_version)
                 if manifest and accepted is not None and manifest["schema"] <= accepted:
                     previous = self.delivered.get(device.id)
@@ -151,7 +170,7 @@ class ManifestStore:
                     # Removing references alone retains the existing subscriptions.
                     if previous is None or required - previous:
                         self.delivered[device.id] = required
-                return deepcopy(manifest)
+                return self.wire(device.id, manifest)
         return {}
 
     async def async_save(self, device_id, manifest, revision):
@@ -162,7 +181,7 @@ class ManifestStore:
                 raise ManifestError(
                     "stale_revision", "Manifest wurde inzwischen geändert"
                 )
-            saved = validate(manifest, firmware_schema(device.sw_version), self.schemas)
+            saved = self.validate_document(manifest, device)
             result = self.read(device_id, saved)
             await self._write(
                 {
@@ -170,6 +189,7 @@ class ManifestStore:
                     device_id: {"revision": revision + 1, "manifest": saved},
                 }
             )
+            await self.ac.sync()
             self.schedule_reload(device_id)
             self.check_references()
             return {**self.read(device_id), "will_restart": result["will_restart"]}
@@ -222,7 +242,27 @@ class ManifestStore:
                 ir.async_delete_issue(self.hass, DOMAIN, device_id)
             if old := event.data.get("old_entity_id"):
                 for device_id, record in records.items():
-                    updated = rename(record["manifest"], old, event.data["entity_id"])
+                    document = record["manifest"]
+                    ordinary = {
+                        **document,
+                        "pages": [
+                            p
+                            for p in document.get("pages", [])
+                            if p.get("type") != "ac"
+                        ],
+                    }
+                    updated = rename(ordinary, old, event.data["entity_id"])
+                    renamed = iter(updated.get("pages", []))
+                    updated["pages"] = [
+                        (
+                            {**p, "entity": event.data["entity_id"]}
+                            if p["entity"] == old
+                            else p
+                        )
+                        if p.get("type") == "ac"
+                        else next(renamed)
+                        for p in document.get("pages", [])
+                    ]
                     if updated != record["manifest"]:
                         record["manifest"] = updated
                         record["revision"] += 1
@@ -231,6 +271,9 @@ class ManifestStore:
                 await self._write(records)
                 for device_id in changed:
                     self.schedule_reload(device_id)
+            if old:
+                await self.ac.rename(old, event.data["entity_id"])
+            await self.ac.sync()
             self.check_references()
 
     @callback
@@ -253,7 +296,10 @@ class ManifestStore:
         for device_id, record in self.records.items():
             missing = sorted(
                 f"{kind}: {value}"
-                for kind, value in references(record["manifest"])
+                for kind, value in (
+                    references(self.wire(device_id, record["manifest"]))
+                    | {("entity_id", p["entity"]) for p in ac_pages(record["manifest"])}
+                )
                 if not registries[kind](value)
             )
             if missing:

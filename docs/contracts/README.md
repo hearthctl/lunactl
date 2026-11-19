@@ -34,7 +34,16 @@ names, illustrated by [the icon mockup](../mockups/icons.png). Unknown names
 reject the Manifest like other invalid fields. Omitting `icon` shows no icon
 in Single or Pie quarters; label/value positions and the rest of the layout
 stay in place. `mdi:help-circle` remains available as a normal icon.
-Unsupported fields and Page types are rejected.
+Unsupported fields and Page types are rejected by the firmware contract.
+The Designer's stored document additionally accepts a managed AC page:
+`{"type":"ac","id":"room","entity":"climate.room","minutes":30,"minimum":18,"maximum":26}`.
+The ID is unique within the document and remains stable when editing the page.
+Duration is 1–1440 minutes; numeric limits must be finite with minimum below maximum.
+The integration validates and compiles these pages into ordinary Dial pages
+before returning `lunactl.manifest`. The firmware schema and version remain
+unchanged. `lunactl.ac(device_id, page_id, command)` resolves the saved settings;
+commands are `cool`, `heat`, `off`, `minus` and `plus`. Generated display entities
+and countdowns are shared per climate; see [managed AC-Dial](../household.md#managed-ac-dial).
 Optional [live values](../values.md) and [countdowns](../countdown.md)
 reference HA entities; the device subscribes to them and formats them locally.
 
