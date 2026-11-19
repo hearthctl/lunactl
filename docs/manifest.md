@@ -3,8 +3,9 @@
 Use [the room example](../examples/child-room.json) and
 [household setup](household.md) to get started. The authoritative field shapes
 are in [schema/manifest.v1.schema.json](../schema/manifest.v1.schema.json).
-The Manifest is plain JSON without Jinja, at most 32 KiB and 31 levels deep
-(the device parses it inside a one-level response envelope). Unknown fields are
+The Manifest is plain JSON without Jinja, at most 32 KiB and 31 levels deep.
+The device requests it as JSON text inside the response envelope and parses it
+in the core, preserving parser errors for its status display. Unknown fields are
 rejected at every defined level; `action.data` and value maps permit their own
 keys. Omit optional fields rather than setting them to `null`. Pie quarters
 accept `null` for an empty Slot; arbitrary data inside `action.data` can also

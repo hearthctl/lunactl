@@ -46,6 +46,10 @@ int main() {
       if (type == "connect") core.set_connected(true);
       else if (type == "disconnect") core.set_connected(false);
       else if (type == "fetch") request = core.begin_fetch();
+      else if (type == "error") {
+        auto token = event["request"].isNull() ? request : event["request"].as<uint32_t>();
+        core.fetch_failed(token, event["error"] | std::string{});
+      }
       else if (type == "sync") connection_action = core.take_connection_action();
       else if (type == "state") core.set_state({event["entity"].as<std::string>(), event["attribute"] | ""}, event["state"].as<std::string>());
       else if (type == "manifest") {
@@ -84,7 +88,7 @@ int main() {
       } else if (type == "sleep") core.sleep();
       else if (type == "tick") { core.tick(now); display_seen = true; }
       else if (type == "bubble") core.tick(now);
-      else if (type != "error") return 2;
+      else return 2;
       auto snapshot = snapshots.add<JsonObject>();
       snapshot["status"] = core.status();
       snapshot["tappable"] = core.tappable();

@@ -145,7 +145,7 @@ func TestUnknownMAC(t *testing.T) {
 	}
 	got := testutil.Host(t, []map[string]any{{"type": "connect"}, {"type": "fetch"}, {"type": "manifest", "manifest": manifest}})
 	last := got["snapshots"].([]any)[2].(map[string]any)
-	if last["status"] != "Kein Manifest" || last["tappable"] != false {
+	if last["status"] != "Kein Manifest\nFür dieses Gerät fehlt es" || last["tappable"] != false {
 		t.Fatal(last)
 	}
 }

@@ -152,9 +152,17 @@ HA by `make verify`; see [testing.md](testing.md).
 
 If the panel shows **Keine Verbindung** or the `wifi-off` icon, check Wi-Fi, HA's
 ESPHome connection and the API encryption key. The icon means the device is
-Disconnected: it still shows the last Manifest and values, but runs no actions. **Kein Manifest** after connecting means no valid
-Manifest was fetched: check integration installation, action permission, the device registry
-MAC and rejection/error logs. An invalid replacement keeps the previous
+Disconnected: it still shows the last Manifest and values, but runs no actions.
+Without a valid Manifest, the display explains fetch failures:
+**Kein Manifest / Für dieses Gerät fehlt es** means HA returned an empty
+response; check the saved Manifest and device registry MAC.
+**Abruf fehlgeschlagen** shows the action error; check integration installation
+and action permission. **Keine Antwort von HA (Aktionen erlaubt?)** appears
+after 10 seconds without a response, including when HA silently denies actions.
+**Manifest abgelehnt** shows the core's validation or JSON parser error, such as
+`Invalid JSON: TooDeep` or `Unknown or invalid schema version`.
+Long errors are shortened on the display and remain complete in the logs.
+An invalid replacement keeps the previous
 valid Manifest. Missing values show `--`; a hidden countdown can mean an inactive
 timer or unsynced HA time. See [values.md](values.md) and [countdown.md](countdown.md)
 for all fallback states. Failed actions are logged and are not retried.

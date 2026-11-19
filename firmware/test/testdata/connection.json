@@ -137,22 +137,22 @@
         "request": 2
       },
       {
-        "status": "Kein Manifest",
+        "status": "Abruf fehlgeschlagen\nUnbekannter Fehler",
         "tappable": false
       },
       {
-        "status": "Kein Manifest",
+        "status": "Abruf fehlgeschlagen\nUnbekannter Fehler",
         "tappable": false
       },
       {
-        "status": "Kein Manifest",
+        "status": "Manifest abgelehnt\nInvalid JSON: IncompleteInput",
         "tappable": false,
-        "error": "Invalid JSON"
+        "error": "Invalid JSON: IncompleteInput"
       },
       {
-        "status": "Kein Manifest",
+        "status": "Kein Manifest\nFür dieses Gerät fehlt es",
         "tappable": false,
-        "error": "Unknown or invalid schema version"
+        "error": "No Manifest stored for this device"
       },
       {
         "status": "",

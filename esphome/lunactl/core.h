@@ -21,6 +21,7 @@ namespace lunactl {
 inline constexpr int MAX_SCHEMA_VERSION = 1;
 
 constexpr size_t MAX_MANIFEST_BYTES = 32 * 1024;
+constexpr uint32_t MANIFEST_FETCH_TIMEOUT_MS = 10000;
 constexpr size_t CENTER_SLOT = 4;
 constexpr int CENTER_HOLE_RADIUS = 168;
 constexpr int CENTER_QUARTER_ANGLE = 74;
@@ -388,6 +389,8 @@ class Core {
       disconnected_at_ = now_;  // tick() advances now_ every 10 ms.
     }
     attempted_ = false;
+    fetching_ = false;
+    manifest_status_.clear();
     ++request_;  // Invalidates replies from an earlier connection.
     // Keep the last valid Manifest and states in RAM; an invalid replacement
     // must not destroy them. Disconnected they stay visible but inert; HA
@@ -395,12 +398,32 @@ class Core {
   }
   bool connected() const { return connected_; }
   uint32_t revision() const { return revision_; }
-  uint32_t begin_fetch() { return connected_ ? ++request_ : 0; }
+  uint32_t begin_fetch() {
+    if (!connected_) return 0;
+    fetching_ = true;
+    fetch_started_ = now_;
+    return ++request_;
+  }
   bool current(uint32_t request) const { return connected_ && request != 0 && request == request_; }
+  bool fetch_failed(uint32_t request, const std::string &error) {
+    if (!current(request)) return false;
+    fetching_ = false;
+    manifest_failure("Abruf fehlgeschlagen", error.empty() ? "Unbekannter Fehler" : error);
+    return true;
+  }
   bool accept(uint32_t request, JsonVariantConst root, std::string &error) {
     if (!current(request)) { error = "Stale Manifest response"; return false; }
+    fetching_ = false;
+    if (root.is<JsonObjectConst>() && root.size() == 0) {
+      error = "No Manifest stored for this device";
+      manifest_failure("Kein Manifest", "Für dieses Gerät fehlt es");
+      return false;
+    }
     Manifest candidate;
-    if (!parse_manifest(root, candidate, error)) return false;
+    if (!parse_manifest(root, candidate, error)) {
+      manifest_failure("Manifest abgelehnt", error);
+      return false;
+    }
     std::vector<Reference> required;
     auto require = [&](const Reference &ref) {
       if (std::find(required.begin(), required.end(), ref) == required.end()) required.push_back(ref);
@@ -440,13 +463,22 @@ class Core {
     page_ = 0;
     ++revision_;
     has_manifest_ = true;
+    manifest_status_.clear();
     return true;
   }
   bool accept_json(uint32_t request, const std::string &json, std::string &error) {
-    if (json.size() > MAX_MANIFEST_BYTES) { error = "Manifest exceeds 32 KiB"; return false; }
+    if (!current(request)) { error = "Stale Manifest response"; return false; }
+    fetching_ = false;
+    auto reject = [&](const std::string &reason) {
+      error = reason;
+      manifest_failure("Manifest abgelehnt", error);
+      return false;
+    };
+    if (json.size() > MAX_MANIFEST_BYTES) return reject("Manifest exceeds 32 KiB");
     JsonDocument doc;
-    auto result = deserializeJson(doc, json, DeserializationOption::NestingLimit(32));
-    if (result) { error = "Invalid JSON"; return false; }
+    // Keep the existing 31-level Manifest limit, formerly inside the API envelope.
+    auto result = deserializeJson(doc, json, DeserializationOption::NestingLimit(31));
+    if (result) return reject(std::string("Invalid JSON: ") + result.c_str());
     return accept(request, doc.as<JsonVariantConst>(), error);
   }
   // Shown: the Manifest is on screen, also while Disconnected.
@@ -656,15 +688,21 @@ class Core {
   // Also reports a change of the offline icon, which needs a render.
   bool tick(uint32_t now) {
     now_ = now;
+    bool status_changed = fetching_ && now - fetch_started_ >= MANIFEST_FETCH_TIMEOUT_MS;
+    if (status_changed) fetch_failed(request_, "Keine Antwort von HA (Aktionen erlaubt?)");
     bool icon_changed = offline_icon() != icon_;
     icon_ = offline_icon();
     if (touch_down_ || buttons_[0].pressed || buttons_[1].pressed) last_activity_ = now;
     if (popping_ && now - pop_at_ >= BUBBLE_POP_MS) popping_ = false;
-    if (!display_on_ || now - last_activity_ < timeout_ms()) return icon_changed;
+    if (!display_on_ || now - last_activity_ < timeout_ms()) return icon_changed || status_changed;
     sleep();
     return true;
   }
-  const char *status() const { return has_manifest_ ? "" : connected_ ? "Kein Manifest" : "Keine Verbindung"; }
+  const char *status() const {
+    if (has_manifest_) return "";
+    if (!connected_) return "Keine Verbindung";
+    return manifest_status_.empty() ? "Kein Manifest" : manifest_status_.c_str();
+  }
 
   // Call with debounced key levels on edges and/or while polling. Unsigned
   // subtraction preserves the threshold across the millis() wraparound.
@@ -735,6 +773,14 @@ class Core {
   }
 
  private:
+  void manifest_failure(const char *heading, const std::string &reason) {
+    // Bound the wrapped text on the round display; preserve complete UTF-8 glyphs.
+    size_t length = std::min(reason.size(), size_t{96});
+    while (length < reason.size() && (static_cast<unsigned char>(reason[length]) & 0xC0) == 0x80) --length;
+    std::string detail = reason.substr(0, length);
+    for (char &c : detail) if (static_cast<unsigned char>(c) < 0x20) c = ' ';
+    manifest_status_ = std::string(heading) + "\n" + detail + (length < reason.size() ? "..." : "");
+  }
   std::string state(const Reference &ref) const {
     auto found = std::find(subscriptions_.begin(), subscriptions_.end(), ref);
     return found == subscriptions_.end() ? "" : states_[found - subscriptions_.begin()];
@@ -752,6 +798,9 @@ class Core {
   std::vector<std::string> states_;
   ConnectionAction connection_action_{ConnectionAction::NONE};
   uint32_t request_{0};
+  bool fetching_{false};
+  uint32_t fetch_started_{0};
+  std::string manifest_status_;
   Manifest manifest_;
   size_t page_{0};
   std::string clock_{"--:--"};

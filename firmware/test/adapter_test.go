@@ -53,9 +53,15 @@ int main() {
  JsonDocument envelope;
  deserializeJson(envelope, R"({"response":{"schema":1,"pages":[{"type":"single","item":{"label":"Adapter","color":"#123456","action":{"action":"script.adapter","target":{"entity_id":"script.expected"},"data":{"text":"quoted \\\" value"}}}}]}})");
  auto response = envelope.as<JsonObjectConst>();
- {
+ auto apply = [&]() {
+ JsonDocument wire;
+ std::string json;
+ serializeJson(envelope["response"], json);
+ wire["response"]["manifest_json"] = json;
+ auto response = wire.as<JsonObjectConst>();
  ` + callback + `
- }
+ };
+ apply();
  if (!manifest_core.tappable()) return 1;
  JsonDocument out;
  ` + bindings.String() + `
@@ -67,15 +73,11 @@ int main() {
  if (!warnings.empty()) return 6;
  deserializeJson(envelope, R"({"response":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,{"label":"Pie","icon":"mdi:future-icon","color":"#AABBCC","action":{"action":"script.pie","data":{"slot":2}}},null]}]}})");
  response = envelope.as<JsonObjectConst>();
- {
- ` + callback + `
- }
+ apply();
  if (warnings.size() != 1 || warnings[0] != "Invalid Item icon" || manifest_core.pie() || manifest_core.item().label != "Adapter") return 7;
  warnings.clear();
  envelope["response"]["pages"][0]["quarters"][2]["icon"] = "mdi:sofa";
- {
- ` + callback + `
- }
+ apply();
  if (!warnings.empty() || !manifest_core.pie()) return 14;
  manifest_core.press(336, 336);
  tapped_slot = manifest_core.release(336, 336);
@@ -86,9 +88,7 @@ int main() {
  if (payload["data"]["slot"] != 2 || payload["target"].size() != 0) return 10;
  deserializeJson(envelope, R"({"response":{"schema":1,"pages":[{"type":"pie","quarters":[null,null,null,null],"center":{"label":"Center","color":"#111827","action":{"action":"script.center","target":{"entity_id":"script.expected"},"data":{"slot":"center"}}}}]}})");
  response = envelope.as<JsonObjectConst>();
- {
- ` + callback + `
- }
+ apply();
  manifest_core.press(233, 233);
  tapped_slot = manifest_core.release(233, 233);
  if (tapped_slot != 4) return 11;

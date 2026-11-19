@@ -291,18 +291,22 @@ script:
           action: lunactl.manifest
           data:
             mac: !lambda return get_mac_address_pretty();
+          # ESPHome discards JSON parse errors before on_success. Keep the
+          # Manifest as text until Core parses it and can display the reason.
+          response_template: "{{ {'manifest_json': response | to_json} }}"
           capture_response: true
           on_success:
             - lambda: |-
                 std::string error;
-                if (!id(manifest_core).accept(request, response["response"], error))
+                if (!id(manifest_core).accept_json(request, response["response"]["manifest_json"].as<std::string>(), error))
                   ESP_LOGW("lunactl", "Manifest rejected: %s", error.c_str());
             - script.execute: render_manifest
             - script.execute: sync_subscriptions
           on_error:
             - lambda: |-
-                if (id(manifest_core).current(request))
+                if (id(manifest_core).fetch_failed(request, error))
                   ESP_LOGW("lunactl", "Manifest fetch failed: %s", error.c_str());
+            - script.execute: render_manifest
   - id: render_manifest
     then:
       - lambda: |-
@@ -515,7 +519,10 @@ lvgl:
         id: manifest_status
         align: center
         text: Keine Verbindung
-        text_font: font_item
+        width: 340
+        long_mode: wrap
+        text_align: center
+        text_font: font_battery
         text_color: 0xFFFFFF
     # Disconnected (ADR 0006): fixed above the pages, covering a Pie center's clock.
     - obj:

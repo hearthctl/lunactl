@@ -86,9 +86,14 @@ Before starting:
 - [ ] Disconnect HA while the log viewer remains open. The Item stays visible
   (Disconnected), and touch cannot run it. Reconnect fetches again.
 - [ ] In the test HA, remove and re-add the ESPHome device, then reboot it. Its
-  deleted Manifest yields **Kein Manifest**; no action can be tapped. Save the
-  room Manifest for the re-added device to recover. A missing/failed `lunactl.manifest` call also logs its error and
-  leaves **Kein Manifest** on a fresh connection.
+  deleted Manifest yields **Kein Manifest / Für dieses Gerät fehlt es**; no action
+  can be tapped. Save the room Manifest for the re-added device to recover.
+  A missing/failed `lunactl.manifest` call shows **Abruf fehlgeschlagen** with the
+  action error on a fresh connection. Denying action permission before a fresh
+  fetch shows the error or **Keine Antwort von HA (Aktionen erlaubt?)** after
+  10 seconds. A rejected Manifest shows **Manifest abgelehnt** and the core's
+  error, wrapped readably within the round display. Invalid replacements keep
+  a previous valid Manifest visible and usable.
 - [ ] Deny action permission or make the Item's action fail. A failed tap is
   logged and is not retried. Restore permission/action and confirm recovery.
 - [ ] Reboot/power cycle: no old Manifest appears before the new fetch. No
