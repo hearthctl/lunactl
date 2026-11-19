@@ -111,8 +111,13 @@ and compiles the firmware with arc labels and A8 glyph transforms enabled.
 Issue [#8](https://github.com/hearthctl/lunactl/issues/8) adds a golden file per
 gesture (`button-a-short`, `button-a-long`, `button-b-short`, `button-b-long`),
 each with lit and dark display cases. They verify no action on press, short on
-release at 999 ms, long at 1000 ms while held, no repeat or short after long,
-and the full action payload. Further golden cases cover absent, empty and
+release at 2999 ms, long at 3000 ms while held, no repeat or short after long,
+and the full action payload. `button-bubble` and `button-bubble-unbound` cover
+the hold bubble Core reports through the host's `bubble` event: hidden for the
+first 400 ms, growing in 4 px steps to the pop at the long gesture, a blue
+bubble for Taste B, and no bubble for unbound long gestures, short presses or a
+lost connection. `TestProductionHoldBubbleAdapter` compiles the YAML lambda that
+applies it to LVGL. Further golden cases cover absent, empty and
 partial bindings, simultaneous keys, millis wraparound, offline cancellation
 and atomic reload/replacement. `sleep` is a host fixture for a dark display;
 automatic timeout is also exercised by the display cases below. The production

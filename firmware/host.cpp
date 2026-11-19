@@ -83,6 +83,7 @@ int main() {
         });
       } else if (type == "sleep") core.sleep();
       else if (type == "tick") { core.tick(now); display_seen = true; }
+      else if (type == "bubble") core.tick(now);
       else if (type != "error") return 2;
       auto snapshot = snapshots.add<JsonObject>();
       snapshot["status"] = core.status();
@@ -113,6 +114,15 @@ int main() {
         snapshot["display_brightness"] = core.display_brightness();
       }
       if (type == "button") snapshot["wake"] = button_event.wake;
+      if (type == "bubble") {
+        auto bubble = core.bubble(now);
+        snapshot["bubble"]["visible"] = bubble.visible;
+        if (bubble.visible) {
+          snapshot["bubble"]["diameter"] = bubble.diameter;
+          snapshot["bubble"]["opacity"] = bubble.opacity;
+          snapshot["bubble"]["rgb"] = bubble.rgb;
+        }
+      }
       const lunactl::Action *action = nullptr;
       if (!button_event.action.action.empty()) action = &button_event.action;
       if (core.shown()) {

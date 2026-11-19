@@ -151,6 +151,7 @@ interval:
           id: handle_key
           key: 1
           pressed: !lambda return id(key_b).state;
+      - script.execute: update_hold_bubble
       - script.execute: update_display
 
   - interval: 1s
@@ -237,6 +238,34 @@ script:
       - lambda: |-
           if (id(manifest_core).tick(millis())) id(render_manifest).execute();
           id(wake_display).execute();
+  - id: update_hold_bubble
+    then:
+      - lambda: |-
+          // Core decides what the held keys show; this only applies it to the bubble.
+          static int diameter = 0, opacity = -1;
+          static uint32_t rgb = 0;
+          auto bubble = id(manifest_core).bubble(millis());
+          auto *obj = id(hold_bubble);
+          if (!bubble.visible) {
+            if (diameter != 0) lv_obj_add_flag(obj, LV_OBJ_FLAG_HIDDEN);
+            diameter = 0;
+            return;
+          }
+          if (rgb != bubble.rgb) {
+            lv_obj_set_style_bg_color(obj, lv_color_hex(bubble.rgb), 0);
+            lv_obj_set_style_border_color(obj, lv_color_hex(bubble.rgb), 0);
+            rgb = bubble.rgb;
+          }
+          if (opacity != bubble.opacity) {
+            lv_obj_set_style_opa(obj, bubble.opacity, 0);
+            opacity = bubble.opacity;
+          }
+          if (diameter != bubble.diameter) {
+            lv_obj_set_size(obj, bubble.diameter, bubble.diameter);
+            lv_obj_set_pos(obj, 233 - bubble.diameter / 2, 233 - bubble.diameter / 2);
+            if (diameter == 0) lv_obj_remove_flag(obj, LV_OBJ_FLAG_HIDDEN);
+            diameter = bubble.diameter;
+          }
   - id: render_battery
     then:
       - lambda: |-
@@ -542,6 +571,21 @@ lvgl:
                       data: !lambda return id(manifest_core).item(id(tapped_slot)).data;
                     on_error:
                       - lambda: 'ESP_LOGW("lunactl", "Item action failed: %s", error.c_str());'
+    # Key hold feedback, above the pages: Core sizes it from the held time.
+    - obj:
+        id: hold_bubble
+        x: 213
+        y: 213
+        width: 40
+        height: 40
+        radius: 200
+        bg_opa: 35%
+        border_width: 6
+        border_opa: COVER
+        pad_all: 0
+        hidden: true
+        clickable: false
+        scrollable: false
     - label:
         id: battery_hint
         align: bottom_mid
