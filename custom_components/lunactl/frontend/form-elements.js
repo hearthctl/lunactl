@@ -223,3 +223,21 @@ class ValueForm extends LitElement {
   }
 }
 customElements.define("lunactl-value-form", ValueForm);
+
+class ActiveForm extends LitElement {
+  static properties = {hass: {attribute: false}, value: {attribute: false}};
+  static styles = formStyles;
+  render() {
+    const value = object(this.value) ? this.value : {entity: "", states: []};
+    return html`<fieldset><legend>${text.active}</legend>
+      <lunactl-entity-picker .hass=${this.hass} .value=${value.entity} .label=${text.entity}
+        @form-change=${(e) => send(this, withField(value, "entity", e.detail))}></lunactl-entity-picker>
+      <label>${text.attribute}<input .value=${valueText(value.attribute)}
+        @input=${(e) => send(this, withField(value, "attribute", e.target.value || undefined))}></label>
+      <label>${text.activeStates}<textarea .value=${Array.isArray(value.states) ? value.states.join("\n") : ""}
+        @input=${(e) => send(this, withField(value, "states", e.target.value.split("\n")))}></textarea></label>
+      <button @click=${() => send(this, undefined)}>${text.removeItem}</button>
+    </fieldset>`;
+  }
+}
+customElements.define("lunactl-active-form", ActiveForm);

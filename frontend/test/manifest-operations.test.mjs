@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import {test} from "node:test";
 import {addPage, removePage, reorderPage, switchPageType, addItem, removeItem,
-  draftItem, canEditManifest, slotsFor, slotItem, setItem} from "../../custom_components/lunactl/frontend/manifest-operations.js";
+  draftItem, canEditManifest, slotsFor, slotItem, setItem, setDialField} from "../../custom_components/lunactl/frontend/manifest-operations.js";
 import {History} from "../../custom_components/lunactl/frontend/history.js";
 import {text} from "../../custom_components/lunactl/frontend/strings.js";
 
@@ -123,3 +123,64 @@ for (const {name, steps, expected, undo, redo} of [
     assert.equal(history.canRedo, redo);
   });
 }
+
+test("Dial drafts expose and edit all five Slots without losing page values", () => {
+  const created = addPage(manifest(single), "dial");
+  assert.equal(created.pages[1].type, "dial");
+  assert.deepEqual(slotsFor(created.pages[1]), [0, 1, 2, 3, 4]);
+  const dial = {type: "dial", status: {format: "Klima", refs: []}, value: {format: "20°", refs: []},
+    minus: a, plus: b, items: [c, null, d]};
+  for (const slot of [0, 1, 2, 3, 4]) {
+    const edited = setItem(manifest(dial), 0, slot, {...a, active: {entity: "climate.room", states: ["cool"]}});
+    assert.deepEqual(slotItem(edited.pages[0], slot).active, {entity: "climate.room", states: ["cool"]});
+    assert.deepEqual(edited.pages[0].status, dial.status);
+    const removed = removeItem(edited, 0, slot);
+    assert.equal(slotItem(removed.pages[0], slot) == null, true);
+    assert.equal(slotItem(addItem(removed, 0, slot).pages[0], slot).label, text.newItem);
+  }
+});
+
+for (const type of ["single", "pie"]) {
+  test(`Dial to ${type} maps Items and reports page-field loss`, () => {
+    const page = {type: "dial", minus: a, plus: b, items: [c, null, d],
+      value: {format: "20°", refs: []}, countdown: "timer.run"};
+    const plan = switchPageType(manifest(page), 0, type);
+    assert.deepEqual(plan.manifest.pages[0], type === "single" ? {type, item: a} :
+      {type, center: a, quarters: [b, c, d, null]});
+    assert.deepEqual(plan.dropped, type === "single" ? [b, c, d] : []);
+    assert.deepEqual(plan.droppedFields, ["value", "countdown"]);
+  });
+}
+test("Pie to Dial fills minus, plus and bottom Slots in order", () => {
+  const plan = switchPageType(manifest({type: "pie", center: c, quarters: [a, null, b, d]}), 0, "dial");
+  assert.deepEqual(plan.manifest.pages[0], {type: "dial", value: {format: "{0}", refs: [{entity: ""}]},
+    minus: c, plus: a, items: [b, d, null]});
+  assert.deepEqual(plan.dropped, []);
+});
+
+test("Dial field loss requires confirmation and undo restores the page", async () => {
+  const {ManifestEditor} = await import("../../custom_components/lunactl/frontend/manifest-editor.js");
+  const original = manifest({type: "dial", minus: a, plus: b, items: [null, null, null],
+    value: {format: "20°", refs: []}});
+  const editor = new ManifestEditor({manifest: original, revision: 1}, async () => ({}), () => {},
+    {setTimeout() {}, clearTimeout() {}});
+  editor.requestPageType("pie");
+  assert.deepEqual(editor.pendingSwitch.droppedFields, ["value"]);
+  assert.deepEqual(editor.manifest, original);
+  editor.cancelPageType();
+  assert.deepEqual(editor.manifest, original);
+  editor.requestPageType("pie");
+  editor.confirmPageType();
+  assert.deepEqual(editor.manifest.pages[0], {type: "pie", center: a, quarters: [b, null, null, null]});
+  editor.undo();
+  assert.deepEqual(editor.manifest, original);
+  editor.close();
+});
+
+test("Dial page fields can be set and removed without changing Items or other pages", () => {
+  const original = manifest({type: "dial", minus: a, plus: b, items: [null, null, null]}, single);
+  const value = {format: "20°", refs: []};
+  const edited = setDialField(original, 0, "value", value);
+  assert.deepEqual(edited, manifest({...original.pages[0], value}, single));
+  assert.deepEqual(setDialField(edited, 0, "value", undefined), original);
+});

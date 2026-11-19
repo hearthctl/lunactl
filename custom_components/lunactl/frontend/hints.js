@@ -6,7 +6,8 @@ const items = (manifest) => (Array.isArray(manifest?.pages) ? manifest.pages : [
   const slots = page?.type === "single" ? [[0, "item", page.item]] : page?.type === "pie" ? [
     ...(Array.isArray(page.quarters) ? page.quarters.map((item, slot) => [slot, `quarters[${slot}]`, item]) : []),
     [4, "center", page.center],
-  ] : [];
+  ] : page?.type === "dial" ? [[0, "minus", page.minus], [1, "plus", page.plus],
+    ...(Array.isArray(page.items) ? page.items.map((item, i) => [i + 2, `items[${i}]`, item]) : [])] : [];
   return slots.filter(([, , item]) => object(item)).map(([slot, field, item]) => ({
     item, page: index, slot, path: `pages[${index}].${field}`,
   }));
@@ -48,11 +49,20 @@ export function manifestHints(manifest, states = {}, services = {}) {
     const location = {page, slot};
     if (Array.isArray(item.value?.refs)) item.value.refs.forEach((ref, i) =>
       entity(ref?.entity, `${path}.value.refs[${i}].entity`, location));
+    entity(item.active?.entity, `${path}.active.entity`, location);
     entity(item.countdown, `${path}.countdown`, location);
     action(item.action, `${path}.action`, location);
     const ratio = contrastAgainstWhite(item.color);
     if (ratio !== null && ratio < 3) hints.push({kind: "contrast", path: `${path}.color`, ...location});
   }
+  (Array.isArray(manifest?.pages) ? manifest.pages : []).forEach((page, index) => {
+    if (page?.type !== "dial") return;
+    for (const field of ["status", "value", "caption"]) {
+      if (Array.isArray(page[field]?.refs)) page[field].refs.forEach((ref, i) =>
+        entity(ref?.entity, `pages[${index}].${field}.refs[${i}].entity`, {page: index}));
+    }
+    entity(page.countdown, `pages[${index}].countdown`, {page: index});
+  });
   for (const [key, binding] of entries(manifest?.buttons)) action(binding, `buttons.${key}`, {});
   entity(manifest?.display?.brightness, "display.brightness");
   return hints;
@@ -66,6 +76,7 @@ export function textFitHints(manifest, states, measure) {
   const hints = [];
   for (const {item, path, page, slot} of items(manifest)) {
     const type = manifest.pages[page].type;
+    if (type === "dial") continue;
     const curved = type === "pie" && slot !== 4 && object(manifest.pages[page].center);
     const available = curved ? 200 * 74 * Math.PI / 180 : type === "single" || slot === 4 ? 240 : 160;
     const fields = [["label", item.label], ...(!curved ? [["value", formatValue(item.value, states)]] : [])];
@@ -80,5 +91,17 @@ export function textFitHints(manifest, states, measure) {
         hints.push({kind: "text-fit", path: `${path}.${field}`, page, slot});
     }
   }
+  (Array.isArray(manifest?.pages) ? manifest.pages : []).forEach((page, index) => {
+    if (page?.type !== "dial") return;
+    for (const field of ["status", "value", "caption"]) {
+      const value = formatValue(page[field], states);
+      const location = {path: `pages[${index}].${field}`, page: index};
+      if (field === "value" && /[^0123456789,.\-–°% ]/u.test(value))
+        hints.push({kind: "dial-glyphs", ...location});
+      const font = field === "value" ? '800 96px "Lunactl Nunito"' : FIT_FONT;
+      if (value.split(/\r\n|\r|\n/).some((line) => measure(line, font) > (field === "status" ? 340 : 200)))
+        hints.push({kind: "text-fit", ...location});
+    }
+  });
   return hints;
 }

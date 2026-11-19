@@ -51,39 +51,38 @@
       ]
     },
     {
-      "type": "pie",
-      "quarters": [
+      "type": "dial",
+      "status": {"format": "{0}", "refs": [{"entity": "sensor.kinderzimmer_klima_status"}]},
+      "value": {"format": "{0}", "refs": [{"entity": "sensor.kinderzimmer_klima_wert"}]},
+      "caption": {"format": "{0}", "refs": [{"entity": "sensor.kinderzimmer_klima_zeile"}]},
+      "minus": {
+        "label": "Kälter", "color": "#374151",
+        "action": {"action": "script.lunactl_kaelter"},
+        "active": {"entity": "climate.kinderzimmer", "attribute": "hvac_mode", "states": ["cool", "heat"]}
+      },
+      "plus": {
+        "label": "Wärmer", "color": "#374151",
+        "action": {"action": "script.lunactl_waermer"},
+        "active": {"entity": "climate.kinderzimmer", "attribute": "hvac_mode", "states": ["cool", "heat"]}
+      },
+      "items": [
         {
-          "label": "Kühlen",
-          "icon": "mdi:snowflake",
-          "color": "#2876A8",
-          "action": {"action": "script.lunactl_kuehlen"}
+          "label": "Kühlen", "icon": "mdi:snowflake", "color": "#3B82F6",
+          "action": {"action": "script.lunactl_kuehlen"},
+          "active": {"entity": "climate.kinderzimmer", "attribute": "hvac_mode", "states": ["cool"]}
         },
         {
-          "label": "Heizen",
-          "icon": "mdi:fire",
-          "color": "#B85C20",
-          "action": {"action": "script.lunactl_heizen"}
+          "label": "Aus", "icon": "mdi:power", "color": "#8A93A3",
+          "action": {"action": "script.lunactl_klima_aus"},
+          "active": {"entity": "climate.kinderzimmer", "attribute": "hvac_mode", "states": ["off"]}
         },
-        null,
-        null
+        {
+          "label": "Heizen", "icon": "mdi:fire", "color": "#F0782A",
+          "action": {"action": "script.lunactl_heizen"},
+          "active": {"entity": "climate.kinderzimmer", "attribute": "hvac_mode", "states": ["heat"]}
+        }
       ],
-      "center": {
-        "label": "Klima aus",
-        "icon": "mdi:power",
-        "color": "#286B61",
-        "action": {"action": "script.lunactl_klima_aus"},
-        "value": {
-          "format": "{0} °C · {1}",
-          "refs": [
-            {"entity": "sensor.kinderzimmer_temperatur", "decimals": 1, "decimal_comma": true},
-            {"entity": "climate.kinderzimmer", "attribute": "hvac_action", "map": {
-              "cooling": "Kühlen", "heating": "Heizen", "idle": "Aus", "off": "Aus"
-            }}
-          ]
-        },
-        "countdown": "timer.kinderzimmer_klima_lauf"
-      }
+      "countdown": "timer.kinderzimmer_klima_lauf"
     },
     {
       "type": "single",

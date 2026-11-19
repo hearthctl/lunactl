@@ -2,7 +2,7 @@ import {LitElement, html, css, keyed} from "./vendor/lit-all.min.js";
 import {deviceList, deviceHeader} from "./devices.js";
 import "./preview-element.js";
 import {ManifestEditor, parseManifest} from "./manifest-editor.js";
-import {canEditManifest, slotItem, setItem} from "./manifest-operations.js";
+import {canEditManifest, slotItem, setItem, setDialField} from "./manifest-operations.js";
 import {text, errorText} from "./strings.js";
 import {palette, iconNames, withField, setDisplay, setBinding, object, restoreLineEndings} from "./forms.js";
 import {icons} from "./icons.js";
@@ -168,7 +168,7 @@ class LunactlDesigner extends LitElement {
         <button aria-label=${text.addPage} ?disabled=${pages.length === 6}
           @click=${() => { this._addingPage = !this._addingPage; this.requestUpdate(); }}>+</button>
         ${this._addingPage && pages.length < 6 ? html`
-          ${["single", "pie"].map((type) => html`<button @click=${() => {
+          ${["single", "pie", "dial"].map((type) => html`<button @click=${() => {
             this._addingPage = false; editor.addPage(type);
           }}>${text.pageTypes[type]}</button>`)}
           <button @click=${() => { this._addingPage = false; this.requestUpdate(); }}>${text.cancel}</button>` : ""}
@@ -182,14 +182,16 @@ class LunactlDesigner extends LitElement {
         <select id="page-type" .value=${page.type} @change=${(event) => {
           editor.requestPageType(event.target.value);
           event.target.value = page.type;
-        }}>${["single", "pie"].map((type) => html`<option value=${type}
+        }}>${["single", "pie", "dial"].map((type) => html`<option value=${type}
           .selected=${type === page.type}>${text.pageTypes[type]}</option>`)}</select>
         <button ?disabled=${pages.length === 1} @click=${() => editor.removePage()}>${text.removePage}</button>
       </div>
+      ${page.type === "dial" ? this._dialForm(editor) : ""}
       ${editor.pendingSwitch ? html`<div role="alert" class="card confirmation">
         <p>${text.pageTypes[page.type]} → ${text.pageTypes[editor.pendingSwitch.type]}:
           <strong>${text.droppedItems(editor.pendingSwitch.dropped.length)}</strong>:
           ${editor.pendingSwitch.dropped.map((item) => typeof item?.label === "string" ? item.label : text.newItem).join(", ")}</p>
+        ${editor.pendingSwitch.droppedFields?.length ? html`<p>${text.droppedFields}: ${editor.pendingSwitch.droppedFields.map((field) => text.dialFields[field] || text.countdown).join(", ")}</p>` : ""}
         <p>${text.undoRecovery}</p>
         <button @click=${() => editor.confirmPageType()}>${text.switchType}</button>
         <button @click=${() => editor.cancelPageType()}>${text.cancel}</button>
@@ -201,6 +203,7 @@ class LunactlDesigner extends LitElement {
     const page = manifest?.pages?.[editor.page];
     const item = slotItem(page, editor.slot);
     const path = `pages[${editor.page}].${page?.type === "single" ? "item" :
+      page?.type === "dial" ? (editor.slot < 2 ? ["minus", "plus"][editor.slot] : `items[${editor.slot - 2}]`) :
       editor.slot === 4 ? "center" : `quarters[${editor.slot}]`}`;
     return html`<section class="card" aria-label=${text.itemForm}>
       ${editor.slot === null || !canEditManifest(manifest) ? html`<h3>${text.itemForm}</h3><p>${text.selectSlot}</p>` : html`
@@ -219,6 +222,8 @@ class LunactlDesigner extends LitElement {
   _itemForm(editor, item) {
     const change = (key, value) => editor.apply(setItem(editor.manifest, editor.page, editor.slot,
       withField(item, key, value)));
+    const pageType = editor.manifest.pages[editor.page].type;
+    const iconRequired = pageType === "dial" && editor.slot >= 2;
     const label = typeof item.label === "string" ? item.label : "";
     return html`
       <label>${text.label}<textarea .value=${label}
@@ -232,9 +237,10 @@ class LunactlDesigner extends LitElement {
         .value=${typeof item.color === "string" ? item.color : ""} @input=${(e) => change("color", e.target.value)}></label>
       <label>${text.iconSearch}<input type="search" .value=${this._iconSearch || ""}
         @input=${(e) => { this._iconSearch = e.target.value; this.requestUpdate(); }}></label>
-      ${editor.slot === 4 ? html`<p class="hint">${text.centerIcon}</p>` : ""}
+      ${pageType === "pie" && editor.slot === 4 ? html`<p class="hint">${text.centerIcon}</p>` : ""}
+      ${iconRequired ? html`<p class="hint">${text.iconRequired}</p>` : ""}
       <div class="icons" aria-label=${text.icon}>
-        <button aria-pressed=${item.icon === undefined} @click=${() => change("icon", undefined)}>${text.noIcon}</button>
+        <button ?disabled=${iconRequired} aria-pressed=${item.icon === undefined} @click=${() => change("icon", undefined)}>${text.noIcon}</button>
         ${iconNames(this._iconSearch).map((name) => html`<button aria-pressed=${item.icon === name}
           @click=${() => change("icon", name)}><span class="glyph" aria-hidden="true">${icons[name]}</span>${name}</button>`)}
       </div>
@@ -243,7 +249,22 @@ class LunactlDesigner extends LitElement {
       <lunactl-entity-picker .hass=${this.hass} .value=${item.countdown || ""} .domains=${["timer"]}
         .label=${text.countdown} @form-change=${(e) => change("countdown", e.detail || undefined)}></lunactl-entity-picker>
       <lunactl-value-form .hass=${this.hass} .value=${item.value}
-        @form-change=${(e) => change("value", e.detail)}></lunactl-value-form>`;
+        @form-change=${(e) => change("value", e.detail)}></lunactl-value-form>
+      <lunactl-active-form .hass=${this.hass} .value=${item.active}
+        @form-change=${(e) => change("active", e.detail)}></lunactl-active-form>
+      `;
+  }
+
+  _dialForm(editor) {
+    const page = editor.manifest.pages[editor.page];
+    const change = (field, value) => editor.apply(setDialField(editor.manifest, editor.page, field, value));
+    return html`<section class="card">
+      ${["status", "value", "caption"].map((field) => html`<h3>${text.dialFields[field]}</h3>
+        <lunactl-value-form .hass=${this.hass} .value=${page[field]}
+          @form-change=${(e) => change(field, e.detail)}></lunactl-value-form>`)}
+      <lunactl-entity-picker .hass=${this.hass} .value=${page.countdown || ""} .domains=${["timer"]}
+        .label=${text.countdown} @form-change=${(e) => change("countdown", e.detail || undefined)}></lunactl-entity-picker>
+    </section>`;
   }
 
   _settings(editor) {

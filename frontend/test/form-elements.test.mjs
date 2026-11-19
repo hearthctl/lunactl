@@ -301,7 +301,7 @@ test("editing an Expert live-value format preserves its newline in autosave", as
   const panel = make("lunactl-designer", {hass});
   const itemForm = panel._itemForm(editor, editor.manifest.pages[0].item);
   const valueForm = templates(itemForm).find((t) => t.strings.join("").includes("<lunactl-value-form"));
-  const form = make("lunactl-value-form", {hass, value: bindings(valueForm, ".value=").at(-1)});
+  const form = make("lunactl-value-form", {hass, value: bindings(valueForm, ".value=").at(-2)});
   const formatField = templates(form.render()).find((t) => t.values.includes(text.format));
   assert.match(formatField.strings.join(""), /<textarea\b/);
   const [format] = bindings(formatField, ".value=");
@@ -364,4 +364,21 @@ test("panel preserves the display timeout draft until the input commits", () => 
   handler(timeout(), "change", 4)({target: field});
   assert.equal(editor.manifest.display, undefined);
   assert.equal(field.value, "10");
+});
+
+test("Dial page form edits live values and countdown; active form edits an Item reference", () => {
+  const page = {type: "dial", value: {format: "20°", refs: []}, minus: {label: "Minus"}, plus: {}, items: [null, null, null]};
+  const editor = new ManifestEditor({manifest: {schema: 1, pages: [page]}, revision: 1}, async () => ({}));
+  const panel = make("lunactl-designer", {hass});
+  const updated = {format: "{0}", refs: [{entity: "sensor.status"}]};
+  handler(panel._dialForm(editor), "form-change")({detail: updated});
+  assert.deepEqual(editor.manifest.pages[0].status, updated);
+  handler(panel._dialForm(editor), "form-change", 3)({detail: "timer.cooling"});
+  assert.equal(editor.manifest.pages[0].countdown, "timer.cooling");
+  const form = make("lunactl-active-form", {hass, value: {entity: "climate.room", states: ["cool"]}});
+  handler(form.render(), "input", 0)(input("hvac_mode"));
+  assert.deepEqual(form.emitted, {entity: "climate.room", attribute: "hvac_mode", states: ["cool"]});
+  handler(form.render(), "input", 1)(input("cool\nheat"));
+  assert.deepEqual(form.emitted.states, ["cool", "heat"]);
+  editor.close();
 });

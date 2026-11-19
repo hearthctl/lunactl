@@ -62,46 +62,80 @@
     "entity": "scene.kinderzimmer_schlafen_gehen"
   },
   {
-    "kind": "action-missing",
-    "path": "pages[1].quarters[0].action.action",
+    "kind": "entity-missing",
+    "path": "pages[1].minus.active.entity",
     "page": 1,
     "slot": 0,
+    "entity": "climate.kinderzimmer"
+  },
+  {
+    "kind": "action-missing",
+    "path": "pages[1].minus.action.action",
+    "page": 1,
+    "slot": 0,
+    "action": "script.lunactl_kaelter"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[1].plus.active.entity",
+    "page": 1,
+    "slot": 1,
+    "entity": "climate.kinderzimmer"
+  },
+  {
+    "kind": "action-missing",
+    "path": "pages[1].plus.action.action",
+    "page": 1,
+    "slot": 1,
+    "action": "script.lunactl_waermer"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[1].items[0].active.entity",
+    "page": 1,
+    "slot": 2,
+    "entity": "climate.kinderzimmer"
+  },
+  {
+    "kind": "action-missing",
+    "path": "pages[1].items[0].action.action",
+    "page": 1,
+    "slot": 2,
     "action": "script.lunactl_kuehlen"
   },
   {
+    "kind": "entity-missing",
+    "path": "pages[1].items[1].active.entity",
+    "page": 1,
+    "slot": 3,
+    "entity": "climate.kinderzimmer"
+  },
+  {
     "kind": "action-missing",
-    "path": "pages[1].quarters[1].action.action",
+    "path": "pages[1].items[1].action.action",
     "page": 1,
-    "slot": 1,
-    "action": "script.lunactl_heizen"
+    "slot": 3,
+    "action": "script.lunactl_klima_aus"
   },
   {
     "kind": "entity-missing",
-    "path": "pages[1].center.value.refs[0].entity",
-    "page": 1,
-    "slot": 4,
-    "entity": "sensor.kinderzimmer_temperatur"
-  },
-  {
-    "kind": "entity-missing",
-    "path": "pages[1].center.value.refs[1].entity",
+    "path": "pages[1].items[2].active.entity",
     "page": 1,
     "slot": 4,
     "entity": "climate.kinderzimmer"
   },
   {
-    "kind": "entity-missing",
-    "path": "pages[1].center.countdown",
+    "kind": "action-missing",
+    "path": "pages[1].items[2].action.action",
     "page": 1,
     "slot": 4,
-    "entity": "timer.kinderzimmer_klima_lauf"
+    "action": "script.lunactl_heizen"
   },
   {
-    "kind": "action-missing",
-    "path": "pages[1].center.action.action",
+    "kind": "contrast",
+    "path": "pages[1].items[2].color",
     "page": 1,
-    "slot": 4,
-    "action": "script.lunactl_klima_aus"
+    "slot": 4
   },
   {
     "kind": "entity-missing",
@@ -116,6 +150,30 @@
     "page": 2,
     "slot": 0,
     "action": "script.lunactl_papa_rufen"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[1].status.refs[0].entity",
+    "page": 1,
+    "entity": "sensor.kinderzimmer_klima_status"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[1].value.refs[0].entity",
+    "page": 1,
+    "entity": "sensor.kinderzimmer_klima_wert"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[1].caption.refs[0].entity",
+    "page": 1,
+    "entity": "sensor.kinderzimmer_klima_zeile"
+  },
+  {
+    "kind": "entity-missing",
+    "path": "pages[1].countdown",
+    "page": 1,
+    "entity": "timer.kinderzimmer_klima_lauf"
   },
   {
     "kind": "action-missing",
