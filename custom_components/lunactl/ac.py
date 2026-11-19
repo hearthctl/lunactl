@@ -8,6 +8,7 @@ import logging
 import math
 import re
 
+from homeassistant.const import MAX_LENGTH_STATE_STATE
 from homeassistant.core import callback
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers.entity import Entity
@@ -254,22 +255,19 @@ class ACManager:
         running = mode in ("cool", "heat")
         target = run["target"] if run else numeric(attrs.get("temperature"))
         value = target if running else temperature
+        caption = attrs.get("friendly_name") or climate
+        if running:
+            room_temperature = (
+                "--" if temperature is None else f"{temperature:g} °C".replace(".", ",")
+            )
+            caption = f"{room_temperature} · {caption}"
         return {
             "timer": "active" if active else "idle",
             "status": {"cool": "Kühlt", "heat": "Heizt", "off": "Klima aus"}.get(
                 mode, "Klima nicht bereit"
             ),
             "value": "--" if value is None else f"{value:g}°".replace(".", ","),
-            "caption": (
-                (
-                    "--"
-                    if temperature is None
-                    else f"{temperature:g} °C".replace(".", ",")
-                )
-                + " im Zimmer"
-            )
-            if running
-            else "im Zimmer",
+            "caption": caption[:MAX_LENGTH_STATE_STATE],
             "adjustable": "on" if running and active else "off",
         }
 

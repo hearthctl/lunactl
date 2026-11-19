@@ -9,6 +9,34 @@ from pytest_homeassistant_custom_component.common import async_fire_time_changed
 from custom_components.lunactl.ac import entity_ids
 
 
+async def test_ac_caption_tracks_selected_climate_name(hass, setup):
+    store, device, _ = setup
+    page = {
+        "type": "ac",
+        "id": "bedroom",
+        "entity": "climate.kinderzimmer",
+        "minutes": 30,
+        "minimum": 18,
+        "maximum": 26,
+    }
+    await store.async_save(device.id, {"schema": 1, "pages": [page]}, 0)
+    dial = store.fetch("aa:bb:cc:dd:ee:ff")["pages"][0]
+    caption = dial["caption"]["refs"][0]["entity"]
+    assert hass.states.get(caption).state == "climate.kinderzimmer"
+    for mode, name, expected in [
+        ("off", "Kinderzimmer", "Kinderzimmer"),
+        ("cool", "Kinderzimmer", "23,5 °C · Kinderzimmer"),
+        ("cool", "Lunas Zimmer", "23,5 °C · Lunas Zimmer"),
+        ("heat", "Lunas Zimmer", "23,5 °C · Lunas Zimmer"),
+        ("unavailable", "Lunas Zimmer", "Lunas Zimmer"),
+    ]:
+        hass.states.async_set(
+            page["entity"], mode, {"friendly_name": name, "current_temperature": 23.5}
+        )
+        await hass.async_block_till_done()
+        assert hass.states.get(caption).state == expected
+
+
 async def test_ac_pages_compile_and_share_latest_run(hass, setup, freezer):
     store, device, _ = setup
     hass.states.async_set(
