@@ -7,8 +7,13 @@ MAC lookup uses HA's device registry and normalizes case and separators.
 
 `lunactl.manifest(mac)` returns the Manifest itself as a response mapping,
 not a JSON string or a `manifest` wrapper. An unmapped MAC returns `{}`. ESPHome
-uses `capture_response: true`; its callback envelope exposes that mapping as
-`response["response"]`. The Manifest must fit within 32 KiB. It is never saved
+uses `capture_response: true` with a response template that serializes the
+mapping into `response["response"]["manifest_json"]` when the resulting
+UTF-8 envelope fits the encrypted API frame. The core parses that JSON text
+so it can display parser errors such as `TooDeep`. If escaping makes the text
+envelope too large, the template sends the original mapping for ESPHome to
+parse and the core to validate. The service always returns a mapping.
+The Manifest must fit within the 32 KiB encrypted frame limit. It is never saved
 to device flash. Every HA API connection fetches it, and the device's
 **Manifest neu laden** button fetches it again. Log viewers do not trigger a
 fetch or make the device appear connected to HA.
@@ -88,9 +93,21 @@ short and long. Each press uses the bindings present when it began; disconnect
 cancels pending actions. Keys cannot dispatch without HA and a valid Manifest.
 New Manifests replace all bindings, so omitted bindings clear previous ones.
 
-An invalid replacement is logged and leaves the current valid Manifest active. Without HA the device shows **Keine Verbindung**;
-connected without a valid Manifest it shows **Kein Manifest**. Neither state
-can run an Item's action. Reconnecting refetches; the previous valid Manifest
+An invalid replacement is logged and leaves the current valid Manifest active.
+Failure reasons appear only when there is no valid Manifest to show. Without HA
+the device shows **Keine Verbindung**. While connected, an empty `{}` response
+shows **Kein Manifest** with **Für dieses Gerät fehlt es** (also for an unmapped
+MAC); an action error shows **Abruf fehlgeschlagen** with its error; an invalid
+Manifest shows **Manifest abgelehnt** with the core's original validation or JSON
+parser error, including `TooDeep` and unsupported schema versions. An unanswered
+fetch shows **Abruf fehlgeschlagen** with **Keine Antwort von HA (Aktionen erlaubt?)**
+after 10 seconds. With no Manifest to show, this wakes the display for its
+normal idle interval. HA can silently refuse actions when permission is disabled.
+The German heading and up to 96 bytes of reason wrap in a centred 340 px label
+using the 20 px font; longer reasons end in `...` without splitting UTF-8.
+Full errors remain in the log. These states cannot run an Item's action.
+Newer replies replace earlier reasons; stale replies cannot change them.
+Reconnecting clears the reason and refetches; the previous valid Manifest
 stays in RAM until replaced. Rebooting always starts without a Manifest.
 
 A tap or bound key gesture calls `lunactl.run` with exactly two string fields:

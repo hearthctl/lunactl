@@ -11,13 +11,16 @@ import (
 	"github.com/hearthctl/lunactl/internal/testutil"
 )
 
-// ESPHome parses the lunactl.manifest response envelope with deserializeJson
-// and no explicit NestingLimit (components/json/json_util.cpp), so the device
-// limit is ArduinoJson's default, set by the build flags in lunactl.yaml.
+// The response template keeps ESPHome's envelope shallow. The actual callback
+// then lets Core reject a deep Manifest without losing ArduinoJson's reason.
 func TestDeviceNestingLimit(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join(testutil.Root(), "esphome/lunactl.yaml"))
 	if err != nil {
 		t.Fatal(err)
+	}
+	callback := regexp.MustCompile(`(?s)capture_response: true\s+on_success:\s+- lambda: \|-\n(.*?)\n            - script.execute:`).FindStringSubmatch(string(raw))
+	if callback == nil {
+		t.Fatal("missing Manifest success callback")
 	}
 	block := regexp.MustCompile(`(?s)\n  build_flags:\n(.*?)\n  [a-z]`).FindStringSubmatch(string(raw))
 	if block == nil {
@@ -39,33 +42,35 @@ func TestDeviceNestingLimit(t *testing.T) {
 			accepted: true,
 		},
 		{
-			name:     "depth 31, deepest Manifest inside the envelope",
+			name:     "depth 31, deepest supported Manifest",
 			manifest: `{"schema":1,"pages":[{"type":"single","item":{"label":"Tief","color":"#123456","action":{"action":"script.deep","data":` + strings.Repeat(`{"n":`, 25) + `{}` + strings.Repeat(`}`, 25) + `}}}]}`,
 			accepted: true,
 		},
 		{
-			name:     "depth 32 exceeds the limit with the envelope",
+			name:     "depth 32 rejected with TooDeep on the display",
 			manifest: `{"schema":1,"pages":[{"type":"single","item":{"label":"Tief","color":"#123456","action":{"action":"script.deep","data":` + strings.Repeat(`{"n":`, 26) + `{}` + strings.Repeat(`}`, 26) + `}}}]}`,
 			accepted: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			want := "1"
-			if !tt.accepted {
-				want = "0"
-			}
 			source := `#include "core.h"
+#define id(name) name
+#define ESP_LOGW(tag, format, message) (void)message
 #include <iostream>
 int main() {
- lunactl::Core core;
- core.set_connected(true);
- uint32_t request = core.begin_fetch();
- std::string data = R"({"response":` + tt.manifest + `})";
+ lunactl::Core manifest_core;
+ manifest_core.set_connected(true);
+ uint32_t request = manifest_core.begin_fetch();
+ JsonDocument envelope;
+ envelope["response"]["manifest_json"] = R"(` + tt.manifest + `)";
+ std::string data;
+ serializeJson(envelope, data);
  JsonDocument doc;
- std::string error;
- bool ok = !deserializeJson(doc, data.data(), data.size()) && core.accept(request, doc["response"], error);
- std::cout << ok;
+ if (deserializeJson(doc, data.data(), data.size())) return 1;
+ auto response = doc.as<JsonObjectConst>();
+ ` + callback[1] + `
+ std::cout << manifest_core.tappable() << "\n" << manifest_core.status();
 }
 `
 			dir := t.TempDir()
@@ -86,8 +91,12 @@ int main() {
 			if err != nil {
 				t.Fatalf("run: %v\n%s", err, out)
 			}
+			want := "1\n"
+			if !tt.accepted {
+				want = "0\nManifest abgelehnt\nInvalid JSON: TooDeep"
+			}
 			if string(out) != want {
-				t.Errorf("accepted = %s, want %s", out, want)
+				t.Errorf("display = %q, want %q", out, want)
 			}
 		})
 	}

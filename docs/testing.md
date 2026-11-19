@@ -19,6 +19,19 @@ make verify           # core, schema, frontend, integration and firmware: needs 
 make e2e              # hassfest and contracts: need Podman
 ```
 
+Issue [#90](https://github.com/hearthctl/lunactl/issues/90) checks the displayed
+reason for empty responses, action errors, unanswered fetches, invalid fields,
+unsupported schemas, malformed JSON, `TooDeep` and the 32 KiB limit. Core tests
+cover stale replies, reconnect, timeout boundaries and millis wraparound,
+preserving a valid Manifest, and bounded UTF-8 text. The production adapter
+test compiles the actual success/error automations and render lambda and
+observes the visible LVGL status label. The nesting test exercises the shallow
+transport envelope followed by the production callback, accepting depth 31 and
+displaying `TooDeep` at depth 32. HA tests render the firmware's actual response
+template, preserving mappings as JSON text, including empty, deep and UTF-8
+content. All run in `make verify`, including the ESP32-S3 firmware compile.
+The on-device checklist covers physical legibility on the round display.
+
 The Designer needs no npm or build step. `check-frontend` runs `node --check`
 on every frontend and test module (including vendored Lit), then `node --test`
 on the DOM-free editing/device logic. Table-driven golden cases cover explicit
