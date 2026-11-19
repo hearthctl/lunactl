@@ -60,10 +60,32 @@ def items(manifest):
     for page in manifest.get("pages", []):
         if page["type"] == "single":
             yield page["item"]
+        elif page["type"] == "dial":
+            yield page["minus"]
+            yield page["plus"]
+            yield from (item for item in page["items"] if item is not None)
         else:
             yield from (item for item in page["quarters"] if item is not None)
             if "center" in page:
                 yield page["center"]
+
+
+def countdowns(manifest):
+    """Objects that can carry a timer: every Item and every Dial page."""
+    yield from items(manifest)
+    yield from (page for page in manifest.get("pages", []) if page["type"] == "dial")
+
+
+def refs(manifest):
+    """Every entity/attribute reference object: value refs and Aktiv refs."""
+    for item in items(manifest):
+        yield from item.get("value", {}).get("refs", [])
+        if "active" in item:
+            yield item["active"]
+    for page in manifest.get("pages", []):
+        if page["type"] == "dial":
+            for name in ("status", "value", "caption"):
+                yield from page.get(name, {}).get("refs", [])
 
 
 def actions(manifest):
@@ -74,12 +96,12 @@ def actions(manifest):
 def subscriptions(manifest):
     """Match the core's entity/attribute subscription pairs, including timers."""
     result = set()
-    for item in items(manifest):
-        for ref in item.get("value", {}).get("refs", []):
-            result.add((ref["entity"], ref.get("attribute", "")))
-        if "countdown" in item:
+    for ref in refs(manifest):
+        result.add((ref["entity"], ref.get("attribute", "")))
+    for holder in countdowns(manifest):
+        if "countdown" in holder:
             result.update(
-                (item["countdown"], attr) for attr in ("", "finishes_at", "duration")
+                (holder["countdown"], attr) for attr in ("", "finishes_at", "duration")
             )
     if entity := manifest.get("display", {}).get("brightness"):
         result.add((entity, ""))
@@ -107,12 +129,12 @@ def references(manifest):
 def rename(manifest, old, new):
     """Rewrite defined reference fields only; action data is opaque."""
     result = deepcopy(manifest)
-    for item in items(result):
-        for ref in item.get("value", {}).get("refs", []):
-            if ref["entity"] == old:
-                ref["entity"] = new
-        if item.get("countdown") == old:
-            item["countdown"] = new
+    for ref in refs(result):
+        if ref["entity"] == old:
+            ref["entity"] = new
+    for holder in countdowns(result):
+        if holder.get("countdown") == old:
+            holder["countdown"] = new
     if result.get("display", {}).get("brightness") == old:
         result["display"]["brightness"] = new
     for action in actions(result):
