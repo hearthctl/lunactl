@@ -291,14 +291,26 @@ script:
           action: lunactl.manifest
           data:
             mac: !lambda return get_mac_address_pretty();
-          # ESPHome discards JSON parse errors before on_success. Keep the
-          # Manifest as text until Core parses it and can display the reason.
-          response_template: "{{ {'manifest_json': response | to_json} }}"
+          # Keep the Manifest as text for Core's parser when it fits. If
+          # escaping pushes it over the frame budget, use HA's original mapping.
+          # Count UTF-8 bytes in HA's JSON envelope and reserve 32 bytes for
+          # the protobuf fields and Noise overhead.
+          response_template: >-
+            {% set wrapped = {'manifest_json': response | to_json} %}
+            {% set wire = {'response': wrapped} | to_json %}
+            {% set bytes = wire | urlencode | regex_replace('%[0-9A-Fa-f]{2}', 'x') | length %}
+            {{ wrapped if bytes <= 32736 else response }}
           capture_response: true
           on_success:
             - lambda: |-
                 std::string error;
-                if (!id(manifest_core).accept_json(request, response["response"]["manifest_json"].as<std::string>(), error))
+                auto &core = id(manifest_core);
+                auto body = response["response"];
+                auto text = body["manifest_json"];
+                bool accepted = body.is<JsonObjectConst>() && !text.is<const char *>()
+                    ? core.accept(request, body, error)
+                    : core.accept_json(request, text.as<std::string>(), error);
+                if (!accepted)
                   ESP_LOGW("lunactl", "Manifest rejected: %s", error.c_str());
             - script.execute: render_manifest
             - script.execute: sync_subscriptions

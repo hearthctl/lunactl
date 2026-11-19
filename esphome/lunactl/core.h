@@ -689,7 +689,10 @@ class Core {
   bool tick(uint32_t now) {
     now_ = now;
     bool status_changed = fetching_ && now - fetch_started_ >= MANIFEST_FETCH_TIMEOUT_MS;
-    if (status_changed) fetch_failed(request_, "Keine Antwort von HA (Aktionen erlaubt?)");
+    if (status_changed) {
+      fetch_failed(request_, "Keine Antwort von HA (Aktionen erlaubt?)");
+      if (!shown()) wake(now);
+    }
     bool icon_changed = offline_icon() != icon_;
     icon_ = offline_icon();
     if (touch_down_ || buttons_[0].pressed || buttons_[1].pressed) last_activity_ = now;

@@ -88,7 +88,7 @@ int main() {
  core.begin_fetch();
  core.tick(lunactl::MANIFEST_FETCH_TIMEOUT_MS);
  assert(core.page_index() == 1 && core.item().label == "Second" && core.tappable());
- assert(std::string(core.status()).empty());
+ assert(std::string(core.status()).empty() && !core.display_on());
  core.show_page(0);
  assert(core.value() == "kept" && core.subscriptions().size() == 1);
  assert(core.button(lunactl::Key::A, true, 10001).action.action.empty());
@@ -114,7 +114,8 @@ int main() {
   assert(std::string(core.status()) == "Kein Manifest"); // Only the latest fetch times out.
   assert(core.tick(start + 15000));
   assert(std::string(core.status()) == "Abruf fehlgeschlagen\nKeine Antwort von HA (Aktionen erlaubt?)");
-  assert(!core.tick(start + 15001)); // Timeout renders once, even while asleep.
+  assert(core.display_on());
+  assert(!core.tick(start + 15001)); // Timeout renders once.
   assert(!core.fetch_failed(old, "Old failure"));
   std::string error;
   assert(!core.accept_json(request, "{}", error));

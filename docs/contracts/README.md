@@ -8,10 +8,12 @@ MAC lookup uses HA's device registry and normalizes case and separators.
 `lunactl.manifest(mac)` returns the Manifest itself as a response mapping,
 not a JSON string or a `manifest` wrapper. An unmapped MAC returns `{}`. ESPHome
 uses `capture_response: true` with a response template that serializes the
-mapping into `response["response"]["manifest_json"]`. The core parses that JSON
-text so parser errors such as `TooDeep` reach the display instead of being
-discarded by ESPHome's envelope parser. The service still returns a mapping;
-this transport template belongs to the firmware. The Manifest must fit within 32 KiB. It is never saved
+mapping into `response["response"]["manifest_json"]` when the resulting
+UTF-8 envelope fits the encrypted API frame. The core parses that JSON text
+so it can display parser errors such as `TooDeep`. If escaping makes the text
+envelope too large, the template sends the original mapping for ESPHome to
+parse and the core to validate. The service always returns a mapping.
+The Manifest must fit within the 32 KiB encrypted frame limit. It is never saved
 to device flash. Every HA API connection fetches it, and the device's
 **Manifest neu laden** button fetches it again. Log viewers do not trigger a
 fetch or make the device appear connected to HA.
@@ -99,7 +101,8 @@ MAC); an action error shows **Abruf fehlgeschlagen** with its error; an invalid
 Manifest shows **Manifest abgelehnt** with the core's original validation or JSON
 parser error, including `TooDeep` and unsupported schema versions. An unanswered
 fetch shows **Abruf fehlgeschlagen** with **Keine Antwort von HA (Aktionen erlaubt?)**
-after 10 seconds; HA can silently refuse actions when permission is disabled.
+after 10 seconds. With no Manifest to show, this wakes the display for its
+normal idle interval. HA can silently refuse actions when permission is disabled.
 The German heading and up to 96 bytes of reason wrap in a centred 340 px label
 using the 20 px font; longer reasons end in `...` without splitting UTF-8.
 Full errors remain in the log. These states cannot run an Item's action.

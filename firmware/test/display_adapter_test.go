@@ -52,10 +52,22 @@ int main() {
  auto release = [&](Point point) { `+touch[2]+` };
  update();
  if (amoled.brightness != 179 || amoled.calls != 1) return 1;
+ manifest_core.set_connected(true);
+ now = 1000; update();
+ manifest_core.begin_fetch();
  now = 9999; update();
  if (!manifest_core.display_on() || amoled.calls != 1 || manifest_ui.refreshes != 1) return 2;
  now = 10000; update();
  if (manifest_core.display_on() || amoled.brightness != 0 || render_manifest.calls != 1) return 3;
+ now = 11000; update();
+ if (amoled.brightness != 179 ||
+     std::string(manifest_core.status()) != "Abruf fehlgeschlagen\nKeine Antwort von HA (Aktionen erlaubt?)") return 22;
+ now = 20999; update();
+ if (amoled.brightness != 179) return 23;
+ now = 21000; update();
+ if (amoled.brightness != 0) return 24;
+ manifest_core = lunactl::Core{};
+ now = 10000; update();
  now = 10001; press({233,233}); release({233,233});
  if (!manifest_core.display_on() || amoled.brightness != 179 || tapped_slot != -1) return 4;
  manifest_core.set_connected(true);
