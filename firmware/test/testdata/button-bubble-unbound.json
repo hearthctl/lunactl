@@ -1,0 +1,30 @@
+{
+  "events": [
+    {"type": "connect"},
+    {"type": "fetch"},
+    {"type": "manifest","manifest": {"schema": 1,"pages": [{"type": "single","item": {"label": "Keys","color": "#123456","action": {"action": "script.item"}}}],"buttons": {"a_short": {"action": "script.a_short"},"b_short": {"action": "script.b_short"}}}},
+    {"type": "button","key": "a","pressed": true,"now": 100},
+    {"type": "bubble","now": 500},
+    {"type": "bubble","now": 2000},
+    {"type": "bubble","now": 3100},
+    {"type": "button","key": "a","pressed": false,"now": 3101},
+    {"type": "bubble","now": 3102},
+    {"type": "button","key": "b","pressed": true,"now": 4000},
+    {"type": "bubble","now": 5000},
+    {"type": "button","key": "b","pressed": false,"now": 5001}
+  ],
+  "want": {"snapshots": [
+    {"status": "Kein Manifest","tappable": false},
+    {"status": "Kein Manifest","tappable": false,"request": 2},
+    {"status": "","tappable": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""}},
+    {"status": "","tappable": true,"display_on": true,"wake": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""}},
+    {"status": "","tappable": true,"bubble": {"visible": false},"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""}},
+    {"status": "","tappable": true,"bubble": {"visible": false},"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""}},
+    {"status": "","tappable": true,"bubble": {"visible": false},"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""}},
+    {"status": "","tappable": true,"display_on": true,"wake": false,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""}},
+    {"status": "","tappable": true,"bubble": {"visible": false},"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""}},
+    {"status": "","tappable": true,"display_on": true,"wake": true,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""}},
+    {"status": "","tappable": true,"bubble": {"visible": false},"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""}},
+    {"status": "","tappable": true,"display_on": true,"wake": false,"page": 0,"home": true,"dots": [],"type": "single","item": {"label": "Keys","color": "#123456","icon": "","glyph": ""},"call": {"service": "lunactl.run","action": "script.b_short","data": "{\"target\":{},\"data\":{}}"}}
+  ]}
+}

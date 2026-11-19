@@ -191,8 +191,12 @@ Before starting:
 - [ ] For each of `a_short`, `a_long`, `b_short`, `b_long`, temporarily bind just
   that gesture to the test helper action. Repeat every test with a lit display
   and after timeout: press wakes immediately; short fires once on release before
-  1 second; long fires once at about 1 second while held. Record timing.
-- [ ] With both gestures bound for a key, hold beyond 1 second: no repeated long
+  3 seconds; long fires once at about 3 seconds while held. Record timing.
+- [ ] Hold a key whose long gesture is bound: after about half a second a bubble
+  in the key's colour (A yellow, B blue) grows in the middle and pops when the
+  action runs. Short presses and keys without a long binding show no bubble.
+  Check the growth looks smooth enough on every page type and from a dark display.
+- [ ] With both gestures bound for a key, hold beyond 3 seconds: no repeated long
   actions and no short action on release. With only long bound, a short press
   only wakes; with only short bound, a long hold only wakes. No fallback gesture.
 - [ ] Remove `buttons`, then use `{}` and partial bindings: unbound gestures

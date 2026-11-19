@@ -158,11 +158,14 @@ off appliances. See [countdown.md](countdown.md) for timestamp/duration formats.
 
 `buttons` accepts only `a_short`, `a_long`, `b_short`, `b_long`, each containing
 an action object. Taste A is yellow; Taste B is blue. Short runs on release
-before 1 second, long runs once at about 1 second while held. A long release
-never also runs short. Every key press wakes; bound gestures run even from a
-dark display. An omitted gesture only wakes and does not fall back to another
-binding. `null` is invalid. A replacement clears omitted bindings. Pending
-presses retain the actions from press time; disconnect cancels them.
+before 3 seconds, long runs once at 3 seconds while held. A long release
+never also runs short. While a key with a bound long gesture is held, a bubble in
+the key's colour grows in the middle of the display and pops when the long
+gesture runs; short presses show nothing. Every key press wakes; bound gestures
+run even from a dark display. An omitted gesture only wakes and does not fall
+back to another binding. `null` is invalid. A replacement clears omitted
+bindings. Pending presses retain the actions from press time; disconnect cancels
+them.
 
 | Display field | Meaning |
 | --- | --- |

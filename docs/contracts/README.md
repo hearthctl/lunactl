@@ -77,8 +77,11 @@ it unbound; `{}` or an absent `buttons` leaves all gestures unbound. Unknown
 gesture names, `null` bindings and malformed actions are rejected.
 
 Taste A is the yellow key; Taste B is the blue key. A short press runs its
-action on release before 1 second. A long press runs once after 1 second while
-held, and release does not also run the short action. Every press immediately
+action on release before 3 seconds. A long press runs once after 3 seconds while
+held, and release does not also run the short action. While a key whose long
+gesture is bound is held, a bubble in the key's colour grows from 0.4 seconds
+and pops when the long gesture runs; unbound or short presses show no bubble,
+and a lost connection removes it. Every press immediately
 wakes the display, including unbound keys, and bound gestures still run when
 the display was dark. Unbound gestures only wake; there is no fallback between
 short and long. Each press uses the bindings present when it began; disconnect

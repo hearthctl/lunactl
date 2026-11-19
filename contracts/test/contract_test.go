@@ -112,10 +112,10 @@ func TestManifestToButtonGestures(t *testing.T) {
 				{"type": "connect"}, {"type": "fetch"}, {"type": "manifest", "manifest": manifest},
 				{"type": "sleep"}, {"type": "button", "key": gesture[:1], "pressed": true, "now": 0},
 			}
-			duration := 999
+			duration := 2999
 			if strings.HasSuffix(gesture, "_long") {
-				duration = 1001
-				events = append(events, map[string]any{"type": "button", "key": gesture[:1], "pressed": true, "now": 1000})
+				duration = 3001
+				events = append(events, map[string]any{"type": "button", "key": gesture[:1], "pressed": true, "now": 3000})
 			}
 			events = append(events, map[string]any{"type": "button", "key": gesture[:1], "pressed": false, "now": duration})
 			got := testutil.Host(t, events)

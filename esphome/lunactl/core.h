@@ -73,7 +73,15 @@ struct Item : Action {
 };
 
 enum class Key : uint8_t { A, B };
-constexpr uint32_t LONG_PRESS_MS = 1000;
+constexpr uint32_t LONG_PRESS_MS = 3000;
+// Hold feedback: a bubble grows while a key with a bound long gesture is held
+// and pops when the gesture fires. The delay keeps short presses free of it.
+constexpr uint32_t BUBBLE_DELAY_MS = 400;
+constexpr uint32_t BUBBLE_POP_MS = 250;
+constexpr int BUBBLE_MIN_DIAMETER = 40, BUBBLE_MAX_DIAMETER = 240, BUBBLE_STEP = 4;
+constexpr uint8_t BUBBLE_OPACITY = 192;
+// The physical keys: Taste A is yellow, Taste B is blue.
+constexpr std::array<uint32_t, 2> BUBBLE_RGB{{0xFFC107, 0x2196F3}};
 // Disconnected: an attempted action flashes the offline icon; after the
 // stale period it stays until the connection returns.
 constexpr uint32_t OFFLINE_HINT_MS = 3000;
@@ -83,6 +91,13 @@ constexpr std::array<const char *, 4> BUTTON_NAMES{{"a_short", "a_long", "b_shor
 struct ButtonEvent {
   bool wake{false};
   Action action;
+};
+
+struct Bubble {
+  bool visible{false};
+  int diameter{0};
+  uint8_t opacity{0};
+  uint32_t rgb{0};
 };
 
 inline bool keys(JsonVariantConst value, std::initializer_list<const char *> allowed) {
@@ -644,6 +659,7 @@ class Core {
     bool icon_changed = offline_icon() != icon_;
     icon_ = offline_icon();
     if (touch_down_ || buttons_[0].pressed || buttons_[1].pressed) last_activity_ = now;
+    if (popping_ && now - pop_at_ >= BUBBLE_POP_MS) popping_ = false;
     if (!display_on_ || now - last_activity_ < timeout_ms()) return icon_changed;
     sleep();
     return true;
@@ -677,6 +693,11 @@ class Core {
       if (!state.long_fired && now - state.since >= LONG_PRESS_MS) {
         state.long_fired = true;
         if (tappable()) event.action = state.actions[1];
+        if (!event.action.action.empty()) {
+          popping_ = true;
+          pop_key_ = index;
+          pop_at_ = now;
+        }
       } else if (!pressed && !state.long_fired && tappable()) {
         event.action = state.actions[0];
       }
@@ -686,6 +707,31 @@ class Core {
       }
     }
     return event;
+  }
+
+  // What the held keys show: from BUBBLE_DELAY_MS a bubble grows to
+  // BUBBLE_MAX_DIAMETER, reaching it when the long gesture fires, then pops
+  // (grows further and fades) for BUBBLE_POP_MS. Only a key whose long gesture
+  // is bound shows it. The diameter moves in BUBBLE_STEP px so a caller that
+  // redraws on change does not render more often than the eye can see.
+  Bubble bubble(uint32_t now) const {
+    if (popping_ && now - pop_at_ < BUBBLE_POP_MS) {
+      uint32_t elapsed = now - pop_at_;
+      int diameter = BUBBLE_MAX_DIAMETER + BUBBLE_MAX_DIAMETER / 3 * static_cast<int>(elapsed) / static_cast<int>(BUBBLE_POP_MS);
+      return {true, diameter - diameter % BUBBLE_STEP,
+              static_cast<uint8_t>(BUBBLE_OPACITY * (BUBBLE_POP_MS - elapsed) / BUBBLE_POP_MS), BUBBLE_RGB[pop_key_]};
+    }
+    if (!tappable()) return {};
+    for (size_t index = 0; index < buttons_.size(); ++index) {
+      const auto &state = buttons_[index];
+      uint32_t held = now - state.since;
+      if (!state.pressed || state.long_fired || state.actions[1].action.empty() || held < BUBBLE_DELAY_MS) continue;
+      uint32_t span = LONG_PRESS_MS - BUBBLE_DELAY_MS;
+      int diameter = BUBBLE_MIN_DIAMETER +
+                     (BUBBLE_MAX_DIAMETER - BUBBLE_MIN_DIAMETER) * static_cast<int>(std::min(held - BUBBLE_DELAY_MS, span)) / static_cast<int>(span);
+      return {true, diameter - diameter % BUBBLE_STEP, BUBBLE_OPACITY, BUBBLE_RGB[index]};
+    }
+    return {};
   }
 
  private:
@@ -727,6 +773,9 @@ class Core {
     std::array<Action, 2> actions;
   };
   std::array<ButtonState, 2> buttons_;
+  bool popping_{false};
+  size_t pop_key_{0};
+  uint32_t pop_at_{0};
 };
 
 }  // namespace lunactl

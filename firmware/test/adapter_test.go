@@ -414,7 +414,7 @@ int main() {
    poll();
    if (amoled.brightness != 179 || manifest_ui.paused || manifest_ui.wakes != wakes_before + 1) return 3;
    if (run_button_action.actions.size() != static_cast<size_t>(gesture)) return 4;
-   now += 999;
+   now += 2999;
    poll();
    if (run_button_action.actions.size() != static_cast<size_t>(gesture)) return 5;
    if (gesture % 2) { ++now; poll(); }
@@ -436,7 +436,7 @@ int main() {
    sensor->state = true;
    poll();
    if (amoled.brightness != 179 || manifest_ui.paused) return 10;
-   now += 1000;
+   now += 3000;
    poll();
    sensor->state = false;
    poll();
