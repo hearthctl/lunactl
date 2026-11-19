@@ -41,6 +41,24 @@
           "description": "JSON-Text mit target- und data-Objekten."
         }
       }
+    },
+    "ac": {
+      "name": "AC-Aktion",
+      "description": "Aktion einer verwalteten AC-Dial-Seite ausführen.",
+      "fields": {
+        "device_id": {
+          "name": "Gerät",
+          "description": "ID des lunactl-Geräts."
+        },
+        "page_id": {
+          "name": "AC-Seite",
+          "description": "ID der gespeicherten AC-Seite."
+        },
+        "command": {
+          "name": "Aktion",
+          "description": "Kühlen, Heizen, Aus, Minus oder Plus."
+        }
+      }
     }
   },
   "exceptions": {

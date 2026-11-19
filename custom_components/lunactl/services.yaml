@@ -17,3 +17,23 @@ run:
       example: '{"target":{"entity_id":"light.bed"},"data":{}}'
       selector:
         text:
+ac:
+  fields:
+    device_id:
+      required: true
+      selector:
+        text:
+    page_id:
+      required: true
+      selector:
+        text:
+    command:
+      required: true
+      selector:
+        select:
+          options:
+          - cool
+          - heat
+          - "off"
+          - minus
+          - plus

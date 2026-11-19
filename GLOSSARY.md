@@ -69,6 +69,13 @@ Der Page type mit einem einzigen großen Slot.
 Der Page type zum Einstellen eines Werts: groß in der Mitte ein Live-Wert mit Minus und Plus daneben, darunter drei Items und ein Restzeit-Ring, der unten offen ist.
 _Avoid_: Thermostat, Stepper, Klima-Seite
 
+**AC-Dial**:
+Eine verwaltete AC-Konfiguration im Designer: Klimaanlage, Laufzeit und
+Temperaturgrenzen. Die HA-Integration verwaltet Aktionen und Anzeige-Werte;
+die Firmware erhält daraus eine normale Dial-Seite. Einzelne Slots werden
+nicht unabhängig von der AC-Konfiguration bearbeitet.
+_Avoid_: neuer Page type, einmalige Vorlage
+
 **Aktiv**:
 Ein Item ist aktiv, wenn ein Zustand in Home Assistant zu ihm passt, etwa Kühlen, während die Klimaanlage kühlt. Das Gerät zeigt es an und blendet bei einer Dial ein inaktives Minus oder Plus aus; was aktiv bedeutet, legt das Manifest fest.
 _Avoid_: ausgewählt, selected, an

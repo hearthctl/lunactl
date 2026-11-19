@@ -184,3 +184,14 @@ test("Dial page fields can be set and removed without changing Items or other pa
   assert.deepEqual(edited, manifest({...original.pages[0], value}, single));
   assert.deepEqual(setDialField(edited, 0, "value", undefined), original);
 });
+
+test("AC pages retain managed settings and have no editable Slots", () => {
+  const created = addPage(manifest(single), "ac");
+  const page = created.pages[1];
+  assert.equal(page.type, "ac");
+  assert.equal(page.minutes, 30);
+  assert.ok(page.id.length > 0);
+  assert.deepEqual(slotsFor(page), []);
+  assert.equal(setItem(created, 1, 0, a), created);
+  assert.equal(switchPageType(created, 1, "dial").manifest, created);
+});

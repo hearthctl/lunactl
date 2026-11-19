@@ -2,7 +2,7 @@ import {LitElement, html, css, keyed} from "./vendor/lit-all.min.js";
 import {deviceList, deviceHeader} from "./devices.js";
 import "./preview-element.js";
 import {ManifestEditor, parseManifest} from "./manifest-editor.js";
-import {canEditManifest, slotItem, setItem, setDialField} from "./manifest-operations.js";
+import {canEditManifest, slotItem, setItem, setDialField, setACField} from "./manifest-operations.js";
 import {text, errorText} from "./strings.js";
 import {palette, iconNames, withField, setDisplay, setBinding, object, restoreLineEndings} from "./forms.js";
 import {icons} from "./icons.js";
@@ -168,7 +168,7 @@ class LunactlDesigner extends LitElement {
         <button aria-label=${text.addPage} ?disabled=${pages.length === 6}
           @click=${() => { this._addingPage = !this._addingPage; this.requestUpdate(); }}>+</button>
         ${this._addingPage && pages.length < 6 ? html`
-          ${["single", "pie", "dial"].map((type) => html`<button @click=${() => {
+          ${["single", "pie", "dial", "ac"].map((type) => html`<button @click=${() => {
             this._addingPage = false; editor.addPage(type);
           }}>${text.pageTypes[type]}</button>`)}
           <button @click=${() => { this._addingPage = false; this.requestUpdate(); }}>${text.cancel}</button>` : ""}
@@ -179,10 +179,10 @@ class LunactlDesigner extends LitElement {
         <button aria-label=${text.nextPage} ?disabled=${editor.page === pages.length - 1}
           @click=${() => editor.reorderPage(1)}>→</button>
         <label for="page-type">${text.pageType}</label>
-        <select id="page-type" .value=${page.type} @change=${(event) => {
+        <select id="page-type" ?disabled=${page.type === "ac"} .value=${page.type} @change=${(event) => {
           editor.requestPageType(event.target.value);
           event.target.value = page.type;
-        }}>${["single", "pie", "dial"].map((type) => html`<option value=${type}
+        }}>${(page.type === "ac" ? ["ac"] : ["single", "pie", "dial"]).map((type) => html`<option value=${type}
           .selected=${type === page.type}>${text.pageTypes[type]}</option>`)}</select>
         <button ?disabled=${pages.length === 1} @click=${() => editor.removePage()}>${text.removePage}</button>
       </div>
@@ -201,6 +201,7 @@ class LunactlDesigner extends LitElement {
   _slotPanel(editor) {
     const manifest = editor.manifest;
     const page = manifest?.pages?.[editor.page];
+    if (page?.type === "ac") return this._acForm(editor);
     const item = slotItem(page, editor.slot);
     const path = `pages[${editor.page}].${page?.type === "single" ? "item" :
       page?.type === "dial" ? (editor.slot < 2 ? ["minus", "plus"][editor.slot] : `items[${editor.slot - 2}]`) :
@@ -253,6 +254,18 @@ class LunactlDesigner extends LitElement {
       <lunactl-active-form .hass=${this.hass} .value=${item.active}
         @form-change=${(e) => change("active", e.detail)}></lunactl-active-form>
       `;
+  }
+
+  _acForm(editor) {
+    const page = editor.manifest.pages[editor.page];
+    const change = (field, value) => editor.apply(setACField(editor.manifest, editor.page, field, value));
+    return html`<section class="card"><h3>${text.pageTypes.ac}</h3><p>${text.acManaged}</p>
+      <lunactl-entity-picker .hass=${this.hass} .value=${page.entity} .domains=${["climate"]}
+        .label=${text.acEntity} @form-change=${(e) => change("entity", e.detail)}></lunactl-entity-picker>
+      ${["minutes", "minimum", "maximum"].map((field) => html`<label>${text.acFields[field]}
+        <input type="number" step=${field === "minutes" ? "1" : "0.5"} .value=${String(page[field])}
+          @change=${(e) => change(field, e.target.value.length ? Number(e.target.value) : null)}></label>`)}
+    </section>`;
   }
 
   _dialForm(editor) {

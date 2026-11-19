@@ -66,6 +66,20 @@ async def async_setup_entry(hass, entry):
             }
         ),
     )
+    hass.services.async_register(
+        DOMAIN,
+        "ac",
+        store.ac.action,
+        schema=vol.Schema(
+            {
+                vol.Required("device_id"): str,
+                vol.Required("page_id"): str,
+                vol.Required("command"): vol.In(
+                    ["cool", "heat", "off", "minus", "plus"]
+                ),
+            }
+        ),
+    )
     for command in (ws_devices, ws_read, ws_save):
         websocket_api.async_register_command(hass, command)
     return True
@@ -73,8 +87,10 @@ async def async_setup_entry(hass, entry):
 
 async def async_unload_entry(hass, entry):
     async_remove_designer(hass)
-    hass.data.pop(DOMAIN).close()
-    for service in ("manifest", "run"):
+    store = hass.data.pop(DOMAIN)
+    store.close()
+    await store.ac.close()
+    for service in ("manifest", "run", "ac"):
         hass.services.async_remove(DOMAIN, service)
     return True
 

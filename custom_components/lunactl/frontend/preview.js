@@ -1,3 +1,4 @@
+import {acPreview} from "./ac-preview.js";
 import {formatValue, stateText} from "./value-format.js";
 import {countdownView} from "./countdown.js";
 import {icons} from "./icons.js";
@@ -87,7 +88,9 @@ function dial(page, states, time, editor) {
 export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0, editor = null, hints = []) {
   const pages = Array.isArray(manifest?.pages) ? manifest.pages.slice(0, 6) : [];
   const index = Math.max(0, Math.min(pages.length - 1, Number.isInteger(pageIndex) ? pageIndex : 0));
-  const page = pages[index];
+  const managed = pages[index]?.type === "ac";
+  const page = managed ? acPreview(pages[index], states) : pages[index];
+  if (managed) editor = null;
   const center = page?.center && typeof page.center === "object";
   const pageHints = hints.filter((hint) => hint.page === index);
   let body = "";
