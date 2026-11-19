@@ -98,7 +98,7 @@ class LunactlPreview extends LitElement {
   }
   _hintLocation(hint, manifest) {
     if (hint.page !== undefined)
-      return `${text.page(hint.page + 1)} · ${text.slot(manifest.pages[hint.page].type, hint.slot)}`;
+      return `${text.page(hint.page + 1)}${hint.slot === undefined ? "" : ` · ${text.slot(manifest.pages[hint.page].type, hint.slot)}`}`;
     return hint.path.startsWith("buttons.") ? text.buttonNames[hint.path.split(".")[1]] : text.brightness;
   }
   render() {

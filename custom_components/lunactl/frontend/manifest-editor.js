@@ -158,8 +158,8 @@ export class ManifestEditor {
       this.cancelPageType();
       return;
     }
-    if (plan.dropped.length) {
-      this.pendingSwitch = {type, dropped: plan.dropped};
+    if (plan.dropped.length || plan.droppedFields?.length) {
+      this.pendingSwitch = {type, dropped: plan.dropped, ...(plan.droppedFields ? {droppedFields: plan.droppedFields} : {})};
       this.changed();
     } else {
       this.slot = null;

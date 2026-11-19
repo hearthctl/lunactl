@@ -43,9 +43,9 @@ Before starting:
   Do not edit contract scripts or press the reload button for these checks.
 - To keep the display awake during visual checks, temporarily set
   `display.timeout` to `120`; restore `10` for the display tests.
-- Variants are edits to the room JSON, not additional Page types: remove Klima's
-  `center` for another plain Pie; copy Licht Items into its `null` quarters to
-  fill all four curved quarters; add Klima center's `countdown` to Papa's `item`
+- Variants are edits to the room JSON, not additional Page types: replace Klima with a Pie whose upper quarters hold Dial's Kühlen/Heizen Items and whose lower quarters are `null`. Put the Aus Item
+  in `center`, with Dial's `value` and `countdown`. Remove `center` for a plain
+  Pie, or fill the lower quarters with Licht Items. Add Dial's `countdown` to Papa's `item`
   for Single countdown checks. To test six pages, duplicate the three example
   pages once and give their labels distinct suffixes. To test one page, keep
   just Licht. These changes stay within the schema.
@@ -122,14 +122,14 @@ Before starting:
 
 ## Live values and subscriptions (#5)
 
-- [ ] On Klima, update the test temperature (for example 21.25) and
-  `climate.kinderzimmer`'s `hvac_action` via the test integration or Developer
-  Tools → States. Temperature rounds to one decimal with a comma; mapped
-  `cooling`/`heating`/`idle` show Kühlen/Heizen/Aus. Changes appear without reload.
+- [ ] On Klima, update the three template sensors via the test integration or
+  Developer Tools → States. Status, large value (for example `21,3°`) and
+  caption change without reload. Unsupported large-value characters produce
+  a Designer fit hint and are not drawn.
 - [ ] Toggle `input_boolean.lunactl_papa_kommt`: Papa's Single value shows
   **Papa kommt** when on and clears when off. Update it while that page is hidden;
   navigating back shows the latest value. Its tap still runs Papa rufen.
-- [ ] Copy Klima center's `value` onto a Licht quarter: plain Pie shows live
+- [ ] Copy Klima's `value` onto a Licht quarter: plain Pie shows live
   values too. Missing, empty, unknown/unavailable and invalid numeric states
   show `--`; valid state recovery updates immediately. Restore the test states.
 - [ ] Cold boot with the example and capture timestamps: initial fetch causes
@@ -147,7 +147,8 @@ Before starting:
 
 ## Countdown on Single and Pie center (#6)
 
-- [ ] Start the Klima-Lauf using Kühlen or Heizen. Klima's center shows label,
+- [ ] Apply the Pie-with-center variant above and start the Klima-Lauf using
+  Kühlen or Heizen. Its center shows label,
   live value, decreasing remaining time and ring together. Text updates every
   second without HA sending a new finish time each second.
 - [ ] Restart the running Klima-Lauf: remaining time and ring reset to the new
@@ -169,7 +170,7 @@ Before starting:
 
 ## Pie with center and curved labels (#7)
 
-- [ ] Klima has a large center, Kühlen/Heizen on the upper curved quarters and
+- [ ] Apply the Pie-with-center variant above. It has a large center, Kühlen/Heizen on the upper curved quarters and
   dark/inert lower quarters. The center label, value and countdown fit together;
   quarter icons/values/countdowns and the center icon are not displayed.
 - [ ] Apply the four-filled-quarter variant: all four curved labels, including
@@ -237,7 +238,7 @@ Before starting:
 
 ## Dial (#93)
 
-Temporarily add the Dial example from [manifest.md](manifest.md#dial) as a page.
+Use the Klima Dial page from the room example.
 Test helpers can stand in for its entities, for example an `input_select` with
 the options `cool`, `off` and `heat` in place of the climate `hvac_mode`.
 

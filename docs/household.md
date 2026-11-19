@@ -1,7 +1,7 @@
 # Set up a household
 
 Start with [examples/child-room.json](../examples/child-room.json). It contains
-three pages in order: Licht (Pie, home), Klima (Pie with `center`), Papa
+three pages in order: Licht (Pie, home), Klima (Dial), Papa
 (Single), plus Taste A/B bindings and display settings. Page names here describe
 their purpose; the Manifest has no page-name field. See the [Manifest field
 reference](manifest.md), [contract](contracts/README.md) and
@@ -26,19 +26,21 @@ household logic. Test the actions in HA's Developer Tools before using the panel
 | `scene.kinderzimmer_gemuetlich` | Gemütlich: warm light at ceiling and bed. |
 | `scene.kinderzimmer_schlafen_gehen` | Schlafen gehen: bed LEDs immediately dim and warm, other lights off. |
 | `script.lunactl_taste_a` | Taste A: choose Schlafen gehen if the ceiling is already on, otherwise Gemütlich. The conditional lives in HA. |
-| `script.lunactl_kuehlen`, `script.lunactl_heizen` | Start the respective Klima-Lauf for 30 minutes; another call restarts the 30 minutes. |
+| `script.lunactl_kuehlen`, `script.lunactl_heizen` | Start the respective Klima-Lauf for 30 minutes; another call restarts the 30 minutes. Keep the current setpoint. |
 | `script.lunactl_klima_aus` | Switch the air conditioner off immediately regardless of who started it; cancel the Klima-Lauf. |
 | `timer.kinderzimmer_klima_lauf` | Track the Klima-Lauf. Household automation must switch off the air conditioner when it finishes. The device only displays its remaining time. |
-| `climate.kinderzimmer` | Provide the `hvac_action` attribute for the Klima value. Adjust the map if this device uses other states. |
-| `sensor.kinderzimmer_temperatur` | Room temperature in °C, displayed with one decimal and a decimal comma. |
+| `climate.kinderzimmer` | Provide `hvac_mode` (`cool`, `heat`, `off`) for the active buttons. Adapt the reference to your entity's state or attribute. |
+| `sensor.kinderzimmer_klima_status` | Template sensor providing the status line, such as Kühlen, Heizen or Aus. |
+| `sensor.kinderzimmer_klima_wert` | Template sensor providing the setpoint while on, room temperature while off. Use only the Dial glyphs, for example `20°`. |
+| `sensor.kinderzimmer_klima_zeile` | Template sensor providing the caption, for example `im Zimmer` while off. |
+| `script.lunactl_kaelter`, `script.lunactl_waermer` | Change the setpoint by 1 °C within 18–26 °C without extending the Klima-Lauf. Handle rapid repeated calls in HA. |
 | `script.lunactl_papa_rufen` | Send Papa a normal phone notification. |
 | `input_boolean.lunactl_papa_kommt` | Papa's reply: on displays **Papa kommt**; off displays no reply. Household automation handles setting and clearing it, including clearing a previous reply on a new call. |
 | `input_number.lunactl_brightness` | Brightness percentage, helper range 0–100; start at 70. |
 
 The example binds `a_short` to Taste A's household action and `b_long` to Papa
 rufen. `a_long` and `b_short` are deliberately unbound and only wake the display.
-The keys work from any page, including when the display is dark. The Klima
-center always runs Klima aus, even when its countdown is hidden. The Papa Item
+The keys work from any page, including when the display is dark. The middle bottom Klima button always runs Klima aus, even when its countdown is hidden. The Papa Item
 always runs Papa rufen, including while showing Papa kommt.
 
 ## 2. Install lunactl through HACS
@@ -104,6 +106,13 @@ HA's **Manifest neu laden** button also fetches it manually. Labels, colours, ac
 reflash; a new entity/attribute reference needs a device restart, requested by
 the firmware automatically. A reboot always fetches again; no Manifest persists
 in device flash. See [values.md](values.md) for subscription details.
+
+The Designer can create and edit Dial pages, including their three live values,
+countdown and each Item's `active` reference. Page type changes retain Items in
+order: Single's Item; Pie's center then clockwise quarters; Dial's minus, plus,
+then bottom Slots from left to right. Destination Slots fill in that same order.
+The Designer asks before dropping excess Items or Dial page values; Undo restores
+the previous page. A bottom Dial Item needs an icon before it can be saved.
 
 ## 4. Verify the setup
 

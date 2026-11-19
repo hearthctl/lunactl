@@ -1,4 +1,4 @@
-import {formatValue} from "./value-format.js";
+import {formatValue, stateText} from "./value-format.js";
 import {countdownView} from "./countdown.js";
 import {icons} from "./icons.js";
 import {text} from "./strings.js";
@@ -47,6 +47,41 @@ function mainSlot(item, states, now, center, editor) {
     (editor && item == null ? label("+", C, 200, 48) : "") + "</g>";
 }
 
+function dial(page, states, time, editor) {
+  const items = [page.minus, page.plus, ...(Array.isArray(page.items) ? page.items : [])];
+  const active = (item, slot) => item?.active === undefined ? slot < 2 :
+    Array.isArray(item.active?.states) && item.active.states.includes(stateText(states, item.active));
+  const selected = items.slice(2).find((item) => item && active(item, 2));
+  const tint = selected ? color(selected) : "#8A93A3";
+  const colored = (value, x, y, size, fill) => label(value, x, y, size).replace('fill="#FFFFFF"', `fill="${fill}"`);
+  const timer = countdownView(states?.[page.countdown], time.timestamp);
+  let status = formatValue(page.status, states);
+  if (timer) status += `${status ? " · " : ""}noch ${Math.ceil(timer.remaining / 60)} min`;
+  let svg = label(/^\d{2}:\d{2}$/.test(time.clock) ? time.clock : "--:--", C, 34, 20) +
+    colored(status, C, 82, 28, tint) +
+    label(formatValue(page.value, states).replace(/[^0123456789,.\-–°% ]/gu, ""), C, 132, 96) +
+    colored(formatValue(page.caption, states), C, 248, 28, "#8A93A3");
+  if (timer) svg += `<g fill="none" stroke-width="12" stroke-linecap="round"><path d="${arc(218, 135, 405)}" stroke="#1B1E25"/><path d="${arc(218, 135, 135 + timer.ring * .27)}" stroke="${tint}"/></g>`;
+  for (const [slot, [x, y]] of [[84, 196], [382, 196], [131, 358], [233, 358], [335, 358]].entries()) {
+    const item = items[slot];
+    const shown = item != null && (slot >= 2 || active(item, slot));
+    if (!shown && !editor) continue;
+    const on = item != null && slot >= 2 && active(item, slot);
+    svg += slotGroup(slot, "dial", item, editor);
+    if (!shown && item != null) svg += '<g opacity="0.3">';
+    svg += `<circle cx="${x}" cy="${y}" r="44" fill="${on ? color(item) : "#1D2129"}"${slot < 2 ? ` stroke="${color(item)}" stroke-width="3"` : ""}/>`;
+    if (on) svg += `<circle cx="${x}" cy="${y}" r="50" fill="none" stroke="${color(item)}" stroke-opacity="${90 / 255}" stroke-width="6"/>`;
+    if (editor && item == null) svg += label("+", x, y - 24, 48);
+    else if (slot < 2) {
+      svg += `<rect x="${x - 19}" y="${y - 5}" width="33" height="9" rx="4" fill="#FFFFFF"/>`;
+      if (slot === 1) svg += `<rect x="${x - 7}" y="${y - 17}" width="9" height="33" rx="4" fill="#FFFFFF"/>`;
+    } else svg += label(icons[item?.icon] ?? "", x, y - 24, 48, "Lunactl MDI").replace('fill="#FFFFFF"', `fill="${on ? "#FFFFFF" : color(item)}"`);
+    if (!shown && item != null) svg += "</g>";
+    svg += "</g>";
+  }
+  return svg;
+}
+
 // Accept partial JSON drafts without throwing. This does not validate or save.
 // time = {timestamp: Unix seconds, clock: HH:MM in HA's configured timezone}.
 export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0, editor = null, hints = []) {
@@ -56,7 +91,8 @@ export function renderPreview(manifest, states = {}, time = {}, pageIndex = 0, e
   const center = page?.center && typeof page.center === "object";
   const pageHints = hints.filter((hint) => hint.page === index);
   let body = "";
-  if (page?.type === "single") body = mainSlot(page.item, states, time.timestamp, false, editor);
+  if (page?.type === "dial") body = dial(page, states, time, editor);
+  else if (page?.type === "single") body = mainSlot(page.item, states, time.timestamp, false, editor);
   else if (page?.type === "pie") {
     const quarters = Array.isArray(page.quarters) ? page.quarters : [];
     for (let slot = 0; slot < 4; slot++) {
