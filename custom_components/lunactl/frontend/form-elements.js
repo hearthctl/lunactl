@@ -77,7 +77,8 @@ class ActionForm extends LitElement {
     _query: {state: true}, _notice: {state: true}, _data: {state: true}};
   static styles = formStyles;
   constructor() { super(); this._query = null; this._notice = ""; this._data = ""; }
-  willUpdate() {
+  willUpdate(changed) {
+    if (!changed.has("binding")) return;
     const action = this.binding?.action;
     if (action !== this._lastAction) {
       this._lastAction = action;
