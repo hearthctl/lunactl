@@ -203,8 +203,8 @@ Before starting:
 ## Timeout, wake, home and brightness (#9)
 
 - [ ] With `display.timeout: 10`, navigate away from home and wait: display
-  goes dark after about 10 idle seconds. First touch wakes onto Licht without
-  running an Item. Test wake with an Item tap and a swipe: each is consumed;
+  goes dark after about 10 idle seconds. First touch wakes onto the same page
+  without running an Item. Test wake with an Item tap and a swipe: each is consumed;
   the next touch performs its normal action/navigation.
 - [ ] Holding a touch or key prevents sleep; releasing starts a fresh timeout.
   Shorten timeout to `2.5` and measure it, then omit `display` and try `{}`:

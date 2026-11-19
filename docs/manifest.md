@@ -20,7 +20,7 @@ contain JSON null values.
 | `display` | No | Idle timeout and brightness entity; omission or `{}` uses defaults. |
 
 Swipe left/right to navigate. On multi-page Manifests, the white dot marks the
-active page. Swiping past the first/last page stays there. A valid Manifest replacement and display sleep return to home.
+active page. Swiping past the first/last page stays there. A valid Manifest replacement returns to home; display sleep keeps the current page.
 An invalid replacement keeps the previous valid Manifest. See the
 [contract](contracts/README.md) for fetch, connection and action behaviour.
 
@@ -170,7 +170,7 @@ presses retain the actions from press time; disconnect cancels them.
 | `brightness` | Entity ID whose state is a percentage 0–100, including fractions; default brightness 70% when omitted or the state is missing/invalid. |
 
 Holding a touch or key keeps the display awake. On sleep, brightness becomes
-zero and the page returns home. The first touch only wakes the display. The next
+zero and the current page stays selected. The first touch only wakes the display. The next
 touch behaves normally. Keys keep their actions when waking. Brightness updates apply immediately while
 awake, or on the next wake while asleep. Missing/empty/unknown/unavailable,
 nonnumeric, nonfinite or out-of-range brightness states use 70%. Disconnected

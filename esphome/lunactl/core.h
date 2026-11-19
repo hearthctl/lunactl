@@ -633,7 +633,6 @@ class Core {
   }
   void sleep() {
     display_on_ = false;
-    page_ = 0;
     pressed_ = false;
     ++revision_;
   }
