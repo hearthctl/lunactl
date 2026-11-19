@@ -35,7 +35,7 @@ function make(name, props = {}) {
   const element = new (elements.get(name))();
   Object.assign(element, props);
   element.dispatchEvent = (e) => { element.emitted = e.detail; };
-  element.willUpdate?.(new Map());
+  element.willUpdate?.(new Map(Object.keys(props).map((key) => [key, undefined])));
   return element;
 }
 const input = (value) => ({target: {value}});
@@ -125,11 +125,25 @@ test("action form blocks Try while the action text differs from the binding", as
   await tryClick();
   assert.deepEqual(calls, []);
   form.binding = form.emitted;
-  form.willUpdate();
+  form.willUpdate(new Map([["binding", undefined]]));
   assert.equal(disabled(), false);
   await tryClick();
   assert.equal(calls.length, 1);
   assert.equal(calls[0][2].action, "light.turn_off");
+});
+
+test("action data survives a local render before the panel returns the edited binding", () => {
+  const form = make("lunactl-action-form", {binding: {action: "notify.mobile_app_g17"}});
+  for (const source of ['{\n  "message": "Luna braucht dich",\n}', '{\n  "message": "Luna braucht dich"\n}']) {
+    handler(form.render(), "input", 1)(input(source));
+    form.willUpdate(new Map([["_data", undefined]]));
+    assert.equal(bindings(form.render(), ".value=").at(-1), source);
+    const previous = form.binding;
+    form.binding = form.emitted;
+    form.willUpdate(new Map([["binding", previous]]));
+    assert.equal(bindings(form.render(), ".value=").at(-1), source);
+  }
+  assert.deepEqual(form.binding.data, {message: "Luna braucht dich"});
 });
 
 test("action form runs current unsaved action and preserves JSON-only targets", async () => {
@@ -141,10 +155,10 @@ test("action form runs current unsaved action and preserves JSON-only targets", 
   assert.equal(form.emitted.action, "light.turn_on");
   assert.deepEqual(form.emitted.target, binding.target);
   form.binding = form.emitted;
-  form.willUpdate();
+  form.willUpdate(new Map([["binding", undefined]]));
   handler(form.render(), "input", 1)(input('{ "brightness_pct": 40 }'));
   form.binding = form.emitted;
-  form.willUpdate();
+  form.willUpdate(new Map([["binding", undefined]]));
   assert.equal(bindings(form.render(), ".value=").at(-1), '{ "brightness_pct": 40 }', "keeps JSON whitespace while typing");
   const extra = templates(form.render()).find((t) => t.values.includes(text.otherTargets));
   assert.ok(extra, "read-only JSON target note is rendered");
@@ -157,7 +171,7 @@ test("action form runs current unsaved action and preserves JSON-only targets", 
   handler(form.render(), "input", 1)(input("{"));
   form.binding = form.emitted;
   assert.equal(form.binding.data, "{");
-  form.willUpdate();
+  form.willUpdate(new Map([["binding", undefined]]));
   assert.equal(bindings(form.render(), "?disabled=").at(-1), false, "complete name is sufficient to try");
   await form._try();
   assert.equal(JSON.parse(calls[1][2].data).data, "{");
@@ -165,7 +179,7 @@ test("action form runs current unsaved action and preserves JSON-only targets", 
   await form._try();
   assert.equal(form._notice, text.actionFailed);
   form.binding = {action: "light."};
-  form.willUpdate();
+  form.willUpdate(new Map([["binding", undefined]]));
   assert.equal(bindings(form.render(), "?disabled=").at(-1), true);
 });
 
