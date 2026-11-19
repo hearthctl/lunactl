@@ -68,14 +68,15 @@ int main() {
  if (amoled.brightness != 102) return 7;
  manifest_core.show_page(1);
  now = 12001; update();
- if (manifest_core.page_index() != 0 || amoled.brightness != 0) return 8;
+ if (manifest_core.page_index() != 1 || amoled.brightness != 0) return 8;
  manifest_core.set_state({"sensor.brightness", ""}, "20");
  render_manifest.execute();
  if (amoled.brightness != 0) return 9; // Live updates must not wake the display.
  now = 12002; press({233,233});
  if (page_ui.slot != -1 || amoled.brightness != 51) return 10;
  release({233,233});
- if (tapped_slot != -1) return 11;
+ if (tapped_slot != -1 || manifest_core.page_index() != 1) return 11; // Waking keeps the last page.
+ manifest_core.show_page(0);
  now = 12003; press({233,233}); release({233,233});
  if (page_ui.slot != 0 || tapped_slot != 0) return 12;
  manifest_core.set_state({"sensor.brightness", ""}, "unavailable");

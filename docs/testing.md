@@ -126,7 +126,7 @@ disposable HA. Run `make verify` and `make e2e` for these checks and the firmwar
 Issue [#9](https://github.com/hearthctl/lunactl/issues/9) adds `display-defaults`,
 `display-timeout` and `display-brightness` golden cases. They check the 10-second
 and 70% defaults, an empty `display`, a custom fractional timeout, the exact
-sleep boundary, return to home, wake-only taps and swipes, subsequent Item
+sleep boundary, page kept across sleep, wake-only taps and swipes, subsequent Item
 actions, held touches/keys, offline wake and millis wraparound. Brightness cases
 check fractional and 0/100% states, missing/empty/unknown/unavailable, invalid and
 nonfinite numbers, out-of-range fallbacks, updates during sleep, disconnect,

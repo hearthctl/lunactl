@@ -79,6 +79,10 @@
       "now": 20004
     },
     {
+      "type": "page",
+      "index": 0
+    },
+    {
       "type": "press",
       "x": 233,
       "y": 233,
@@ -303,19 +307,33 @@
       {
         "status": "",
         "tappable": true,
-        "page": 0,
-        "home": true,
+        "page": 1,
+        "home": false,
         "dots": [
-          true,
-          false
+          false,
+          true
         ],
-        "type": "single",
-        "item": {
-          "label": "Home",
-          "color": "#123456",
-          "icon": "",
-          "glyph": ""
-        },
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ],
         "display_on": false,
         "timeout_ms": 10000,
         "brightness": 70,
@@ -324,19 +342,68 @@
       {
         "status": "",
         "tappable": true,
-        "page": 0,
-        "home": true,
+        "page": 1,
+        "home": false,
         "dots": [
-          true,
-          false
+          false,
+          true
         ],
-        "type": "single",
-        "item": {
-          "label": "Home",
-          "color": "#123456",
-          "icon": "",
-          "glyph": ""
-        },
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ],
+        "display_on": true,
+        "timeout_ms": 10000,
+        "brightness": 70,
+        "display_brightness": 179
+      },
+      {
+        "status": "",
+        "tappable": true,
+        "page": 1,
+        "home": false,
+        "dots": [
+          false,
+          true
+        ],
+        "type": "pie",
+        "clock": "--:--",
+        "hole_radius": 56,
+        "quarters": [
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          },
+          {
+            "tappable": false,
+            "color": "#202020"
+          }
+        ],
         "display_on": true,
         "timeout_ms": 10000,
         "brightness": 70,

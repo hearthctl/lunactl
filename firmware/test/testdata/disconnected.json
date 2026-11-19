@@ -542,15 +542,15 @@
         "timeout_ms": 10000,
         "brightness": 35,
         "display_brightness": 0,
-        "page": 0,
-        "home": true,
+        "page": 1,
+        "home": false,
         "dots": [
-          true,
-          false
+          false,
+          true
         ],
         "type": "single",
         "item": {
-          "label": "Home",
+          "label": "Second",
           "color": "#123456",
           "icon": "",
           "glyph": ""
@@ -564,15 +564,15 @@
         "timeout_ms": 10000,
         "brightness": 35,
         "display_brightness": 0,
-        "page": 0,
-        "home": true,
+        "page": 1,
+        "home": false,
         "dots": [
-          true,
-          false
+          false,
+          true
         ],
         "type": "single",
         "item": {
-          "label": "Home",
+          "label": "Second",
           "color": "#123456",
           "icon": "",
           "glyph": ""
@@ -585,15 +585,15 @@
         "timeout_ms": 10000,
         "brightness": 35,
         "display_brightness": 0,
-        "page": 0,
-        "home": true,
+        "page": 1,
+        "home": false,
         "dots": [
-          true,
-          false
+          false,
+          true
         ],
         "type": "single",
         "item": {
-          "label": "Home",
+          "label": "Second",
           "color": "#123456",
           "icon": "",
           "glyph": ""
@@ -606,15 +606,15 @@
         "timeout_ms": 10000,
         "brightness": 35,
         "display_brightness": 89,
-        "page": 0,
-        "home": true,
+        "page": 1,
+        "home": false,
         "dots": [
-          true,
-          false
+          false,
+          true
         ],
         "type": "single",
         "item": {
-          "label": "Home",
+          "label": "Second",
           "color": "#123456",
           "icon": "",
           "glyph": ""
@@ -627,15 +627,15 @@
         "timeout_ms": 10000,
         "brightness": 35,
         "display_brightness": 89,
-        "page": 0,
-        "home": true,
+        "page": 1,
+        "home": false,
         "dots": [
-          true,
-          false
+          false,
+          true
         ],
         "type": "single",
         "item": {
-          "label": "Home",
+          "label": "Second",
           "color": "#123456",
           "icon": "",
           "glyph": ""
