@@ -1,0 +1,149 @@
+{
+  "status": "pass",
+  "scope": "exported STEP geometry only",
+  "findings": [
+    {
+      "name": "valid_brep",
+      "status": "pass",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "positive_volume",
+      "status": "pass",
+      "actual": 3909.7929700000004,
+      "expected": ">0 mm3"
+    },
+    {
+      "name": "solid_count",
+      "status": "pass",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "dimension_x_mm",
+      "status": "pass",
+      "actual": 18.0,
+      "expected": {
+        "nominal": 18.0,
+        "tolerance": 0.01
+      }
+    },
+    {
+      "name": "dimension_y_mm",
+      "status": "pass",
+      "actual": 22.845,
+      "expected": {
+        "nominal": 22.845,
+        "tolerance": 0.01
+      }
+    },
+    {
+      "name": "dimension_z_mm",
+      "status": "pass",
+      "actual": 15.65,
+      "expected": {
+        "nominal": 15.65,
+        "tolerance": 0.01
+      }
+    },
+    {
+      "name": "plug pocket is open",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "block behind the plug",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "right ledge under the plug shoulder",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "slot for the cable",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    },
+    {
+      "name": "latch strip in front of the overmold, under the metal shell",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "latch beside the metal shell",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 1.0,
+        "outside_model_bounds": false
+      },
+      "expected": "solid"
+    },
+    {
+      "name": "slot for the metal shell",
+      "status": "pass",
+      "actual": {
+        "material_fraction": 0.0,
+        "outside_model_bounds": false
+      },
+      "expected": "empty"
+    }
+  ],
+  "manufacturing": {
+    "material": {
+      "product": "Bambu PLA Basic",
+      "source": "provisional; workbench profile h2d-engineering/pla.json. Final material not chosen."
+    },
+    "orientation": {
+      "bed_face": "back of the carrier, XY at Z=0",
+      "reason": "pocket opens upwards; jaws, ledge and rails are vertical walls"
+    },
+    "support": {
+      "policy": "forbidden"
+    },
+    "fits": [
+      "plug overmold to jaws: 0.2 mm total interference (PLUG_SQUEEZE); plug measured by the user on 2026-11-22",
+      "latch to overmold face 0.1 mm (LATCH_GAP_PLUG), latch to the housing flat 0.25 mm (LATCH_GAP_DEV), latch slot to metal shell 0.25 mm per side (LATCH_CLEAR)"
+    ],
+    "loads": [
+      "USB-C unmating force 8 to 20 N per the USB-C spec pulls the overmold face against the latch; latch bears on a 0.6 to 0.75 mm rim of the face; not calculated"
+    ],
+    "physical_tests": [
+      "PENDING: the plug presses in between ledge and latch by hand",
+      "PENDING: the plug stays in the carrier when the device is pulled out",
+      "PENDING: the device charges"
+    ]
+  },
+  "manufacturing_evaluated": false,
+  "limits": [
+    "Probes test small boxes with 98% solid / at most 2% material for empty; no general feature recognition.",
+    "Wall checks sample named cross-sections; no global minimum-wall guarantee.",
+    "Material, load capacity, physical fit, orientation and support require separate evidence."
+  ],
+  "model": "cad/parts/wandhalter/generated/cad/wandhalter_xl_carrier.step",
+  "model_sha256": "aaea35d807a084bc8527994010ec655467eeed5e1db41c64f0b3d990b64b6173",
+  "requirements_sha256": "f2cffb41a6e882d466bf99121560ae0c783d8a3321bc9e4fbc0a1f019ed491b0",
+  "schema": 1
+}

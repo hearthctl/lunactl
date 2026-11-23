@@ -40,7 +40,8 @@ class Dims:
     SPEAKER_Y: float = 10.0  # speaker recess begins this far above the centre, official STL
     SPEAKER_HALF_W: float = 10.5  # widest half width of the speaker recess, official STL
 
-    # --- USB-C plug of the cable, measured by the user on 2026-11-16 ---
+    # --- USB-C plug: the standard variant is the Apple cable, measured by the user on 2026-11-16.
+    # PLUG_W, PLUG_T, PLUG_L and RELIEF_D differ per plug (see VARIANTS); the body never reads them. ---
     PLUG_W: float = 10.18  # overmold width, measured
     PLUG_T: float = 4.41  # overmold thickness, measured
     PLUG_L: float = 14.55  # overmold face to rear shoulder, measured
@@ -57,8 +58,8 @@ class Dims:
     RIM_END: float = 5.0  # rim ends here, degrees below the widest point of the device; 1 mm of wall is left there
     PLATE_INSET: float = 1.25  # plate behind the upper half of the device stays this far inside the device outline
     RAD_CLEAR: float = 0.3  # rim to device, per side
-    TIP_R: float = 12.5  # radius of the teardrop tip
-    TIP_ABOVE_FLOOR: float = 7.275  # centre of the teardrop tip above the carrier bottom; leaves 2 mm wall at the bay corners
+    TIP_R: float = 13.5  # radius of the teardrop tip
+    TIP_ABOVE_FLOOR: float = 8.0  # centre of the teardrop tip above the carrier bottom; leaves 2 mm wall at the bay corners
     EDGE_R: float = 2.0  # rounding of the outer front edge
     LIP_START: float = 14.3  # lip begins this far above the rear plateau (rim is full radius to 14.0)
     LIP_SLOPE: float = 0.8  # lip rise per mm inwards: 51 degrees from vertical, a 1 mm overhang over five layers
@@ -81,12 +82,15 @@ class Dims:
     PLUG_SQUEEZE: float = 0.2  # pocket narrower than the overmold, total: the jaws grip the plug
     PLUG_DX: float = 0.0  # trim: move the plug left/right
     PLUG_DZ: float = 0.0  # trim: move the plug away from the wall
-    CARRIER_W: float = 14.0  # carrier width; follows PLUG_W, the teardrop tip leaves no spare room
+    # Every carrier has the same outside and fits the same bay: width, length and the bay depth
+    # follow the largest plug (xl), and RELIEF_D of every plug must stay within CABLE_MAX_D.
+    CARRIER_W: float = 15.6  # carrier width; follows PLUG_W of the widest plug, the teardrop tip leaves no spare room
     CARRIER_TOP_GAP: float = 0.3  # carrier top below the lowest point of the device
-    CARRIER_L: float = 17.25  # carrier length; follows PLUG_L and leaves room for a 1.2 mm latch
+    CARRIER_L: float = 21.85  # carrier length; follows PLUG_L of the longest plug and leaves room for the ledge
+    CABLE_MAX_D: float = 5.7  # widest cable the cable slot in the body lets through
     RAIL_DROP: float = 4.0  # rails this far below the carrier top, where the teardrop is still wide
     FLOOR_GAP: float = 0.2  # carrier to the bay floor and to the bay top
-    BAY_DEPTH: float = 15.15  # bay roof from the wall; the roof keeps the plug in its pocket, so it follows PLUG_T
+    BAY_DEPTH: float = 16.15  # bay roof from the wall; follows PLUG_T of the thickest plug
     JAW_MIN: float = 2.0  # least carrier wall beside the plug
     LEDGE_MIN: float = 2.0  # least ledge under the rear shoulder (takes the push when docking)
     RELIEF_CLEAR: float = 0.3  # slot around the strain relief, per side
@@ -204,15 +208,23 @@ class Dims:
             raise ValueError(f"rim ends too thin: {self.END_WALL:.2f} mm; raise RIM_R or RIM_END")
         if self.PLUG_ROOF_GAP < self.ROOF_GAP:
             raise ValueError(f"plug too thick for the bay: roof gap {self.PLUG_ROOF_GAP:.2f} mm; raise BAY_DEPTH")
+        if self.RELIEF_D > self.CABLE_MAX_D:
+            raise ValueError(f"cable too thick for the body: {self.RELIEF_D:.2f} mm; raise CABLE_MAX_D")
 
     def lip_z(self, r):
         """Height of the sloped lip underside at radius r."""
         return self.BACK_T + self.LIP_START + (self.R_IN - r) * self.LIP_SLOPE
 
 
+# One variant per plug. The body is the same in all of them; only the carrier differs.
+VARIANTS = {
+    "": {},  # Apple cable
+    "xl": dict(PLUG_W=11.78, PLUG_T=6.42, PLUG_L=19.16, RELIEF_D=5.7),  # measured by the user on 2026-11-22
+}
+
 PRINT = {
     "supports": "none",
-    "why": "wall face on the bed; the lip overhangs 1 mm at 51 degrees, the plug bay roof is a 17 mm bridge",
+    "why": "wall face on the bed; the lip overhangs 1 mm at 51 degrees, the plug bay roof is an 18 mm bridge",
 }
 PRINT_NOTES = (
     "Press the plug into the carrier from the open side, between ledge and latch, slide the carrier into the body from the wall side, then screw the body to the wall."
@@ -287,10 +299,12 @@ def body(d: Dims) -> Part:
     # the latch stands above the carrier, the metal shell above the latch; cut the full bay
     # width up to the lip so no thin fin is left between bay and device
     part -= box(x - d.BAY_HW, x + d.BAY_HW, d.CARRIER_TOP_Y, d.BAY_TOP_Y, -1, d.lip_z(d.R_IN))
+    # the bay walls run on up to the rim's inner circle; otherwise a hair of rim is left where a wall meets the circle at BAY_TOP_Y
+    part -= box(x - d.BAY_HW, x + d.BAY_HW, d.BAY_TOP_Y - 0.1, d.BAY_TOP_Y + 1, d.BACK_T, d.lip_z(d.R_IN))
     tip = d.PLUG_TIP_W / 2 + d.TIP_CLEAR
     part -= box(x - tip, x + tip, d.BAY_TOP_Y - 1, d.BAY_TOP_Y + d.PLUG_TIP + 1, -1, d.BACK_T + 1)
     # the cable leaves through the floor of the bay
-    cable = d.RELIEF_D / 2 + d.RELIEF_CLEAR
+    cable = d.CABLE_MAX_D / 2 + d.RELIEF_CLEAR
     part -= box(x - cable, x + cable, d.TIP_Y - d.TIP_R - 1, bay_bottom + 1, -1, d.BAY_Z)
 
     # the speaker fires to the rear: open the plate behind it, up to the top edge
@@ -316,8 +330,10 @@ def carrier_placed(d: Dims) -> Part:
     part = box(x - hw, x + hw, d.BOTTOM_Y, d.CARRIER_TOP_Y, d.BACK_RECESS, z1)
     part += box(x - hw - d.RAIL_D, x + hw + d.RAIL_D, d.RAIL_Y - d.RAIL_H / 2, d.RAIL_Y + d.RAIL_H / 2, d.BACK_RECESS, z1)
     pocket = (d.PLUG_W - d.PLUG_SQUEEZE) / 2
+    # the pocket is open up to the carrier top; the latch cap is added afterwards, so a plug taller than the cap
+    # leaves no thin film in front of its face
+    part -= box(x - pocket, x + pocket, d.SHOULDER_Y, d.CARRIER_TOP_Y + 1, d.PLUG_Z - d.PLUG_T / 2, z1 + 1)
     part += latch(d)
-    part -= box(x - pocket, x + pocket, d.SHOULDER_Y, d.LATCH_Y0, d.PLUG_Z - d.PLUG_T / 2, z1 + 1)
     shell = d.PLUG_TIP_W / 2 + d.LATCH_CLEAR  # slot for the metal shell, open to the front
     part -= box(x - shell, x + shell, d.LATCH_Y0 - 0.01, d.LATCH_Y1 + 1, d.PLUG_Z - d.PLUG_TIP_T / 2 - d.LATCH_CLEAR, z1 + 1)
     slot = d.RELIEF_D / 2 + d.RELIEF_CLEAR

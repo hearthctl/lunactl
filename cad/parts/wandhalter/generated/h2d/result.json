@@ -1,6 +1,6 @@
 {
     "error_string": "Success.",
-    "export_time": 418,
+    "export_time": 503,
     "layer_height": 0.20000000298023224,
     "plate_index": 0,
     "prepare_time": 24,
@@ -8,107 +8,159 @@
     "sliced_plates": [
         {
             "feature_type_times": {
-                "Bottom surface": 84.22236633300781,
-                "Bridge": 122.12732696533203,
-                "Custom": 297.6737060546875,
+                "Bottom surface": 74.22747039794922,
+                "Bridge": 138.41197204589844,
+                "Custom": 297.6664123535156,
                 "Flush": 30.0,
-                "Gap infill": 34.49724578857422,
-                "Inner wall": 172.73350524902344,
-                "Internal solid infill": 218.93240356445313,
-                "Outer wall": 228.2195587158203,
-                "Overhang wall": 2.405038833618164,
-                "Sparse infill": 213.07496643066406,
-                "Top surface": 69.42372131347656,
-                "Travel": 255.25399780273438,
-                "Undefined": 246.26803588867188
+                "Gap infill": 29.0432071685791,
+                "Inner wall": 176.98423767089844,
+                "Internal solid infill": 230.63058471679688,
+                "Outer wall": 236.95558166503906,
+                "Overhang wall": 3.445425271987915,
+                "Sparse infill": 237.88888549804688,
+                "Top surface": 76.1784896850586,
+                "Travel": 261.99749755859375,
+                "Undefined": 253.0115203857422
             },
             "filament_change_times": 0,
             "filaments": [
                 {
                     "filament_id": "GFA00",
                     "id": 1,
-                    "main_used_g": 11.87288761138916,
-                    "total_used_g": 11.87288761138916
+                    "main_used_g": 12.865147590637207,
+                    "total_used_g": 12.865147590637207
                 }
             ],
-            "generate_support_material_time": 14,
+            "generate_support_material_time": 15,
             "id": 1,
-            "infill_time": 63,
+            "infill_time": 59,
             "layer_filament_change": 0,
-            "main_predication": 1370.867919921875,
+            "main_predication": 1435.7467041015625,
             "make_perimeters_time": 47,
             "obj_cached_cnt": 0,
             "objects": [
                 {
                     "bbox": {
-                        "depth": 80.9465560913086,
+                        "depth": 79.31071472167969,
                         "height": 19.5,
-                        "width": 87.62914276123047,
-                        "x": 133.2604217529297,
-                        "y": 115.53225708007813,
+                        "width": 90.44444274902344,
+                        "x": 127.98051452636719,
+                        "y": 116.29878234863281,
                         "z": 0.0
                     },
                     "id": 15,
                     "name": "wandhalter_body_1",
-                    "triangle_count": 8404
+                    "triangle_count": 8378
                 }
             ],
-            "sliced_time": 364,
-            "sliced_time_with_cache": 212,
-            "total_predication": 1719.5250244140625,
-            "triangle_count": 8404,
+            "sliced_time": 327,
+            "sliced_time_with_cache": 186,
+            "total_predication": 1784.396484375,
+            "triangle_count": 8378,
             "warning_message": ""
         },
         {
             "feature_type_times": {
-                "Bottom surface": 10.947237968444824,
-                "Bridge": 8.78029727935791,
-                "Custom": 297.91107177734375,
+                "Bottom surface": 14.633807182312012,
+                "Bridge": 16.872873306274414,
+                "Custom": 297.870361328125,
                 "Flush": 30.0,
-                "Gap infill": 18.20683479309082,
-                "Inner wall": 88.62850189208984,
-                "Internal solid infill": 31.08946418762207,
-                "Outer wall": 106.45499420166016,
-                "Sparse infill": 70.40857696533203,
-                "Top surface": 16.643320083618164,
-                "Travel": 53.627601623535156,
-                "Undefined": 44.391632080078125
+                "Gap infill": 9.261221885681152,
+                "Inner wall": 93.39374542236328,
+                "Internal solid infill": 37.63134765625,
+                "Outer wall": 122.35225677490234,
+                "Sparse infill": 103.65413665771484,
+                "Top surface": 15.532715797424316,
+                "Travel": 72.79422760009766,
+                "Undefined": 63.60826110839844
             },
             "filament_change_times": 0,
             "filaments": [
                 {
                     "filament_id": "GFA00",
                     "id": 1,
-                    "main_used_g": 1.9692835807800293,
-                    "total_used_g": 1.9692835807800293
+                    "main_used_g": 2.733004570007324,
+                    "total_used_g": 2.733004570007324
                 }
             ],
             "generate_support_material_time": 1,
             "id": 2,
+            "infill_time": 6,
+            "layer_filament_change": 0,
+            "main_predication": 456.16070556640625,
+            "make_perimeters_time": 5,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 22.844999313354492,
+                        "height": 15.649999618530273,
+                        "width": 18.0,
+                        "x": 586.0,
+                        "y": 148.57749938964844,
+                        "z": 0.0
+                    },
+                    "id": 35,
+                    "name": "wandhalter_carrier_1",
+                    "triangle_count": 124
+                }
+            ],
+            "sliced_time": 64,
+            "sliced_time_with_cache": 49,
+            "total_predication": 804.8143920898438,
+            "triangle_count": 124,
+            "warning_message": ""
+        },
+        {
+            "feature_type_times": {
+                "Bottom surface": 14.633779525756836,
+                "Bridge": 12.835740089416504,
+                "Custom": 297.86260986328125,
+                "Flush": 30.0,
+                "Gap infill": 27.787006378173828,
+                "Inner wall": 96.97801208496094,
+                "Internal solid infill": 38.43121337890625,
+                "Outer wall": 119.73084259033203,
+                "Sparse infill": 70.41455841064453,
+                "Top surface": 13.744064331054688,
+                "Travel": 78.42825317382813,
+                "Undefined": 69.2422866821289
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 2.641193151473999,
+                    "total_used_g": 2.641193151473999
+                }
+            ],
+            "generate_support_material_time": 2,
+            "id": 3,
             "infill_time": 5,
             "layer_filament_change": 0,
-            "main_predication": 374.81280517578125,
+            "main_predication": 443.01971435546875,
             "make_perimeters_time": 4,
             "obj_cached_cnt": 0,
             "objects": [
                 {
                     "bbox": {
-                        "depth": 18.2449951171875,
-                        "height": 14.649999618530273,
-                        "width": 16.400012969970703,
-                        "x": 586.7999877929688,
-                        "y": 150.87750244140625,
+                        "depth": 22.844999313354492,
+                        "height": 15.649999618530273,
+                        "width": 18.0,
+                        "x": 166.0,
+                        "y": -235.42250061035156,
                         "z": 0.0
                     },
-                    "id": 35,
-                    "name": "wandhalter_carrier_1",
-                    "triangle_count": 108
+                    "id": 55,
+                    "name": "wandhalter_xl_carrier_1",
+                    "triangle_count": 136
                 }
             ],
-            "sliced_time": 62,
-            "sliced_time_with_cache": 48,
-            "total_predication": 723.4572143554688,
-            "triangle_count": 108,
+            "sliced_time": 68,
+            "sliced_time_with_cache": 54,
+            "total_predication": 791.6656494140625,
+            "triangle_count": 136,
             "warning_message": ""
         }
     ],
