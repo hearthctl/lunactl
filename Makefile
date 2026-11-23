@@ -69,6 +69,8 @@ check-firmware:
 BAMBU ?= /Applications/BambuStudio.app/Contents/MacOS/BambuStudio
 CAD_PART := cad/parts/wandhalter
 CAD_GEN := $(CAD_PART)/generated
+# One variant per plug besides the standard one (VARIANTS in wandhalter.py); each adds a carrier.
+CAD_VARIANTS := xl
 SLICER_PROFILES = $(WORKBENCH)/profiles/slicer/h2d-engineering
 
 # The workbench always writes to out/; the finished tree is moved to generated/.
@@ -78,18 +80,31 @@ cad:
 	rm -rf $(CAD_PART)/out
 	$(WORKBENCH)/.venv/bin/b123d-print --root cad build wandhalter
 	$(WORKBENCH)/.venv/bin/b123d-print --root cad check wandhalter
-	for part in body carrier; do \
-		$(WORKBENCH)/.venv/bin/python $(WORKBENCH)/tools/verify_step.py \
-			--model $(CAD_PART)/out/cad/wandhalter_$$part.step \
-			--requirements cad/requirements/$$part.json \
-			--report $(CAD_PART)/out/geometry-$$part.json > /dev/null || exit 1; \
+	# the body is the same in every variant: keep one copy, and fail if a variant ever changes it
+	for v in $(CAD_VARIANTS); do \
+		cmp $(CAD_PART)/out/print/wandhalter_body.stl $(CAD_PART)/out/print/wandhalter_$${v}_body.stl || exit 1; \
+		rm $(CAD_PART)/out/print/wandhalter_$${v}_body.stl $(CAD_PART)/out/cad/wandhalter_$${v}_body.step; \
+		sed -i.bak "/wandhalter_$${v}_body.stl/d" $(CAD_PART)/out/README.md && rm $(CAD_PART)/out/README.md.bak; \
 	done
-	# of the pictures the workbench renders, keep the assembly and the centre-line section
-	find $(CAD_PART)/out/images -type f ! -name wandhalter_assembly.png ! -name wandhalter_yz0.png -delete
+	$(WORKBENCH)/.venv/bin/python $(WORKBENCH)/tools/verify_step.py \
+		--model $(CAD_PART)/out/cad/wandhalter_body.step --requirements cad/requirements/body.json \
+		--report $(CAD_PART)/out/geometry-body.json > /dev/null
+	$(WORKBENCH)/.venv/bin/python $(WORKBENCH)/tools/verify_step.py \
+		--model $(CAD_PART)/out/cad/wandhalter_carrier.step --requirements cad/requirements/carrier.json \
+		--report $(CAD_PART)/out/geometry-carrier.json > /dev/null
+	for v in $(CAD_VARIANTS); do \
+		$(WORKBENCH)/.venv/bin/python $(WORKBENCH)/tools/verify_step.py \
+			--model $(CAD_PART)/out/cad/wandhalter_$${v}_carrier.step \
+			--requirements cad/requirements/carrier_$$v.json \
+			--report $(CAD_PART)/out/geometry-carrier_$$v.json > /dev/null || exit 1; \
+	done
+	# of the pictures the workbench renders, keep the assembly and the centre-line section of each variant
+	find $(CAD_PART)/out/images -type f ! -name wandhalter_assembly.png ! -name wandhalter_yz0.png \
+		$(foreach v,$(CAD_VARIANTS),! -name wandhalter_$(v)_assembly.png ! -name wandhalter_$(v)_yz0.png) -delete
 	rm -rf $(CAD_GEN)
 	mv $(CAD_PART)/out $(CAD_GEN)
 	# the reports name the model by its absolute path; keep the checkout location out of the repo
-	for part in body carrier; do \
+	for part in body carrier $(addprefix carrier_,$(CAD_VARIANTS)); do \
 		sed -i.bak 's#$(CURDIR)/$(CAD_PART)/out/#$(CAD_GEN)/#' $(CAD_GEN)/geometry-$$part.json && rm $(CAD_GEN)/geometry-$$part.json.bak; \
 	done
 

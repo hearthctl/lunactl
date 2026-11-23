@@ -3,15 +3,15 @@
   "solid_count": 1,
   "dimensions_mm": {
     "x": {
-      "nominal": 16.4,
+      "nominal": 18.0,
       "tolerance": 0.01
     },
     "y": {
-      "nominal": 18.245,
+      "nominal": 22.845,
       "tolerance": 0.01
     },
     "z": {
-      "nominal": 14.65,
+      "nominal": 15.65,
       "tolerance": 0.01
     }
   },
@@ -135,9 +135,10 @@
       "USB-C unmating force 8 to 20 N per the USB-C spec pulls the overmold face against the latch; latch bears on a 0.6 to 0.75 mm rim of the face; not calculated"
     ],
     "physical_tests": [
-      "DONE 2026-11-17: plug presses in between ledge and latch by hand",
-      "DONE 2026-11-17: plug stays in the carrier when the device is pulled out",
-      "DONE 2026-11-17: device charges with the plug sitting 1.25 mm lower (insertion 4.9 mm instead of 6.2 mm)"
+      "DONE 2026-11-17 (earlier, smaller carrier): plug presses in between ledge and latch by hand",
+      "DONE 2026-11-17 (earlier, smaller carrier): plug stays in the carrier when the device is pulled out",
+      "DONE 2026-11-17 (earlier, smaller carrier): device charges with the plug sitting 1.25 mm lower (insertion 4.9 mm instead of 6.2 mm)",
+      "PENDING: the Apple plug sits firmly in the larger carrier (the bay roof is now 1.7 mm above the plug instead of 0.3 mm; the jaws alone hold it) and stays when the device is pulled out"
     ]
   }
 }

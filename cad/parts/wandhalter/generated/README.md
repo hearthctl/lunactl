@@ -15,3 +15,4 @@ do not need a backup: keep the script, `ref/` and `b123d-print.toml`.
 
 - `print/wandhalter_body.stl`
 - `print/wandhalter_carrier.stl`
+- `print/wandhalter_xl_carrier.stl`

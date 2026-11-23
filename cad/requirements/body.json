@@ -7,7 +7,7 @@
       "tolerance": 0.01
     },
     "y": {
-      "nominal": 70.37,
+      "nominal": 75.24,
       "tolerance": 0.01
     },
     "z": {
@@ -35,12 +35,12 @@
       "center_mm": [
         0,
         -34,
-        17.3
+        18.0
       ],
       "size_mm": [
         8,
         8,
-        3
+        2.5
       ],
       "expect": "solid"
     },
@@ -62,7 +62,7 @@
       "name": "cable slot through the tip",
       "center_mm": [
         0,
-        -45.2,
+        -51,
         7
       ],
       "size_mm": [
@@ -279,14 +279,15 @@
       "device rim to holder rim: 0.3 mm per side (RAD_CLEAR)",
       "device rim to stop pads: contact, no clearance",
       "power button to relief: 1.0 mm radially (RELIEF_CLEAR_R)",
-      "carrier to bay: 0.2 mm per side (CARRIER_CLEAR), 0.3 mm to the bridged roof (ROOF_GAP)"
+      "carrier to bay: 0.2 mm per side (CARRIER_CLEAR), 0.3 mm to the bridged roof (ROOF_GAP); the bay is sized for the largest plug (xl) and every carrier has the same outside"
     ],
     "loads": [
       "docking and undocking by hand, USB-C mating force up to 20 N per the USB-C spec; not calculated",
       "lifting the device out is resisted only by the USB-C socket's own retention; the rim holds sideways and against tipping forward"
     ],
     "physical_tests": [
-      "DONE 2026-11-17: printed in PLA; the device docks, sits flush with the glass and is held by the plug alone",
+      "DONE 2026-11-17 (earlier, smaller body): printed in PLA; the device docks, sits flush with the glass and is held by the plug alone",
+      "PENDING: the enlarged body prints (bay roof bridges 18 mm instead of 16.4 mm), a carrier slides in from the wall side, and the device docks as before",
       "PENDING: power button is not pressed while the device is docked or being docked",
       "PENDING: retention after many docking cycles"
     ],

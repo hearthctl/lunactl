@@ -3,7 +3,7 @@
 3D-druckbare Wandhalterung für die M5Stack StopWatch (C152). Das Gerät wird von oben
 eingesetzt und gleitet dabei auf einen USB‑C-Stecker, der fest in der Halterung sitzt.
 
-Zwei Teile:
+Ein Körper und je Stecker eine Steckeraufnahme:
 
 - **Körper** (`body`): Wandplatte mit zwei Senkbohrungen und ein tropfenförmiger Rand um die
   untere Gerätehälfte. Zwei Anschlagflächen unter dem Gehäuserand tragen das Gerät, der Rand
@@ -14,7 +14,9 @@ Zwei Teile:
 - **Steckeraufnahme** (`carrier`): klemmt den Stecker seitlich, stützt ihn an der hinteren
   Schulter ab und hält ihn mit einem Riegel vor der Stirnfläche der Umspritzung fest, wenn das
   Gerät herausgezogen wird. Sie wird von der Wandseite in den Körper geschoben; die Wand hält
-  sie fest.
+  sie fest. Alle Aufnahmen haben dieselbe Außenform und passen in denselben Körper, nur die
+  Tasche für den Stecker unterscheidet sich. Es gibt eine für den Apple-Stecker (`carrier`) und
+  eine für den größeren Stecker `xl` (`xl_carrier`).
 
 Das Gerät liegt auf den Anschlagflächen auf. Die Stirnfläche des Steckers bleibt 1,55 mm
 unter dem Gehäuse, die Buchse trägt also keine Last. In diesem Spalt sitzt der Riegel. Display und Tasten A und B bleiben frei,
@@ -25,8 +27,9 @@ zum Taster, damit er nicht gedrückt wird.
 ## Bauen
 
 Die fertigen Dateien liegen im Repo unter `parts/wandhalter/generated/`: STEP in `cad/`, STL
-in `print/`, Zusammenbau und Mittelschnitt als Bild in `images/` und die Druckdatei
-`h2d/wandhalter.3mf`. Neu erzeugt werden sie aus dem Repo-Wurzelverzeichnis; `WORKBENCH` zeigt
+in `print/`, Zusammenbau und Mittelschnitt je Stecker als Bild in `images/` (`wandhalter_xl_*`
+für den Stecker `xl`) und die Druckdatei `h2d/wandhalter.3mf`. Der Körper ist in jeder Variante
+derselbe und liegt deshalb nur einmal vor; `make cad` bricht ab, falls eine Variante ihn ändert. Neu erzeugt werden sie aus dem Repo-Wurzelverzeichnis; `WORKBENCH` zeigt
 auf den Checkout der gemeinsamen Werkbank (`b123d-print`, build123d):
 
 ```sh
@@ -38,6 +41,7 @@ Maße ändern, danach neu erzeugen:
 
 ```sh
 b123d-print --root cad set wandhalter PLUG_W=11.9 PLUG_T=6.3
+b123d-print --root cad set wandhalter --variant xl PLUG_W=11.9   # Maß eines anderen Steckers
 ```
 
 Alle Maße stehen als Parameter in `parts/wandhalter/wandhalter.py`, die Gerätemaße und ihre
@@ -45,7 +49,7 @@ Quellen in `ref/README.md`, die Prüfanforderungen in `requirements/`.
 
 ## Maße
 
-Der Stecker des Kabels ist gemessen (16.11.2026):
+Der Apple-Stecker (Standardvariante) ist gemessen (16.11.2026):
 
 | Parameter | Messen zwischen | Wert |
 |---|---|---:|
@@ -56,9 +60,33 @@ Der Stecker des Kabels ist gemessen (16.11.2026):
 | `RELIEF_D` | Kabeldurchmesser direkt an der Schulter (kein eigener Knickschutz) | 3,09 mm |
 | `PLUG_EDGE` | Rundung der Kanten an der Stirnfläche | nicht gemessen, 0,3 mm angenommen |
 
-Schacht und Tropfenspitze sind auf diesen Stecker zugeschnitten (`BAY_DEPTH`, `CARRIER_W`,
-`CARRIER_L`, `TIP_R`, `TIP_ABOVE_FLOOR`). Ein anderes Kabel braucht deshalb in der Regel auch einen
-neuen Körper.
+## Steckervarianten
+
+Jeder Stecker ist eine Variante in `VARIANTS` in `parts/wandhalter/wandhalter.py` und überschreibt
+nur `PLUG_W`, `PLUG_T`, `PLUG_L` und `RELIEF_D`. Die Metallspitze ist bei beiden nach USB‑C-Norm.
+Eckenradien sind nicht gemessen; die Tasche hat scharfe Ecken, ein Stecker mit gerundeten Ecken
+passt also immer.
+
+| Parameter | Apple (Standard) | `xl` (gemessen 22.11.2026) |
+|---|---:|---:|
+| `PLUG_W` | 10,18 mm | 11,78 mm |
+| `PLUG_T` | 4,41 mm | 6,42 mm |
+| `PLUG_L` | 14,55 mm | 19,16 mm |
+| `RELIEF_D` | 3,09 mm | 5,7 mm |
+
+Schacht und Tropfenspitze sind für den größten Stecker (`xl`) ausgelegt (`CARRIER_W`,
+`CARRIER_L`, `BAY_DEPTH`, `CABLE_MAX_D`, `TIP_R`, `TIP_ABOVE_FLOOR`); der Körper liest
+von den Steckermaßen nur die Metallspitze, die bei allen gleich ist. Ein Stecker passt in diese
+Außenform, solange er nicht breiter als 11,79 mm, nicht dicker als 6,45 mm, nicht länger als
+19,54 mm ist und das Kabel höchstens 5,7 mm misst. Sonst bricht `Dims` ab und der Körper muss neu
+ausgelegt werden.
+
+Einen weiteren Stecker ergänzen:
+
+1. Eine Variante in `VARIANTS` eintragen.
+2. Den Namen in `CAD_VARIANTS` im Makefile eintragen.
+3. `requirements/carrier_<name>.json` aus der `xl`-Variante ableiten und in `plates.json`
+   eine Platte für `generated/print/wandhalter_<name>_carrier.stl` ergänzen.
 
 Am Gerät aus den Gehäusedateien übernommen, nicht nachgemessen:
 
@@ -98,19 +126,22 @@ Für die Wandschrauben sind 4‑mm-Senkkopfschrauben angenommen (`SCREW_HOLE_D`,
 
 Bambu Lab H2D, 0,4‑mm-Düse, 0,20 mm Standard, ohne Stützen. Körper mit der Wandseite auf dem
 Bett, Steckeraufnahme mit der Rückseite auf dem Bett. Geslict mit PLA Basic als vorläufiger
-Wahl: Körper 11,9 g und 29 min, Steckeraufnahme 2,0 g und 12 min. Die
-Druckdatei mit beiden Platten ist `parts/wandhalter/generated/h2d/wandhalter.3mf`.
+Wahl: Körper 12,9 g und 30 min, Steckeraufnahme für Apple 2,7 g und 13 min, für `xl` 2,6 g und
+13 min. Die Druckdatei mit den drei Platten ist `parts/wandhalter/generated/h2d/wandhalter.3mf`.
+Das Dach des Schachts überbrückt jetzt 18 mm statt 16,4 mm.
 
 ## Zusammenbau
 
-1. Stecker von der offenen Seite in die Steckeraufnahme drücken: Die Umspritzung sitzt
+1. Stecker von der offenen Seite in die zu ihm passende Steckeraufnahme drücken: Die Umspritzung sitzt
    zwischen Absatz und Riegel, der Metallteil im Schlitz des Riegels.
 2. Steckeraufnahme von der Wandseite in den Körper schieben, Kabel nach unten herausführen.
 3. Körper mit zwei Schrauben an die Wand schrauben.
 
 ## Stand
 
-Körper und Steckeraufnahme sind gedruckt und im Einsatz: Das Gerät lädt, der Stecker bleibt
+Der Körper in der jetzigen Größe und die beiden Aufnahmen sind nur gerechnet, geprüft und
+gesliced, aber noch nicht gedruckt. Ein früherer, kleinerer Stand von Körper und Aufnahme für den
+Apple-Stecker ist gedruckt und im Einsatz: Das Gerät lädt, der Stecker bleibt
 beim Herausziehen in der Aufnahme, und der Rand schließt bündig mit dem Glas ab. Nach oben
 hält allein die Rastung der USB‑C-Buchse; wie sich das über viele Steckzyklen verhält, ist
 offen.
